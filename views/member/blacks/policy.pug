@@ -1,0 +1,14 @@
+button.btn.btn-dark.btn-sm(type='button' data-bs-toggle="modal" data-bs-target="#policyBlackModal") 차단 정책 보기
+
+#policyBlackModal.modal.fade(tabindex='-1' aria-labelledby='policyBlackModalLabel' aria-hidden='true')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h1#policyBlackModalLabel.modal-title.fs-5 악성 고객 차단 정책
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      .modal-body
+        p 욕설 사용: 7일
+        p 장기미결제: 7일
+        p ..
+        p ..
+        p 신고누적정지: 10일

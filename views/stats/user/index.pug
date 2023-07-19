@@ -1,0 +1,59 @@
+//- Parameters
+//- admin, userStat ,helperStat, blackStat
+
+extends ../../layout.pug 
+
+block title 
+    | 유저 인덱스
+
+block content
+    include navTab.pug
+    .d-flex.justify-content-between  
+        .card.col-sm-6
+            .card-header 부름이 현황
+            .card-body
+                table.table
+                    tr 
+                        td 전체 부름이
+                        td.text-end #{userStat[0]}명
+                    tr 
+                        td 신규 부름이(한달)
+                        td.text-end  #{userStat[1]}명
+                    tr 
+                        td 탈퇴 부름이
+                        td.text-end  #{userStat[2]}명
+                    tr 
+                        td 일간 재방문율
+                        td.text-end  #{userStat[3]}%
+                    tr 
+                        td 주간 재방문율
+                        td.text-end  #{userStat[4]}%
+                    tr 
+                        td 월간 재방문율
+                        td.text-end  #{userStat[5]}%
+        .card.col-sm-6
+            .card-header 드림이 현황
+            .card-body
+                table.table 
+                    tr 
+                        td 전체 드림이
+                        td.text-end #{helperStat[0]}명
+                    tr 
+                        td 드림이당 평균 심부름 건수
+                        td.text-end #{helperStat[1]}회
+                    tr 
+                        td 드림이당 평균 심부름비
+                        td.text-end #{helperStat[2]}원
+    .card 
+        .card-header 블랙리스트 현황
+        .card-body 
+            table.table
+                tr 
+                    td 전체 차단 횟수
+                    td.text-end #{blackStat[0]}회
+                tr 
+                    td 현재 차단 부름이 수
+                    td.text-end #{blackStat[1]}명
+                tr 
+                    td 2회 이상 차단 부름이
+                    td.text-end #{blackStat[2]}명

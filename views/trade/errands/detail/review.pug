@@ -1,0 +1,26 @@
+//- Parameters
+//- errand, reviews
+
+
+#reviewModal.modal.fade(tabindex='-1' aria-labelledby='reviewModalLabel' aria-hidden='true')
+    .modal-dialog
+        .modal-content
+            .modal-header
+                h1#reviewModalLabel.modal-title.fs-5 리뷰 내역
+                button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+            .modal-body
+                if (reviews.length > 0)
+                    each review in reviews
+                        - const starCount = Math.floor(review.score);
+                        - const remainingCount = 5 - starCount;
+                        each _ in Array(starCount)
+                            i.bi.bi-star-fill(style='color: red;')
+                        each _ in Array(remainingCount)
+                            i.bi.bi-star(style='color: red;')
+                        strong.ms-1 #{starCount}
+                        p.mt-1 #{review.type} 리뷰: #{review.comment}
+                else
+                    | 리뷰 내역 없음
+
+            .modal-footer
+                button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close

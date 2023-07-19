@@ -1,0 +1,42 @@
+//- Parameters
+//- admin, reports, page, minPage, maxPage 
+
+extends ../../layout.pug 
+
+block title 
+    | 신고 심부름리스트 #{page}p
+
+block content
+    include ../../title.pug
+    |  신고리스트
+    .container-fluid
+        include search.pug
+        .table-responsive.justify-content-center.mt-2
+            table.table(data-toggle='table' data-pagination)
+                thead.table-light
+                    tr
+                        th(scope='col') idx 
+                        th(scope='col') 심부름 idx
+                        th(scope='col') 신고자
+                        th(scope='col') 요청날짜
+                        th(scope='col') 상세보기
+                tbody 
+                    each report in reports
+                        tr
+                            td #{report.idx}
+                            td #{report.requestIdx}
+                            td #{report.id}
+                            td #{report.reportDate}
+                            td 
+                                a.btn.btn-dark.btn-sm(href=`/trade/report/${report.idx}`) 상세정보
+
+                            
+                    else
+                        tr
+                            th(scope='row') 0
+                            td there is
+                            td no 
+                            td reports
+                            td
+        
+            include ../../pagination.pug

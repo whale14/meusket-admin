@@ -1,0 +1,100 @@
+//- Parameters
+//- rootCategories, categories, rootCategoryIdx, categoryIdx, subCategory, status
+
+script(type='text/javascript' src='https://cdn.jsdelivr.net/momentjs/latest/moment.min.js')
+script(type='text/javascript' src='https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js')
+link(rel='stylesheet' type='text/css' href='https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css')
+
+.card
+    .container-fluid
+        form
+            .d-flex.mt-2.align-items-center
+                label.form-control-label(for='startDate')
+                    i.bi.bi-caret-right-fill
+                input#startDate.form-control.form-control-sm(type='text' name='startDate' value=sDate)
+                label.form-control-label.ms-1.me-1(for='endDate') ~
+                input#endDate.form-control.form-control-sm.me-1(type='text' name='endDate' value=eDate)
+            .d-md-flex.flex-md-row.flex-column.mt-1
+                .d-flex.mt-1
+                    select#rootCategorySelect.form-select.ms-1.me-1(name='rootCategory' aria-label='rootCategory')
+                        option(value='', selected=!rootCategoryIdx) 상위카테고리
+                        each root in rootCategories
+                            option(value=`${root.idx}`, selected=(rootCategoryIdx == root.idx)) #{root.categoryName}
+                    select#subCategorySelect.form-select.ms-1.me-1(name='subCategory' aria-label='category')
+                        option(value='', selected=!subCategory) 하위카테고리
+                        if subCategory && subCategory.length > 0
+                            each sub in subCategory
+                                option(value=`${sub.idx}`, selected=(categoryIdx == sub.idx)) #{sub.categoryName}
+                .flex-grow-1
+                    .d-flex.mt-1
+                        select.form-select.ms-1(name='searchType' aria-label='searchType', style='width: auto;')
+                            option(value='requesterIdx') 부름이
+                            option(value='workerIdx') 드림이
+                        input#searchInput.form-control.ms-1.me-1(type='text', name='search',aria-label='search' placeholder='id, 이름 검색')
+            .mt-2.mb-1
+                .form-check.form-check-inline
+                    input#errandCheckbox1.form-check-input(type='checkbox' name='status' value='5' checked=status[5].value)
+                    label.form-check-label(for='errandCheckbox1') 심부름취소
+                .form-check.form-check-inline
+                    input#errandCheckbox2.form-check-input(type='checkbox' name='status' value='4' checked=status[4].value)
+                    label.form-check-label(for='errandCheckbox2') 심부름완료
+                .form-check.form-check-inline
+                    input#errandCheckbox3.form-check-input(type='checkbox' name='status' value='1' checked=status[0].value||status[1].value)
+                    label.form-check-label(for='errandCheckbox3') 매칭대기
+                .form-check.form-check-inline
+                    input#errandCheckbox4.form-check-input(type='checkbox' name='status' value='2' checked=status[2].value)
+                    label.form-check-label(for='errandCheckbox4') 진행대기
+                .form-check.form-check-inline
+                    input#errandCheckbox5.form-check-input(type='checkbox' name='status' value='3' checked=status[3].value)
+                    label.form-check-label(for='errandCheckbox5') 진행중
+                input(type='hidden' name='page' value=1)
+                button.btn.btn-sm.btn-success.mb-1.float-end(type='submit') 검색    
+
+script.
+    $(function() {
+        $('input[name="startDate"]').daterangepicker({
+            singleDatePicker: true,
+            minYear: 1901,
+            maxYear: parseInt(moment().format('YYYY'),10)
+        });
+    });
+    $(function() {
+        $('input[name="endDate"]').daterangepicker({
+            singleDatePicker: true,
+            minYear: 1901,
+            maxYear: parseInt(moment().format('YYYY'),10)
+        });
+    });
+    //- 카테고리 적용
+    const rootCategories = !{JSON.stringify(rootCategories)};
+    const categories = !{JSON.stringify(categories)};
+
+    const rootCategorySelect = document.querySelector("#rootCategorySelect");
+    const categorySelect = document.querySelector("#subCategorySelect");
+    
+    rootCategorySelect.addEventListener("change", function() {
+        const selectedRootCategoryId = this.value;
+        const subCategories = categories[selectedRootCategoryId];
+
+        // 기존의 하위 카테고리 옵션들을 모두 제거
+        while (categorySelect.firstChild) {
+        categorySelect.removeChild(categorySelect.firstChild);
+        }
+
+        // 새로운 하위 카테고리 옵션들을 추가
+        
+        const defaultOption = document.createElement("option");
+        defaultOption.selected = true;
+        defaultOption.textContent = "하위카테고리";
+        categorySelect.appendChild(defaultOption);
+        
+        if (subCategories){
+            subCategories.forEach(function(subCategory) {
+                const option = document.createElement("option");
+                option.value = subCategory.idx;
+                option.textContent = subCategory.categoryName;
+                categorySelect.appendChild(option);
+            });
+        }
+        
+    });

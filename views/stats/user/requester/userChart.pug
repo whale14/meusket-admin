@@ -1,0 +1,77 @@
+//- Parameters
+//- admin, top10ErrandsUsers, top10MoneyUsers, topScoreUsers, registerTwoWeeks, registerCumultive, chartOptions
+
+extends ../../../layout.pug 
+
+block title 
+    | 부름이 차트
+
+block content
+    include ./reviewModal.pug
+    include ../navTab.pug
+    
+    .card 
+        .card-header 심부름 상위 5명 부름이
+        .card-body 
+            .d-flex
+                table.table
+                    thead
+                        tr 
+                            th(scope='col') 주문 많이 한 부름이
+                            th
+                    tbody
+                        each user in top10ErrandsUsers
+                            tr
+                                td 
+                                    a(href=`/trade/errands?searchType=requesterIdx&search=${user.id}&page=1`) #{user.id}
+                                td.text-end #{user.cnt}회
+                table.table
+                    thead
+                        tr 
+                            th(scope='col') 심부름 금액 큰 부름이
+                            th
+                    tbody
+                        each user in top10MoneyUsers
+                            tr
+                                td 
+                                    a(href=`/trade/errands?searchType=requesterIdx&search=${user.id}&page=1`) #{user.id}
+                                td.text-end 누적 #{user.sum}원
+            table.table
+                    thead
+                        tr 
+                            th(scope='col') 평점 좋은 부름이
+                            th
+                    tbody
+                        each user in topScoreUsers
+                            tr
+                                
+                                td 
+                                    button.btn.btn-link.text-primary.me-2(type='button' data-bs-toggle='modal' data-bs-target=`#review${user.idx}Modal`) #{user.id}
+                                    
+                                td.text-end 
+                                    - const remainingCount = 5 - Math.floor(user.score);
+                                    - const starCount = Math.floor(user.score) - (Math.ceil(user.score) - Math.floor(user.score));
+                                    each _ in Array(starCount)
+                                        i.bi.bi-star-fill(style='color: red;')
+                                    - if (user.score % 1 !== 0)
+                                        i.bi.bi-star-half(style='color: red;')
+                                    each _ in Array(remainingCount)
+                                        i.bi.bi-star(style='color: red;')
+                                    |  #{user.score}점
+    #chartContainer.container
+        //- #dataChartCard.card   
+    .card
+        .card-header 누적 가입자 추이
+        .card-body
+            .d-flex.justify-content-center
+                canvas#registerCumultiveChart(width='400', height='200' style='max-width: 800px; max-hegiht: 320px;')
+    .card
+        .card-header 2주간 가입자 추이
+        .card-body
+            .d-flex.justify-content-center
+                canvas#registerTwoWeeksChart(width='400', height='200' style='max-width: 800px; max-hegiht: 320px;')
+
+    script.
+        // 차트 생성
+        createChart('registerCumultiveChart', !{JSON.stringify(registerCumultive)})
+        createChart('registerTwoWeeksChart', !{JSON.stringify(registerTwoWeeks)})

@@ -1,0 +1,45 @@
+//- Parameters
+//- user
+
+#blockUserModal.modal.fade(tabindex='-1' aria-labelledby='blockUserModalLabel' aria-hidden='true')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h1#blockUserModalLabel.modal-title.fs-5 악성 고객 #{user.name} 차단
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      form(method='POST' action='/member/user/block')
+        .modal-body
+          label.form-label(for='blockReasonSelect') 차단사유
+          select#blockReasonSelect.form-select(name='blockReason' aria-label='blockReason' onchange='toggleBlockPeriod(this)')
+            option(selected='') 차단사유
+            option(value='심부름 중 욕설 사용') 심부름 중 욕설 사용(7일)
+            option(value='기타 사유') 기타 사유
+          #blockOtherReason(style='display: none')
+            label.form-label.mt-1.d-flex.justify-content-between(for='blockPeriod', id='blockPeriodLabel', style='display: none') 차단기간
+              .form-check
+                input#blockForever.form-check-input(type='checkbox' name='period' aria-label='period' value='INF' onchange='toggleBlockINFPeriod(this)')
+                label.form-check-label(for='blockForever')
+                  | 영구정지
+            input#blockPeriod.form-control(name='period', type='number', aria-label='period', placeholder='기간을 입력하세요')
+            input#blockReasonInput.mt-1.form-control(name='blockReasonInput', type='text', aria-label='blockReasonInput', placeholder='사유를 입력하세요')
+        .modal-footer
+          input(type='hidden' name='idx' value=user.idx)
+          button.btn.btn-dark(type='submit') 차단
+          button.btn.btn-light(type='button' data-bs-dismiss='modal') 취소
+
+script.
+  function toggleBlockPeriod(select) {
+    var blockOtherReason = document.getElementById('blockOtherReason');
+    if (select.value === '기타 사유') {
+      document.getElementById('blockPeriod').value = '';
+      document.getElementById('blockReasonInput').value = '';
+      blockOtherReason.style.display = 'block';
+    } else {
+      document.getElementById('blockPeriod').value = 7;
+      blockOtherReason.style.display = 'none';
+    }
+  }
+  function toggleBlockINFPeriod(checkbox) {
+    var blockPeriodInput = document.getElementById('blockPeriod');
+    blockPeriodInput.disabled = checkbox.checked;
+  }

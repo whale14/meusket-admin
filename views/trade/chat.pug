@@ -1,0 +1,29 @@
+//- Parameters
+//- admin, chat
+    chat:{room, content}
+
+#chatModal.modal.fade(tabindex='-1' aria-labelledby='recruitModalLabel' aria-hidden='true')
+    .modal-dialog
+        .modal-content
+            .modal-header
+                h1#recruitModalLabel.modal-title.fs-5 심부름 채팅 내역
+                button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+            .modal-body
+                if chat.content
+                    .chat-box-header.mt-0 #{chat.room.subject}
+                    .chat-box-body 
+                        .chat-logs
+                            .mt-2
+                            each content in chat.content
+                                if content.userIdx == errand.requesterIdx
+                                    .chat-msg.self
+                                        .cm-msg-type
+                                        .cm-msg-text #{content.content}
+                                        .cm-msg-time #{content.time}
+                                else
+                                    .chat-msg.user
+                                        .cm-msg-type
+                                        .cm-msg-text #{content.content}
+                                        .cm-msg-time #{content.time}
+            .modal-footer
+                button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close

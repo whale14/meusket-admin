@@ -1,0 +1,23 @@
+button.btn.btn-dark.btn-sm.ms-2(type='button' data-bs-toggle="modal" data-bs-target="#categoryModal") 카테고리 보기
+
+#categoryModal.modal.fade(tabindex='-1' aria-labelledby='categoryModalLabel' aria-hidden='true')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h1#categoryModalLabel.modal-title.fs-5 드림이 카테고리
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      .modal-body
+        .table-responsives
+            table.table.mb-0.mt-0
+                thead 
+                    tr 
+                        th(scope='col' style='width: 20%') idx 
+                        th(scope='col' style='width: 40%') 상위 분류
+                        th(scope='col' style='width: 40%') 카테고리
+                tbody.table-group-divider
+                    each category in work_category
+                        tr
+                            td #{category.idx}
+                            td #{category.rootName}
+                            td #{category.categoryName}
+                    

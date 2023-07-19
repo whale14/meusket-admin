@@ -1,0 +1,60 @@
+//- Parameters
+//- admin, errands, page, minPage, maxPage 
+
+extends ../../layout.pug 
+
+block title 
+    | 심부름리스트 #{page}p
+
+block content
+    include ../../title.pug
+    |  심부름리스트
+    .container-fluid
+        include search.pug
+        .table-responsive.justify-content-center.mt-2
+            table.table(data-toggle='table' data-pagination)
+                thead.table-light
+                    tr
+                        th(scope='col') idx 
+                        th(scope='col') 제목
+                        th(scope='col') 부름이
+                        th(scope='col') 드림이
+                        th(scope='col') 요청날짜
+                tbody 
+                    each errand in errands
+                        tr
+                            th(scope='row') #{errand.pidx}
+                            td 
+                                a(href=`/trade/errand/${errand.idx}`) #{errand.title} 
+                                if errand.status == 0
+                                    span.badge.rounded-pill.bg-dark 매칭대기
+                                if errand.status == 1
+                                    span.badge.rounded-pill.bg-dark 드림이대기
+                                if errand.status == 2
+                                    span.badge.rounded-pill.bg-primary 진행대기
+                                if errand.status == 3
+                                    span.badge.rounded-pill.bg-info 진행중
+                                if errand.status == 4
+                                    span.badge.rounded-pill.bg-success 심부름완료
+                                if errand.status == 5
+                                    span.badge.rounded-pill.bg-danger 심부름취소
+                            td 
+                                if errand.u_id=="admin"
+                                    | 삭제부름이
+                                else
+                                    |#{errand.u_id}
+                            td
+                                if errand.h_id=="admin"
+                                    | 삭제드림이
+                                else
+                                    |#{errand.h_id}
+                            td #{errand.regDate}
+                    else
+                        tr
+                            th(scope='row') 0
+                            td there is
+                            td no errands
+                            td
+                            td
+        
+            include ../../pagination.pug

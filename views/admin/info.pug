@@ -1,0 +1,18 @@
+#showAdminModal.modal.fade(tabindex='-1' aria-labelledby='showAdminModalLabel' aria-hidden='true')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h1#showAdminModalLabel.modal-title.fs-5 관리자 정보
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      .modal-body
+        .card 
+            .list-group.list-group-flush 
+                .list-group-item 
+                    i.bi.bi-file-person.me-2
+                    | #{admin.admin_id}
+                .list-group-item 
+                    i.bi.bi-app.me-2
+                    | #{admin.name}
+                //- .list-group-item 
+                //-     i.bi.bi-envelope.me-2
+                //-     | #{admin.email}

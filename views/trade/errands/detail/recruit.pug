@@ -1,0 +1,29 @@
+//- Parameters
+//- errand, recruitments
+
+if (recruitments)
+    #recruitModal.modal.fade(tabindex='-1' aria-labelledby='recruitModalLabel' aria-hidden='true')
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h1#recruitModalLabel.modal-title.fs-5 지원 드림이 내역
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                .modal-body
+                    .table-responsives
+                        table.table.mb-0.mt-0
+                            thead 
+                                tr 
+                                    th(scope='col' style='width: 20%') idx 
+                                    th(scope='col') 드림이
+                            tbody.table-group-divider
+                                    each recruitment in recruitments
+                                        tr
+                                            td #{recruitment.idx}
+                                            td  #{recruitment.h_id}
+                                            td 
+                                                if recruitment.isRejected == 1
+                                                    | 거절
+                                                else 
+                                                    | 수락
+                .modal-footer
+                    button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close

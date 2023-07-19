@@ -1,0 +1,23 @@
+//- Parameters
+//-topScoreHelpers
+
+each user in topScoreHelpers
+    .modal.fade(id=`review${user.idx}Modal` tabindex='-1' aria-labelledby=`review${user.idx}ModalLabel` aria-hidden='true')
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h1.modal-title.fs-5(id=`review${user.idx}ModalLabel`) #{user.id} 리뷰
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                .modal-body
+                    table.table
+                        thead 
+                            tr 
+                                th(scope='col') 심부름 idx 
+                                th(scope='col') 리뷰내역
+                        tbody 
+                            each review in user.review
+                                tr 
+                                    td #{review.r_idx}
+                                    td #{review.comment}
+                .modal-footer
+                    button.btn.btn-light(type='button' data-bs-dismiss='modal') 닫기

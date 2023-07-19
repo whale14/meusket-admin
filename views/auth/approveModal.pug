@@ -1,0 +1,25 @@
+//- Parameters
+//-- admin, message, redirectUrl
+
+#approveModal.modal.fade(tabindex='-1' aria-labelledby='approveModalLabel' aria-hidden='true' data-bs-backdrop="static")
+    .modal-dialog
+        .modal-content
+            .modal-header
+                h1#approveModalLabel.modal-title.fs-5 회원가입 신청 완료
+                a.btn-close(type='button' href=`${redirectUrl}`)
+            .modal-body
+                | #{message}
+            .modal-footer
+                a.btn.btn-light(type='button' href=`${redirectUrl}`) 확인
+                button#hiddenBtn.btn(type='button' data-bs-toggle='modal' data-bs-target='#approveModal' aria-hidden='true' style='display: none;') 
+
+script.
+    const message = "#{message}";
+    const redirectUrl = '#{redirectUrl}';
+
+    if (message && redirectUrl) {
+        document.addEventListener("DOMContentLoaded", function() {
+            const hiddenBtn = document.getElementById('hiddenBtn');
+            hiddenBtn.click();
+        });
+    }

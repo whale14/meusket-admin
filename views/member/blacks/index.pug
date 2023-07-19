@@ -1,0 +1,44 @@
+//- Parameters
+//- blacks, page, list, minPage, maxPage, helpeType, blackSearch
+
+extends ../../layout.pug 
+
+block title 
+    | 블랙리스트 #{page}p
+
+block content
+    .container-fluid
+        include ../../title.pug
+            |  블랙 리스트  
+        include policy.pug
+        include search.pug
+        .table-responsive.justify-content-center.mt-4
+            table.table
+                thead.table-light
+                    tr
+                        th(scope='col' style='width: 10%') idx 
+                        th(scope='col' style='width: 15%') u_id
+                        th(scope='col' style='width: 20%') 이름
+                        th(scope='col' class='text-center') 상세정보
+                        th(scope='col' style='width: 10%') 해제
+                tbody 
+                    each black in blacks
+                        tr
+                            th(scop='row') #{black.pidx}
+                            td  #{black.u_id}  
+                            td  #{black.name} 
+                            td.text-center
+                                include info.pug
+                            td 
+                                if black.isUnblock != 1
+                                    include remove.pug
+                                else 
+                                    button.btn.btn-dark.btn-sm.btn-disabled(disabled style="width: 4.2rem;") 해제완료
+                    else
+                        tr
+                            th(scope='row') 
+                            td no
+                            td blacks
+                            td 
+                            td
+            include ../../pagination.pug

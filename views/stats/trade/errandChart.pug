@@ -1,0 +1,37 @@
+.card
+    .card-header 심부름 요청 통계
+            .float-end
+                select.form-select(name='type' aria-label='type', style='width: auto;', onchange='showChart(this.value)')
+                    option(value='weekday') 요일별
+                    option(value='hour') 시간대별
+                    option(value='money') 가격대별
+    .card-body
+        .d-flex.justify-content-center
+            canvas#cntForWeekdayChart(width='400', height='200' style='display: block; max-width: 800px; max-hegiht: 320px;')
+            canvas#cntForHourChart(width='400', height='200' style='display: none;')
+            canvas#cntForMoneyChart(width='400', height='200' style='display: none;')
+
+script.
+    // 차트 생성
+    createChart('cntForWeekdayChart',!{JSON.stringify(cntForWeekData)})
+    createChart('cntForHourChart',!{JSON.stringify(cntForHourData)})
+    createChart('cntForMoneyChart',!{JSON.stringify(cntForMoneyData)})
+    function showChart(value) {
+        const weekdayChart = document.getElementById('cntForWeekdayChart');
+        const hourChart = document.getElementById('cntForHourChart');
+        const moneyChart = document.getElementById('cntForMoneyChart');
+        if (value === 'weekday') {
+            weekdayChart.style.display = 'block';
+            hourChart.style.display = 'none';
+            moneyChart.style.display = 'none';
+        } else if (value === 'hour') {
+            weekdayChart.style.display = 'none';
+            hourChart.style.display = 'block';
+            moneyChart.style.display = 'none';
+        }
+        else if (value === 'money') {
+            moneyChart.style.display = 'block';
+            weekdayChart.style.display = 'none';
+            hourChart.style.display = 'none';
+        }
+    }

@@ -1,0 +1,60 @@
+include ./header.pug
+
+nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.sticky-top
+    .container-fluid
+        a.navbar-brand.align-self-start(href='/') Meusket Admin
+        button.navbar-toggler(type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+            span.navbar-toggler-icon
+        if(admin)
+            #navbarSupportedContent.collapse.navbar-collapse
+                ul.navbar-nav.me-auto.mb-2.mb-lg-0.text-light
+                    li.nav-item.dropdown
+                        ul.list-unstyled.ps-0
+                    li.mb-1.me-3
+                        button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#member-collapse' aria-expanded='false')
+                            | 회원관리
+                        ul#member-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small
+                            li
+                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/user') 회원리스트
+                            li
+                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/apply') 드림이 신청
+                            li
+                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='') 신고 회원
+                            li
+                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/black') 블랙리스트
+                    li.mb-1.me-3
+                        button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#order-collapse' aria-expanded='false')
+                            | 심부름 매칭 관리
+                        ul#order-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small
+                            li  
+                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/trade/errand') 심부름 매칭
+                            li
+                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/trade/report') 신고 심부름
+                    li.mb-1.me-3
+                        button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#stats-collapse' aria-expanded='false')
+                            | 통계 보기
+                        ul#stats-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small
+                            li
+                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/stat/user') 사용자 통계
+                            li
+                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/stat/user') 심부름 통계
+                    li.border-top.my-3
+                    li.mb-1
+                        button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1(data-bs-toggle='collapse' data-bs-target='#account-collapse' aria-expanded='false')
+                            | 계정 관리
+                        #account-collapse.collapse
+                            ul.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small
+                                li
+                                a.d-inline-flex.text-decoration-none.rounded(role='button' data-bs-toggle="modal" data-bs-target="#showAdminModal") 정보보기
+                                li
+                                a.d-inline-flex.text-decoration-none.rounded(href='/edit') 정보변경
+                                li
+                                a.d-inline-flex.text-decoration-none.rounded(href='/manage') 관리자 승인 및 관리
+                ul.navbar-nav.ms-auto.align-self-start.mt-2.text-end
+                    li.nav-item
+                        a.d-inline-flex.text-decoration-none.rounded(href='/auth/sign_out') 로그아웃
+.container.mt-2
+if(admin)
+    include ./admin/info.pug
+.container-xl
+    block content

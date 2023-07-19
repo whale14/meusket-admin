@@ -1,0 +1,43 @@
+//- Parameters
+//- users, page, list,  minPage, maxPage, userType, userSearch
+
+extends ../../layout.pug 
+
+block title 
+    | 부름이리스트 #{page}p
+
+block content
+    
+    .container-fluid
+        include ../../title.pug
+            |  전체 회원 관리
+        include search.pug
+        .table-responsive.justify-content-center.mt-2
+            table#userTable.table(data-toggle='table' data-pagination)
+                thead.table-light
+                    tr
+                        th(scope='col') idx 
+                        th(scopr='col') id
+                        th(scope='col') 이름 
+                        th(scope='col') 가입날짜
+                tbody 
+                    each user in users
+                        tr
+                            th(scop='row') #{user.pidx}
+                            td 
+                                a(href=`/member/user/${user.idx}`) #{user.id}
+                            td #{user.name} 
+                                if user.isWorkerRegist == 1
+                                    span.badge.rounded-pill.bg-primary.ms-1 드림이
+                                else
+                                    span.badge.rounded-pill.bg-success.ms-1 부름이
+                                if user.accountState == 1
+                                    span.badge.rounded-pill.bg-dark.ms-1 블랙
+                            td #{user.createAt}
+                    else
+                        tr
+                            th(scope='row') 0
+                            td there is
+                            td no users
+                            td
+            include ../../pagination.pug

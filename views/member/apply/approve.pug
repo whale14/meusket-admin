@@ -1,0 +1,16 @@
+//- Parameters
+//-- admin, apply, trans, applyUser, category
+
+#approveHelperModal.modal.fade(tabindex='-1' aria-labelledby='approveHelperModalLabel' aria-hidden='true')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h1#approveHelperModalLabel.modal-title.fs-5 드림이 지원 승인
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      .modal-body
+        | #{applyUser.id} 님을 드림이 승인하시겠습니까?
+      .modal-footer
+        form(method='POST')
+            input(type='hidden' name='idx' value=applyUser.idx)
+            button.btn.btn-dark(type='submit') 승인
+        button.btn.btn-light(type='button' data-bs-dismiss='modal') 취소

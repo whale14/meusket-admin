@@ -1,0 +1,58 @@
+//- Parameters
+//- admin,top10ErrandsHelpers, top10MoneyHelpers, topScoreHelpers
+
+extends ../../../layout.pug 
+
+block title 
+    | 드림이 차트
+
+block content
+    include ./reviewModal.pug
+    include ../navTab.pug
+    
+    .card 
+        .card-header 심부름 상위 5명 드림이
+        .card-body
+            .d-flex
+                table.table
+                    thead
+                        tr 
+                            th(scope='col') 심부름 다수 드림이
+                            th
+                    tbody
+                        each user in top10ErrandsHelpers
+                            tr
+                                td 
+                                    a(href=`/trade/errands?searchType=workerIdx&search=${user.id}&page=1`) #{user.id}
+                                td.text-end #{user.cnt}회
+                table.table
+                    thead
+                        tr 
+                            th(scope='col') 심부름 누적 금액 큰 드림이
+                            th
+                    tbody
+                        each user in top10MoneyHelpers
+                            tr
+                                td 
+                                    a(href=`/trade/errands?searchType=workerIdx&search=${user.id}&page=1`) #{user.id}
+                                td.text-end 평균 #{user.sum}원
+            table.table
+                thead
+                    tr 
+                        th(scope='col') 평점 좋은 드림이
+                        th
+                tbody
+                    each user in topScoreHelpers
+                        tr
+                            td 
+                                button.btn.btn-link.text-primary.me-2(type='button' data-bs-toggle='modal' data-bs-target=`#review${user.idx}Modal`) #{user.id}
+                            td.text-end 
+                                - const remainingCount = 5 - Math.floor(user.score);
+                                - const starCount = Math.floor(user.score) - (Math.ceil(user.score) - Math.floor(user.score));
+                                each _ in Array(starCount)
+                                    i.bi.bi-star-fill(style='color: red;')
+                                - if (user.score % 1 !== 0)
+                                    i.bi.bi-star-half(style='color: red;')
+                                each _ in Array(remainingCount)
+                                    i.bi.bi-star(style='color: red;')
+                                |  #{user.score}점

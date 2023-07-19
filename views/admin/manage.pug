@@ -1,0 +1,24 @@
+each user in admins
+
+    .modal.fade(id=`manage${user.idx}Modal` tabindex='-1' aria-labelledby='manageModalLabel' aria-hidden='true')
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h1#manageModalLabel.modal-title.fs-5 관리자 권한 설정
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                form(method='POST' action='/manage')
+                    .modal-body
+                        .mb-1 이름: #{user.name}(id: #{user.id}) 권한 주기
+                        select.form-select.mb-1(name='authority')
+                            option(selected) 권한 선택(회의필요)
+                            option(value="1") 최고 권한
+                            option(value="2") 중간 권한
+                            option(value="3") 하위 권한
+                    .modal-footer
+                        input(type='hidden' name='idx' value=user.idx)
+                        button.btn.btn-dark(type='submit') 
+                            if user.authority == 0
+                                | 승인
+                            else 
+                                | 변경
+                        button.btn.btn-light(type='button' data-bs-dismiss='modal') 취소

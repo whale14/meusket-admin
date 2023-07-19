@@ -1,0 +1,9 @@
+ul#myTab.nav.nav-tabs(role='tablist')
+    li.nav-item(role='presentation')
+        a.nav-link(class=(type === 'index' ? 'active' : ''), href='/stat/user/index', role='tab', aria-selected=(type === 'index')) 기본
+    li.nav-item(role='presentation')
+        a.nav-link(class=(type === 'user' ? 'active' : ''), href='/stat/user/uchart', role='tab', aria-selected=(type === 'user')) 부름이 통계
+    li.nav-item(role='presentation')
+        a.nav-link(class=(type === 'helper' ? 'active' : ''), href='/stat/user/hchart', role='tab', aria-selected=(type === 'helper')) 드림이 통계
+
+include ../chart.pug

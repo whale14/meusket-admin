@@ -1,0 +1,17 @@
+script.
+    function createChart(chartId, chartData) {
+        var chartCtx = document.getElementById(chartId).getContext('2d');
+        var chart = new Chart(chartCtx, {
+            type: chartData.type,
+            data: chartData.data,
+            options: {
+                ...!{JSON.stringify(chartOptions)},
+                elements: {
+                    point: {
+                        radius: 3, // 데이터 포인트의 점 크기
+                    },
+                },
+                showLine: true,
+            },
+        });
+    }

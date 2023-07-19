@@ -1,0 +1,21 @@
+
+if(result)
+    #resultModal.modal.fade(tabindex='-1' aria-labelledby='resultModalLabel' aria-hidden='true')
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h1#resultModalLabel.modal-title.fs-5 신고 처리 내역
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                .modal-body
+                    table.table
+                        each value, index in result
+                            if value == '차단번호' && index > 0
+                                    td.separator
+                                    td.separator
+                            if index % 2 == 0
+                                tr
+                                    th(scope='col') #{value} 
+                                    td.text-end #{result[index+1]}
+                .modal-footer
+                    button.btn.btn-dark(type='button' data-bs-dismiss='modal' data-bs-toggle='modal' data-bs-target='#userActionModal') 수정하기
+                    button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close

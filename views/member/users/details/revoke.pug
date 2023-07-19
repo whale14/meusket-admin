@@ -1,0 +1,16 @@
+//- Parameters
+//- user
+
+#revokeModal.modal.fade(tabindex='-1' aria-labelledby='revokeModalLabel' aria-hidden='true')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h1#revokeModalLabel.modal-title.fs-5 드림이 #{user.name} 해제
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      form(method='POST' action='/member/user/revoke')
+        .modal-body
+          | #{user.id}님을 드림이에서 해제하시겠습니까?
+        .modal-footer
+          input(type='hidden' name='idx' value=user.idx)
+          button.btn.btn-dark(type='submit') 해제
+          button.btn.btn-light(type='button' data-bs-dismiss='modal') 취소

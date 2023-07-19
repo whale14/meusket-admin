@@ -1,0 +1,15 @@
+//- Parameters
+//- black
+
+div
+  button.btn.btn-dark.btn-sm(type='button' data-bs-toggle='collapse' data-bs-target=`#collapseDetail${black.idx}` aria-expanded='false' aria-controls=`collapseDetail${black.idx}`)
+    | 자세히
+  div.collapse(id=`collapseDetail${black.idx}`)
+    form.card
+      .card-header 정지일: #{black.createAt} 정지기간: 
+        if black.period == "INF"
+          | 영구정지
+        else 
+          | #{black.period}일
+      .card-body
+          | 사유: #{black.reason}

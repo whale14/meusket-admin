@@ -1,0 +1,31 @@
+//- Parameters
+//-- admin, password_not_match, password_not_fill
+
+extends ../layout.pug
+
+block title 
+  | 관리자 정보 변경
+
+block content
+  .card.ms-5.me-5#editAdminCard(aria-labelledby='editAdminCardLabel')
+    .card-header.bg-dark.text-light 관리자 정보 변경
+    .card-body
+      form(method="post")
+        .mb-3 
+          label.col-form-label(for="admin_id") 새 아이디
+          input#admin_id.form-control(type='text' value=`${admin.admin_id}` name='admin_id' aria-label='admin_id')
+        .mb-3
+          label.col-form-label(for="name") 새 관리자 이름
+          input#name.form-control(type='text' value=`${admin.name}` name='name' aria-label='name')
+        .mb-3
+          label.col-form-label(for="new_password") 새 비밀번호
+          input#new_password.form-control(type='password' name='new_password' aria-label='new_password',)
+          if password_not_fill === true 
+            .text-danger 새로운 비밀번호를 입력하세요.
+        hr
+        .mb-3
+          label.col-form-label(for="cur_password") 현재 비밀번호
+          input#cur_password.form-control(type='password' name='cur_password' aria-label='cur_password')
+          if password_not_match === true
+            .text-danger 비밀번호가 일치하지 않습니다.
+        button.btn.btn-dark(type='submit') 변경

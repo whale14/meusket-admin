@@ -1,0 +1,59 @@
+//- Parameters
+//-- admin, apply, trans, applyUser, category
+
+extends ../../layout.pug
+
+block title 
+    | 지원 정보
+
+block content
+    include ./approve.pug
+    .container-fluid.w-80
+        include ../../title.pug
+            a.text-dark(href='#' onclick='history.back(); return false;')
+                |  드림이 신청
+            i.bi.bi-chevron-double-right 
+                |  
+    .container-fluid.w-90
+        .card.text-bg-light
+            .container.px-5.mb-5
+                .row.gx-5
+                    .col-lg-9
+                    // Post content
+                    article
+                        // Post header
+                        header.mb-4
+                        // Post title
+                        h2.fw-bolder.mb-1  #{applyUser.name} 신청 상세 내역
+                        // Post meta content
+                        .text-bold 신청번호: #{apply.idx}
+                        .text-muted.fst-italic.mb-2 아이디: #{applyUser.id}
+                        // Post content
+                        p.fs-5.mb-4
+                    .container-xl
+                        .card.mb-1
+                            .card-header.bg-transparent 대금 정보
+                            table.table.table-borderless
+                                tr
+                                    th(scope='col') 수령인
+                                        td #{apply.accountName}
+                                tr
+                                    th(scope='col') 거래은행
+                                        td #{apply.bankName}
+                                tr   
+                                    th(scope='col') 계좌번호
+                                        td #{apply.accountNumber}
+                        .card.mb-1
+                            .card-header.bg-transparent 탈것정보
+                            .card-body
+                                | #{apply.transportation}
+                        .card.mb-1
+                            .card-header.bg-transparent 심부름 가능정보
+                            .card-body
+                                | #{apply.workCategory}
+                        .card
+                            .card-header.bg-transparent 자기소개
+                            .card-body #{apply.introduce}
+            .card-footer
+                .d-flex.justify-content-center  
+                    button.btn.btn-dark.me-2(type='button' data-bs-toggle='modal' data-bs-target='#approveHelperModal')  드림이 승인

@@ -1,0 +1,109 @@
+//- Parameters
+//-- admin, user, errands, totalCount, wallet
+
+#editModal.modal.fade(tabindex='-1' aria-labelledby='editModalLabel' aria-hidden='true')
+    .modal-dialog
+        .modal-content
+            .modal-header
+                h1#editModalLabel.modal-title.fs-5 회원정보 수정
+            form#editForm(method='POST' action=`/member/user/edit`)
+                input(type='hidden' name='idx' value=user.idx)
+                .modal-body 
+                    .mb-2
+                        label.col-form-label(for='editName') 이름:
+                        input#editName.form-control(name='name' type='text' value=user.name)
+                    .mb-2
+                        label.col-form-label(for='editID') ID:
+                        input#editID.form-control(name='id' type='text' value=user.id)
+                    if user.isWorkerRegist == 1
+                        .mb-2
+                            label.col-form-label(for='editBio') 인사말:
+                            input#editBio.form-control(name='bio' type='text' value=helper.bio)
+                        .mb-2
+                            label.col-form-label(for='editIntroduce') 자기소개:
+                            input#editIntroduce.form-control(name='introduce' type='text' value=helper.introduce)
+                        .mb-2
+                            label.col-form-label(for='editBank') 입금 은행:
+                            select#editBank.form-select(name='bank')
+                                option(value=helper.bankName) #{helper.bankName}
+                                option(value='국민은행') 국민은행
+                                option(value='우리은행') 우리은행
+                        .mb-2
+                            label.col-form-label(for='editAccountNumber') 계좌 번호:
+                            input#editAccountNumber.form-control(name='accountNumber' type='text' value=helper.accountNumber)
+                .modal-footer
+                    button#editBtn.btn.btn-dark(type='submit') 수정
+                    button#closeBtn.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+script.
+    function updateUserTable(user) {
+        const userTable = document.getElementById('userFirstTable');
+        userTable.innerHTML = `
+            <tbody>
+                <tr>
+                    <td>${user.name}</td>
+                    <td>${user.createAt}</td>
+                    <td>${user.updateAt}</td>
+                    <td>${user.profileImageUrl}</td>
+                </tr>
+            </tbody>
+        `;
+    }
+
+    function updateHelperTable(helper, wallet) {
+        const helperTable = document.getElementById('helperTable');
+        helperTable.innerHTML = `
+            <tbody>
+                <tr>
+                    <td>
+                        <button class='btn btn-dark btn-sm' type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasHelperErrand' aria-labelledby='offcanvasErrandLabel'>심부름 내역</button>
+                    </td>
+                    <td>${helper.workCategory}</td>
+                    <td>${helper.transportation}</td>
+                    <td>${helper.bio}</td>
+                </tr>
+            </tbody>
+        `;
+
+        const moneyTable = document.getElementById('userSecondTable ');
+        moneyTable.innerHTML = `
+            <tbody>
+                <tr>
+                    <td>${wallet ? wallet.money : 0}</td>
+                    <td>${wallet ? wallet.preMoney : 0}</td>
+                    ${helper.isWorkerRegist == 1 ? `<td>${helper.bankName}</td><td>${helper.accountNumber}</td>` : ''}
+                </tr>
+            </tbody>
+        `;
+    }
+    const editForm = document.getElementById('editForm');
+    const editBtn = document.getElementById('editBtn');
+    const idx = "#{user.idx}";
+
+    editForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData(editForm);
+        
+        xhr.open('POST', '/member/user/edit');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    // Handle the successful response
+                    // Close the current modal
+                    const closeBtn = document.getElementById('closeBtn');
+                    closeBtn.click();
+
+                    const response = JSON.parse(xhr.responseText);
+                    const updateUser = response.updateUser;
+                    const updateHelper = response.updateHelper ? response.updateHelper : false;
+                    updateUserTable(updateUser);
+                    if(updateHelper) updateHelperTable(updateHelper);
+                } else {
+                    // Handle the error response
+                    // For example, display an error message
+                    console.error(xhr.responseText);
+                }
+            }
+        };
+        xhr.send(formData);
+    });

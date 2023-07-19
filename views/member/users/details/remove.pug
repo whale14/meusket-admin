@@ -1,0 +1,15 @@
+
+#removeUserModal.modal.fade(tabindex='-1' aria-labelledby='removeUserModalLabel' aria-hidden='true')
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h1#removeUserModalLabel.modal-title.fs-5 부름이 #{user.name} 삭제
+        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+      form(method='POST' action='/member/user/remove')
+        .modal-body
+          | 정말로 #{user.name}(#{user.id})님을 삭제하시겠습니까?
+        .modal-footer
+          input(type='hidden' name='idx' value=user.idx)
+          input(type='hidden' name='id' value=user.id)
+          button.btn.btn-dark(type='submit') 삭제
+          button.btn.btn-light(type='button' data-bs-dismiss='modal') 취소

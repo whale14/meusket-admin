@@ -1,0 +1,10 @@
+//- Parameters
+//- errorCode, errorMsg
+
+extends layout.pug
+
+block title
+    | #{errorCode} #{errorMsg}
+
+block content
+    | ERROR: #{errorCode} #{errorMsg}

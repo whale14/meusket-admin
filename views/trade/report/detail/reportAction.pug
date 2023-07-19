@@ -1,0 +1,71 @@
+//- Parameters
+//- requster, worker, reporter
+
+#userActionModal.modal.fade(tabindex='-1' aria-labelledby='userActionModalLabel' aria-hidden='true')
+    .modal-dialog
+        .modal-content
+            .modal-header
+                h1#userActionModalLabel.modal-title.fs-5 신고 내역 처리하기
+                button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+            script.
+            - const action = report.status == 0 ? 'action' : 'update';
+                form(method='POST' action=`/trade/report/${action}`)
+                    .modal-body
+                        .mb-1 
+                            .form-check.form-check-inline
+                                input#inlineRadio1.form-check-input(type='radio' name='subject' value=requester.idx checked=requester.id!==reporter.id)
+                                label.form-check-label(for='inlineRadio1') #{requester.id}
+                                    if requester.id==reporter.id 
+                                        | (신고자)
+                            .form-check.form-check-inline
+                                input#inlineRadio2.form-check-input(type='radio' name='subject' value=worker.idx checked=worker.id!==reporter.id)
+                                label.form-check-label(for='inlineRadio2') #{worker.id}
+                                    if worker.id==reporter.id 
+                                        | (신고자)
+                        .mb-1
+                            label.form-label(for='blockReasonSelect') 차단사유
+                            select#blockReasonSelect.form-select(name='blockReason' aria-label='blockReason' onchange='toggleBlockPeriod(this)')
+                                option(selected='') 차단사유
+                                option(value='심부름 중 욕설 사용') 심부름 중 욕설 사용(7일)
+                                option(value='차단 사유 미발견') 차단 사유 미발견
+                                option(value='other') 기타 사유
+                        #blockOtherReason.mb-1(style='display: none')
+                            label.form-label.mt-1.d-flex.justify-content-between(for='blockPeriod', id='blockPeriodLabel', style='display: none') 차단기간
+                            .form-check
+                                input#blockForever.form-check-input(type='checkbox' name='period' aria-label='period' value='INF' onchange='toggleBlockINFPeriod(this)')
+                                label.form-check-label(for='blockForever')
+                                | 영구정지
+                            input#blockPeriod.form-control(name='period', type='number', aria-label='period', placeholder='기간을 입력하세요')
+                            input#blockReasonInput.mt-1.form-control(name='blockReasonInput', type='text', aria-label='blockReasonInput', placeholder='사유를 입력하세요')
+                        .mb-1
+                            label.form-label(for='solutionInput') 구체적 근거
+                            textarea#solutionInput.form-control(name='solution', type='text', aria-label='reportSolution', placeholder='사유를 입력하세요')
+                    .modal-footer
+                        input(type='hidden' name='idx' value=report.idx)
+                        input(type='hidden' name='originalSol' value=report.solution)
+                        if report.status == 0
+                            button.btn.btn-dark(type='submit') 처리하기
+                        else if report.status == 1
+                            button.btn.btn-dark(type='submit') 수정하기
+                        button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+
+script.
+  function toggleBlockPeriod(select) {
+    var blockOtherReason = document.getElementById('blockOtherReason');
+    if (select.value === 'other') {
+      document.getElementById('blockPeriod').value = '';
+      document.getElementById('blockReasonInput').value = '';
+      blockOtherReason.style.display = 'block';
+    } else if (select.value === '심부름 중 욕설 사용'){
+      document.getElementById('blockPeriod').value = 7;
+      blockOtherReason.style.display = 'none';
+    } else if(select.value === '차단 사유 미발견'){
+      document.getElementById('blockPeriod').value = 0;
+      document.getElementById('blockReasonInput').value = '';
+      blockOtherReason.style.display = 'none';
+    }
+  }
+  function toggleBlockINFPeriod(checkbox) {
+    var blockPeriodInput = document.getElementById('blockPeriod');
+    blockPeriodInput.disabled = checkbox.checked;
+  }

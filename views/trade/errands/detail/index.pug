@@ -1,0 +1,90 @@
+//- Parameters
+//- errand, review, recruitments, chat
+
+extends ../../../layout.pug
+
+block title 
+    | 심부름 정보
+
+block content
+    //- include cancel.pug
+    include review.pug
+    include recruit.pug
+    include ../../chat.pug
+    .container-fluid.w-80
+        include ../../../title.pug
+            a.text-dark(href='#' onclick='history.back(); return false;')
+                |  심부름리스트
+            i.bi.bi-chevron-double-right 
+                |  #{errand.idx} 
+        .container-fluid.w-90
+            .ccard
+                .container.px-5.mb-5
+                    .row.gx-5
+                        .col-lg-9
+                        // Post content
+                        article
+                            // Post header
+                            header.mb-4
+                            // Post title
+                            h2.fw-bolder.mb-1 #{errand.title}
+                            // Post meta content
+                            .text-muted.fst-italic.mb-2 #{errand.request_time}
+                            // Post categories
+                            if errand.status == 0
+                                span.badge.rounded-pill.bg-dark 매칭대기
+                            if errand.status == 1
+                                span.badge.rounded-pill.bg-dark 드림이대기
+                            if errand.status == 2
+                                span.badge.rounded-pill.bg-primary 진행대기
+                            if errand.status == 3
+                                span.badge.rounded-pill.bg-info 진행중
+                            if errand.status == 4
+                                span.badge.rounded-pill.bg-success 심부름완료
+                            if errand.status == 5
+                                span.badge.rounded-pill.bg-danger 심부름취소
+                            // Post content
+                            p.fs-5.mb-4
+                        .container-xl
+                                .card.mb-1
+                                    .card-header.bg-transparent 
+                                        table.table.table-borderless.mb-0.mt-0 
+                                            tr 
+                                                th(scope='col') 부름이
+                                                    if errand.u_id=="admin"
+                                                        td.text-end 삭제회원
+                                                    else
+                                                        td.text-end #{errand.u_id}
+                                            tr 
+                                                th(scope='col') 제목
+                                                    td.text-end #{errand.title}
+                                            tr 
+                                                th(scope='col') 분류
+                                                    td.text-end #{errand.category}
+                                    .card-body 
+                                        table.table.table-borderless.mb-0.mt-0 
+                                            tr 
+                                                th(scope='col') 위치
+                                                    td.text-end #{errand.address}
+                                            tr 
+                                                th(scope='col') 요청날짜
+                                                    td.text-end #{errand.regDate}
+                                            tr 
+                                                th(scope='col') 내용
+                                                    td.text-end #{errand.content}
+                                    .card-footer.bg-transparent
+                                        table.table.table-borderless.mb-0.mt-0
+                                            tr
+                                                th(scope='col') 심부름비
+                                                    td.text-end #{errand.reward}원
+                                            if errand.status > 1
+                                                tr
+                                                    th(scope='col') 드림이
+                                                        td.text-end #{errand.h_id}
+                                                tr
+                                                    th(scope='col') 심부름날짜
+                                                        td.text-end #{errand.workDate}
+        .d-flex.justify-content-center.mt-2
+            button.btn.btn-dark.me-2(type='button' data-bs-toggle='modal' data-bs-target='#chatModal' disabled=!(chat.content))  채팅 내역   
+            button.btn.btn-dark.me-2(type='button' data-bs-toggle='modal' data-bs-target='#reviewModal' disabled = errand.status !== 4)  리뷰 보기
+            button.btn.btn-dark(type='button' data-bs-toggle='modal' data-bs-target='#recruitModal' disabled = errand.status < 2)  지원 드림이

@@ -1,0 +1,90 @@
+//- Parameters
+//- admin, report, errand, reporter, requester, worker, chat
+
+extends ../../../layout.pug
+
+block title 
+    | 신고 정보
+
+block content
+    include ../../chat.pug
+    include reportAction.pug
+    include result.pug
+    .container
+        .row
+            .col-md-6.col-lg-6.mb-1
+                .card.mx-auto(style='max-width: 600px; height: 100%;')
+                    .card-body
+                        h5.card-title(style="display: inline-block;") 신고자 정보
+                        span(style="display: inline-block; float: right;")
+                            if report.status == 0
+                                .badge.text-bg-warning 처리필요
+                            else 
+                                .badge.text-bg-success 처리완료
+                        table.table
+                            tr 
+                                th(scope='col') id 
+                                td.text-end #{reporter.id}
+                            tr 
+                                th(scope='col') 이름
+                                td.text-end #{reporter.name}
+                            tr 
+                                th(scope='col') 신고날짜
+                                td.text-end #{report.reportDate}
+                            
+                            tr 
+                                th(scope='col') 신고내용
+                                td
+                            td
+                                p #{report.content}
+                            td 
+            .col-md-6.col-lg-6.mb-1
+                .card.mx-auto(style='max-width: 600px; height: 100%;')
+                    .card-body
+                        h5.card-title 부름이, 드림이 정보
+                        table.table
+                            tr 
+                                th(scope='col') 부름이
+                                td.text-end
+                                    if requester.idx > 0 
+                                        a(href=`/member/user/${requester.idx}`) #{requester.id}
+                                    else 
+                                        |탈퇴회원
+                            tr 
+                                th(scope='col') 차단횟수
+                                td.text-end #{requester.blackCount}
+
+                            tr 
+                                th(scope='col') 드림이
+                                td.text-end 
+                                    if worker.idx > 0
+                                        a(href=`/member/user/${worker.idx}`) #{worker.id}
+                                    else 
+                                        |탈퇴회원
+                            tr 
+                                th(scope='col') 차단횟수
+                                td.text-end #{worker.blackCount}
+        .row
+            .col-md-12.col-lg-12
+                .card.mx-auto(style='max-width: 1200px;')
+                    .card-body
+                            h5.card-title 신고 심부름 정보
+                            table.table
+                                tr 
+                                    th(scope='col') 제목
+                                    td.text-end #{errand.title}
+                                tr 
+                                    th(scope='col') 요청날짜
+                                    td.text-end #{errand.regDate}
+                                tr 
+                                    th(scope='col') 내용
+                                    td
+                                td 
+                                    p #{errand.content}
+                                td
+    .d-flex.justify-content-center.mt-2
+            button.btn.btn-dark.me-2(type='button' data-bs-toggle='modal' data-bs-target='#chatModal' disabled=!(chat.content))  채팅 내역
+            if report.status == 0
+                button.btn.btn-dark.me-2(type='button' data-bs-toggle='modal' data-bs-target='#userActionModal') 처리하기
+            else 
+                button.btn.btn-dark.me-2(type='button' data-bs-toggle='modal' data-bs-target='#resultModal') 처리내역

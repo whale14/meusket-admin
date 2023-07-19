@@ -1,0 +1,43 @@
+//- Parameters
+//- admins, page, list,  minPage, maxPage, authority
+
+extends ../layout.pug 
+
+block title 
+    | 관리자 관리 및 승인 #{page}p
+
+block content
+    include manage.pug
+    .container-fluid
+        include ../title.pug
+            |  관리자 관리 및 승인
+        .table-responsive.justify-content-center.mt-2
+            table#userTable.table(data-toggle='table' data-pagination)
+                thead.table-light
+                    tr
+                        th(scope='col') idx 
+                        th(scopr='col') id
+                        th(scope='col') 이름 
+                        th(scope='col') 현재 권한
+                        th(scope='col') 승인 및 관리
+                tbody 
+                    each user in admins
+                        tr
+                            th(scop='row') #{user.pidx}
+                            td #{user.id}
+                            td #{user.name} 
+                            td #{user.author} 
+                            td 
+                                button.btn.btn-dark.btn-sm(type='button' data-bs-toggle="modal" data-bs-target=`#manage${user.idx}Modal`) 
+                                    if user.authority == 0
+                                        | 승인
+                                    else 
+                                        | 변경
+                    else
+                        tr
+                            th(scope='row') 0
+                            td there is
+                            td no
+                            td admins 
+                            td
+            include ../pagination.pug

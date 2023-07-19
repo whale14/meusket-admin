@@ -1,0 +1,54 @@
+//- Parameters
+//- admin, errandLeftStat, errandRightStat, cntForWeekData, cntForHourData, cntForMoneyData
+
+extends ../../layout.pug 
+
+block title 
+    | 심부름 인덱스
+
+block content
+    include ../chart.pug
+    .d-flex.justify-content-between
+        .card.col-sm-6
+            .card-body
+                table.table
+                    tr 
+                        td 누적 심부름 요청
+                        td.text-end #{errandLeftStat[0]}건
+                    tr 
+                        td 누적 심부름 총 요청 금액
+                        td.text-end #{errandLeftStat[1]}원
+                    tr 
+                        td 심부름 성사율
+                        td.text-end #{errandLeftStat[2]}%
+                    tr 
+                        td 심부름 총 성사 금액
+                        td.text-end #{errandLeftStat[3]}원
+                    
+        .card.col-sm-6
+            .card-body
+                table.table
+                    //- tr
+                    //-     td 누적 심부름
+                    //-     td.text-end #{errandRightStat[4]}
+                    tr 
+                        td 가장 많은 심부름 카테고리
+                        td.text-end 
+                            a(href=`/trade/errands?rootCategory=${errandRightStat[0].rootIndex}&subCategory=${errandRightStat[0].workCategoryIdx}&page=1`) #{errandRightStat[0].categoryName}
+                            | : #{errandRightStat[0].count}건
+                    tr 
+                        td 가장 많은 상위 카테고리
+                        td.text-end 
+                            a(href=`/trade/errands?rootCategory=${errandRightStat[1].rootIndex}&page=1`) #{errandRightStat[1].categoryName}
+                            | : #{errandRightStat[1].count}건
+                    tr 
+                        td 가장 비용 높은 카테고리
+                        td.text-end
+                            a(href=`/trade/errands?rootCategory=${errandRightStat[2].rootIndex}&subCategory=${errandRightStat[2].workCategoryIdx}&page=1`) #{errandRightStat[2].categoryName}
+                            | : 평균 #{errandRightStat[2].avg}원
+                    tr 
+                        td 가장 비용 낮은 카테고리
+                        td.text-end 
+                            a(href=`/trade/errands?rootCategory=${errandRightStat[3].rootIndex}&subCategory=${errandRightStat[3].workCategoryIdx}&page=1`) #{errandRightStat[3].categoryName}
+                            | : 평균 #{errandRightStat[3].avg}원
+    include errandChart.pug   

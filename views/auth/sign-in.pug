@@ -1,0 +1,57 @@
+//- Parameters
+//- admin, error
+
+include ../header.pug
+
+.position-realative
+    .col.col-sm-4.position-absolute.top-15.start-50.translate-middle
+        .card
+            .card-header.text-bg-dark Meusket Admin
+            .card-body
+                form#signInForm(method='post')
+                    .input-group.mb-2
+                        .input-group-prepend
+                            span.input-group-text#username-addon ID
+                        input.form-control#admin_id(name='admin_id',
+                                                    type='text',
+                                                    aria-label='admin_id',
+                                                    aria-describedby='id-addon'
+                                                    value=admin && admin.admin_id ? admin.admin_id : ''
+                                                    )
+                    .input-group.mb-2
+                        .input-group-prepend
+                            span.input-group-text#password-addon Password
+                        input.form-control#password(name='password',
+                                                    type='password',
+                                                    aria-label='Password',
+                                                    aria-describedby='password-addon'
+                                                    value=admin && admin.password ? admin.password : ''
+                                                    )
+                    #errorText
+                    button.btn.btn-dark.me-1(type='submit') 로그인
+                    a.btn.btn-dark(type='submit' href='/auth/sign_up') 회원가입
+script.
+    const signInForm = document.getElementById('signInForm');
+    const errorText = document.getElementById('errorText');
+
+    signInForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const admin_id = document.getElementById('admin_id').value;
+        const password = document.getElementById('password').value;
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `/auth/sign_in`);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    window.location.href = '/';
+                } else {
+                    const response = JSON.parse(xhr.responseText);
+                    errorText.innerHTML = '<div class="text-danger mt-1 mb-1">'+ response.error +'</div>';
+                }
+            }
+        };
+        xhr.send(`admin_id=${encodeURIComponent(admin_id)}&password=${encodeURIComponent(password)}`);
+    });
