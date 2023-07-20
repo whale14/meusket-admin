@@ -29,7 +29,8 @@ const errandChart = async (req, res, next) => {
         const successCount = errandCountByStatus
             .filter((item) => [2, 3, 4].includes(item.status))
             .reduce((total, item) => total + item.requestCount, 0);
-        const errandSuccessRate = ((successCount * 10) / totalCount) * 10;
+        const errandSuccessRate =
+            parseInt((successCount * 1000) / totalCount) / 10;
 
         //차트 생성
         const chartOptions = setChartOption(1);

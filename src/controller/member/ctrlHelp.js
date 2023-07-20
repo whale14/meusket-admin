@@ -1,5 +1,3 @@
-const { contains } = require("jquery");
-const app = require("../../app");
 const { HelpDAO, UserDAO } = require("../../DAO");
 const { generateCode } = require("../../lib/encryption");
 
@@ -17,6 +15,16 @@ const applyList = async (req, res, next) => {
             (page - 1) * APPLY_PER_PAGE,
             APPLY_PER_PAGE
         );
+        for (i in worker_approvals) {
+            const categories = worker_approvals[i].workCategory.split(", ");
+            if (categories.length > 2) {
+                worker_approvals[i].category = categories
+                    .slice(0, 2)
+                    .join(", ");
+            } else {
+                worker_approvals[i].category = worker_approvals[i].workCategory;
+            }
+        }
         const applycount = await HelpDAO.getHelperApplyTotalCount();
 
         const pageCnt = Math.ceil(applycount / APPLY_PER_PAGE);
