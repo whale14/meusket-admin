@@ -7,9 +7,9 @@ block title
     | 심부름리스트 #{page}p
 
 block content
-    include ../../title.pug
-    |  심부름리스트
     .container-fluid
+        include ../../title.pug
+            |  심부름리스트
         include search.pug
         .table-responsive.justify-content-center.mt-2
             table.table(data-toggle='table' data-pagination)

@@ -69,6 +69,7 @@ const usersList = async (req, res, next) => {
         return next(err);
     }
 };
+
 const latestUser = async (req, res, next) => {
     try {
         return res.redirect("/member/users?page=1");
@@ -162,7 +163,8 @@ const revokeHelper = async (req, res, next) => {
 const editUserRequest = async (req, res, next) => {
     try {
         const { admin } = req.session;
-        if (admin.authority > 3) throw new Error("UNAUTHORIZED");
+        if (admin.authority > 3)
+            return res.status(403).json({ error: "권한이 없습니다!" });
         const { password } = req.body;
         const admin_info = await AdminDAO.getAdminById(admin.admin_id);
         const isValid = await verifyCode(password, admin_info.password);

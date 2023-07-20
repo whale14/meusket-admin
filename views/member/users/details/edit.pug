@@ -8,7 +8,7 @@
                 h1#editModalLabel.modal-title.fs-5 회원정보 수정
             form#editForm(method='POST' action=`/member/user/edit`)
                 input(type='hidden' name='idx' value=user.idx)
-                .modal-body 
+                .modal-body
                     .mb-2
                         label.col-form-label(for='editName') 이름:
                         input#editName.form-control(name='name' type='text' value=user.name)
@@ -37,6 +37,12 @@
 script.
     function updateUserTable(user) {
         const userTable = document.getElementById('userFirstTable');
+        const userTitle = document.getElementById('userTitle');
+        if (user.isWorkerRegist == 1) {
+                userTitle.innerHTML = `<div class='h4 d-inline'>드림이 ${user.name} 정보</div>`;
+        } else {
+                userTitle.innerHTML = `<div class='h4 d-inline'>부름이 ${user.name} 정보</div>`;
+        }
         userTable.innerHTML = `
             <tbody>
                 <tr>

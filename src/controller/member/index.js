@@ -18,6 +18,7 @@ router.post("/user/remove", authRequired, ctrlU.removeUser);
 router.post("/user/revoke", authRequired, ctrlU.revokeHelper);
 router.post("/user/edit/request", authRequired, ctrlU.editUserRequest);
 router.post("/user/edit", authRequired, upload.none(), ctrlU.editUser);
+router.post("/user/sort", authRequired);
 
 router.get("/apply", authRequired, ctrlH.latestApply);
 router.get("/applies", authRequired, ctrlH.applyList);

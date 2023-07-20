@@ -2,7 +2,7 @@
 //- black
 
 div
-  button.btn.btn-dark.btn-sm(type='button' data-bs-toggle='collapse' data-bs-target=`#collapseDetail${black.idx}` aria-expanded='false' aria-controls=`collapseDetail${black.idx}`)
+  button.btn.btn-dark.btn-sm(id=`collapseBtn${black.idx}` type='button' data-bs-toggle='collapse' data-bs-target=`#collapseDetail${black.idx}` aria-expanded='false' aria-controls=`collapseDetail${black.idx}`)
     | 자세히
   div.collapse(id=`collapseDetail${black.idx}`)
     form.card

@@ -18,72 +18,78 @@ block content
         include ./helper_errand.pug
     .container-fluid.w-80
         include ../../../title.pug
-            a.text-dark(href='/member/user')
-                |  전체 회원 관리
+            a.text-dark(href='/member/user') 전체 회원 관리
             i.bi.bi-chevron-double-right 
-                |  #{user.id}
+            | #{user.id}
     .container-fluid.w-90
         .card
             .card-header
                 .d-inline
                     if user.isWorkerRegist == 1
-                        .h4.d-inline 드림이 #{user.name} 정보
+                        .h4.d-inline#userTitle 드림이 #{user.name} 정보
                     else 
-                        .h4.d-inline 부름이 #{user.name} 정보
+                        .h4.d-inline#userTitle 부름이 #{user.name} 정보
                     button.btn.btn-link.text-decoration-underline.ms-2(type='button' data-bs-toggle='modal' data-bs-target='#requestModal') 정보수정
                     button.btn.btn-dark.btn-sm.float-end(type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasErrand' aria-labelledby="offcanvasErrandLabel") 심부름 요청 내역
-            .table-responsives
-                table.table.table-striped.align-middle
-                    thead
-                        tr
-                            th(scope='col') 이름
-                            th(scope='col') 가입일
-                            th(scope='col') 수정일
-                            th(scope='col') 프로필 사진
-                    tbody#userFirstTable
-                        tr 
-                            td #{user.name}
-                            td #{user.createAt}
-                            td #{user.updateAt}
-                            td #{user.profileImageUrl}
-                    thead
-                        tr
-                            th(scope='col') money
-                            th(scope='col') preMoney
-                            if user.isWorkerRegist == 1
-                                th(scope='col') 입금은행
-                                th(scope='col') 계좌번호
-                            else
-                                th(scope='col') 
-                                th(scope='col') 
-                    tbody#userSecondTable
-                        tr 
-                            if wallet
-                                td #{wallet.money}
-                                td #{wallet.preMoney}
-                            else 
-                                td 0
-                                td 0
-                            if user.isWorkerRegist == 1
-                                td #{helper.bankName}
-                                td #{helper.accountNumber}
-                            else 
-                                td 
-                                td
-                    if user.isWorkerRegist == 1
-                            thead 
-                                tr 
-                                    th(scope='col') 심부름 수행내역
-                                    th(scope='col') 활동 카테고리
-                                    th(scope='col') 이동수단
-                                    th(scope='col') 자기소개
-                            tbody#helpertable
-                                tr 
+            .d-flex
+                if user.profileImageUrl
+                    img.me-2(src=user.profileImageUrl, alt="프로필 사진", width="75", height="75")
+                else
+                    img.me-2(src="https://placehold.co/75", alt="기본 이미지" width="75", height="75")
+                .table-responsives.flex-fill
+                    table.table.table-striped.align-middle.table-borderless
+                        thead
+                            tr
+                                th(scope='col') 이름
+                                th(scope='col') 가입일
+                                th(scope='col') 수정일
+                        tbody#userFirstTable
+                            tr 
+                                td #{user.name}
+                                td #{user.createAt}
+                                td #{user.updateAt}
+                                //- td #{user.profileImageUrl
+            .d-flex
+                .table-responsives.flex-fill
+                    table.table.table-striped.align-middle.table-borderless
+                        thead
+                            tr
+                                th(scope='col') money
+                                th(scope='col') preMoney
+                                if user.isWorkerRegist == 1
+                                    th(scope='col') 입금은행
+                                    th(scope='col') 계좌번호
+                                else
+                                    th(scope='col') 
+                                    th(scope='col') 
+                        tbody#userSecondTable
+                            tr 
+                                if wallet
+                                    td #{wallet.money}
+                                    td #{wallet.preMoney}
+                                else 
+                                    td 0
+                                    td 0
+                                if user.isWorkerRegist == 1
+                                    td #{helper.bankName}
+                                    td #{helper.accountNumber}
+                                else 
                                     td 
-                                        button.btn.btn-dark.btn-sm(type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasHelperErrand' aria-labelledby="offcanvasErrandLabel") 심부름 내역
-                                    td #{helper.workCategory}
-                                    td #{helper.transportation}
-                                    td #{helper.bio}
+                                    td
+                        if user.isWorkerRegist == 1
+                                thead 
+                                    tr 
+                                        th(scope='col') 심부름 수행내역
+                                        th(scope='col') 활동 카테고리
+                                        th(scope='col') 이동수단
+                                        th(scope='col') 자기소개
+                                tbody#helpertable
+                                    tr 
+                                        td 
+                                            button.btn.btn-dark.btn-sm(type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasHelperErrand' aria-labelledby="offcanvasErrandLabel") 심부름 내역
+                                        td #{helper.workCategory}
+                                        td #{helper.transportation}
+                                        td #{helper.bio}
             .card-footer
                 .d-flex.justify-content-center
                     if user.isWorkerRegist == 1

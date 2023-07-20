@@ -25,15 +25,19 @@ const signIn = async (req, res, next) => {
 
         const authority = await AdminDAO.getAdminAuthorityByIdx(admin.idx);
         if (!authority || authority < 1) {
-            //1이 최상위 관리자, 0: 등록되지 않은 관리자
+            //1이 최상위 관리자, 0: 등록되지 않은 관리자 2: 중간 관리자, 3: 하위 관리자
             return res
                 .status(403)
                 .json({ error: "등록되지 않은 관리자입니다!" });
         }
+        if (authority == 1) admin.authorName = "최상위 관리자";
+        else if (authority == 2) admin.authorName = "중간 관리자";
+        else if (authority == 3) admin.authorName = "하위 관리자";
         req.session.admin = {
             admin_id: admin.id,
             name: admin.name,
             authority: authority,
+            authorityName: admin.authorName,
         };
         return res.sendStatus(200);
     } catch (err) {
