@@ -1,0 +1,19 @@
+.card-footer.bg-transparent
+    .h5.text-center 취소정보
+    table.table.table-borderless.mb-0.mt-0
+        tr
+            if cancel.userIdx = requesterIdx
+                th(scope='col') 취소 부름이
+                    td.text-end #{errand.u_id}
+            else
+                th(scope='col') 취소 드림이
+                    td.text-end #{errand.h_id}
+        tr
+            th(scope='col') 심부름상태
+                if cancel.requestStatus == 2
+                    td.text-end 진행대기
+                if cancel.requestStatus == 3
+                    td.text-end 진행중
+        tr
+            th(scope='col') 취소사유
+                td.text-end #{cancel.content}

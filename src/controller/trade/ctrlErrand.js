@@ -1,5 +1,5 @@
 const moment = require("moment");
-const { ErrandDAO, ChatDAO } = require("../../DAO");
+const { ErrandDAO, ChatDAO, CancelDAO } = require("../../DAO");
 
 const errandsList = async (req, res, next) => {
     try {
@@ -122,6 +122,9 @@ const showErrand = async (req, res, next) => {
         if (errand.recruitmentStatus != 0 && !recruitments)
             throw new Error("NOT_EXIST");
 
+        const cancel = await CancelDAO.getCancelByIdx(errandIdx);
+        if (errand.status == 5 && !cancel) throw new Error("NOT_EXIST");
+
         const chat_room = await ChatDAO.getChatByReqIdx(errandIdx);
         const chat_content = chat_room
             ? await ChatDAO.getChatContentByIdx(chat_room.idx)
@@ -131,6 +134,7 @@ const showErrand = async (req, res, next) => {
             errand,
             recruitments,
             reviews,
+            cancel,
             chat: { room: chat_room, content: chat_content },
         });
     } catch (err) {

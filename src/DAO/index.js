@@ -5,6 +5,7 @@ const BlackDAO = require("./black");
 const ErrandDAO = require("./errand");
 const ReportDAO = require("./report");
 const ChatDAO = require("./chat");
+const CancelDAO = require("./cancel");
 
 module.exports = {
     AdminDAO,
@@ -14,4 +15,5 @@ module.exports = {
     ErrandDAO,
     ReportDAO,
     ChatDAO,
+    CancelDAO,
 };

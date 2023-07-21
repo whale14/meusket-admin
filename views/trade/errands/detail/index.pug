@@ -7,7 +7,6 @@ block title
     | 심부름 정보
 
 block content
-    //- include cancel.pug
     include review.pug
     include recruit.pug
     include ../../chat.pug
@@ -83,6 +82,8 @@ block content
                                                 tr
                                                     th(scope='col') 심부름날짜
                                                         td.text-end #{errand.workDate}
+                                    if cancel 
+                                        include cancel.pug
         .d-flex.justify-content-center.mt-2
             button.btn.btn-dark.me-2(type='button' data-bs-toggle='modal' data-bs-target='#chatModal' disabled=!(chat.content))  채팅 내역   
             button.btn.btn-dark.me-2(type='button' data-bs-toggle='modal' data-bs-target='#reviewModal' disabled = errand.status !== 4)  리뷰 보기
