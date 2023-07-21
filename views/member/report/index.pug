@@ -27,8 +27,8 @@ block content
                             td #{report.id}
                             td #{report.reportDate}
                             td 
-                                a.btn.btn-dark.btn-sm(href=`/trade/report/${report.idx}` style="width: 4.2rem;") 상세정보
-                            td.d-none.d-md-table-cell
+                                a.btn.btn-dark.btn-sm(href=`/member/report/${report.idx}` style="width: 4.2rem;") 상세정보
+                            td.d-none.d-md-table-cell 
                                 if report.status == 0
                                     .badge.text-bg-warning 처리필요
                                 else 

@@ -16,7 +16,6 @@ router.get("/user/:userIdx(\\d+)", authRequired, ctrlU.showUser);
 router.post("/user/block", authRequired, ctrlU.blockUser);
 router.post("/user/remove", authRequired, ctrlU.removeUser);
 router.post("/user/revoke", authRequired, ctrlU.revokeHelper);
-router.post("/user/edit/request", authRequired, ctrlU.editUserRequest);
 router.post("/user/edit", authRequired, upload.none(), ctrlU.editUser);
 router.post("/user/sort", authRequired);
 
@@ -31,5 +30,7 @@ router.post("/black/remove_black", authRequired, ctrlB.removeBlack);
 
 router.get("/report", authRequired, ctrlR.latestReport);
 router.get("/reports", authRequired, ctrlR.reportsList);
+router.get("/report/:reportIdx(\\d+)", authRequired, ctrlR.showReport);
+router.post("/report/action", authRequired, ctrlR.getActionReport);
 
 module.exports = router;

@@ -12,4 +12,6 @@ router.post("/sign_up", ctrl.signUp);
 
 router.get("/sign_out", ctrl.signOut);
 
+router.post("/request", ctrl.adminRequest);
+
 module.exports = router;

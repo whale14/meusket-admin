@@ -1,4 +1,5 @@
 const { AdminDAO, UserDAO, OrderDAO } = require("../DAO");
+const { verifyCode } = require("../lib/encryption");
 
 const indexPage = async (req, res, next) => {
     try {

@@ -8,27 +8,24 @@ block title
 
 block content
     .container-xl
-        //- .d-flex.ms-1.mt-1.justify-content-center
         .row.justify-content-center.d-md-flex.flex-md-row.flex-column
             .col-12.col-md-4.mb-4
-                //- .card.col-4
                 .card
                     .card-body
                         h5.card-title.text-center 회원 관리
                         p.card-text 전체회원 관리
-                            a.btn.btn-dark.btn-sm.float-end(href='member/user') 바로가기
+                            a.btn.btn-dark.btn-sm.float-end(href='/member/user') 바로가기
                         p.card-text 드림이 신청
-                            a.btn.btn-dark.btn-sm.float-end(href='member/apply') 바로가기
+                            a.btn.btn-dark.btn-sm.float-end(href='/member/apply') 바로가기
                         p.card-text 신고 회원
-                            a.btn.btn-dark.btn-sm.float-end(href='') 바로가기
+                            a.btn.btn-dark.btn-sm.float-end(href='/member/report') 바로가기
                         p.card-text 블랙리스트 관리
-                            a.btn.btn-dark.btn-sm.float-end(href='member/black') 바로가기
+                            a.btn.btn-dark.btn-sm.float-end(href='/member/black') 바로가기
             .col-12.col-md-4.mb-4
-                //- .card.ms-1.col-4
                 .card
                     .card-body
                         h5.card-title.text-center 심부름 매칭 관리
-                        p.card-text 심부름 매칭
+                        p.card-text 심부름 조회
                             a.btn.btn-dark.btn-sm.float-end.ms-3(href='/trade/errand') 바로가기
                         p.card-text 신고 심부름
                             a.btn.btn-dark.btn-sm.float-end.ms-3(href='/trade/report') 바로가기

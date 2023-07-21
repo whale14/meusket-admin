@@ -396,3 +396,13 @@ chating css
         margin-right: 0;
     }
 }
+
+.img-profile {
+    border-radius: 50%; /* 동그랗게 만들기 */
+    border: 1px solid rgb(185, 185, 185, 0.5); /* 테두리 추가 및 회색으로 설정 */
+    width: 80px;
+    height: 80px;
+    min-width: 80px; /* 최소 너비 설정 */
+    min-height: 80px; /* 최소 높이 설정 */
+    object-fit: cover;
+}

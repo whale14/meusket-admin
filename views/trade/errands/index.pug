@@ -9,7 +9,7 @@ block title
 block content
     .container-fluid
         include ../../title.pug
-            |  심부름리스트
+            |  심부름 조회
         include search.pug
         .table-responsive.justify-content-center.mt-2
             table.table(data-toggle='table' data-pagination)
@@ -18,7 +18,7 @@ block content
                         th(scope='col') idx 
                         th(scope='col') 제목
                         th(scope='col') 부름이
-                        th(scope='col') 드림이
+                        th.d-none.d-md-table-cell(scope='col') 드림이
                         th(scope='col') 요청날짜
                 tbody 
                     each errand in errands
@@ -43,7 +43,7 @@ block content
                                     | 삭제부름이
                                 else
                                     |#{errand.u_id}
-                            td
+                            td.d-none.d-md-table-cell
                                 if errand.h_id=="admin"
                                     | 삭제드림이
                                 else

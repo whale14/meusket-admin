@@ -133,10 +133,31 @@ const signUp = async (req, res, next) => {
     }
 };
 
+const adminRequest = async (req, res, next) => {
+    try {
+        const { admin } = req.session;
+        const { password, authority } = req.body;
+        const admin_info = await AdminDAO.getAdminById(admin.admin_id);
+        const isValid = await verifyCode(password, admin_info.password);
+        if (!isValid)
+            return res.status(400).json({ error: "잘못된 비밀번호입니다!" });
+        var authority_num = 3;
+        if (authority == "edit") authority_num = 2;
+        else if (authority == "remove") authority_num = 1;
+        if (admin.authority > authority_num)
+            return res.status(403).json({ error: "권한이 없습니다!" });
+
+        return res.sendStatus(200);
+    } catch (err) {
+        return next(err);
+    }
+};
+
 module.exports = {
     signIn,
     signInForm,
     signOut,
     signUpForm,
     signUp,
+    adminRequest,
 };

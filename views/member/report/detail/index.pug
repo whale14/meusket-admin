@@ -1,0 +1,63 @@
+//- Parameters
+//- admin, report, reporter, reported
+
+extends ../../../layout.pug
+
+block title 
+    | 신고 정보
+
+block content
+    include reportAction.pug
+    include result.pug
+    .container
+        .row
+            .col-md-6.col-lg-6.mb-1
+                .card.mx-auto(style='max-width: 600px; height: 100%;')
+                    .card-body
+                        h5.card-title(style="display: inline-block;") 신고자 정보
+                        span(style="display: inline-block; float: right;")
+                            if report.status == 0
+                                .badge.text-bg-warning 처리필요
+                            else 
+                                .badge.text-bg-success 처리완료
+                        table.table
+                            tr 
+                                th(scope='col') id 
+                                td.text-end 
+                                    a(href=`/member/user/${report.idx}`) #{reporter.id}
+                            tr 
+                                th(scope='col') 이름
+                                td.text-end #{reporter.name}
+                            tr 
+                                th(scope='col') 신고날짜
+                                td.text-end #{report.reportDate}
+                            
+                            tr 
+                                th(scope='col') 신고내용
+                                td
+                            td
+                                p #{report.content}
+                            td 
+            .col-md-6.col-lg-6.mb-1
+                .card.mx-auto(style='max-width: 600px; height: 100%;')
+                    .card-body
+                        h5.card-title 신고대상 정보
+                        table.table
+                            tr 
+                                th(scope='col') 신고대상
+                                td.text-end 
+                                    if reported.idx > 0
+                                        a(href=`/member/user/${reported.idx}`) #{reported.id}
+                                    else 
+                                        |탈퇴회원
+                            tr 
+                                th(scope='col') 이름
+                                td.text-end #{reporter.name}
+                            tr 
+                                th(scope='col') 차단횟수
+                                td.text-end #{reported.blackCount}
+    .d-flex.justify-content-center.mt-2
+            if report.status == 0
+                button.btn.btn-dark.me-2(type='button' data-bs-toggle='modal' data-bs-target='#userActionModal') 처리하기
+            else 
+                button.btn.btn-dark.me-2(type='button' data-bs-toggle='modal' data-bs-target='#resultModal') 처리내역
