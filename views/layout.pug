@@ -50,9 +50,11 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.sticky-top
                                 a.d-inline-flex.text-decoration-none.rounded(href='/edit') 정보변경
                                 li
                                 a.d-inline-flex.text-decoration-none.rounded(href='/manage') 관리자 승인 및 관리
-                ul.navbar-nav.ms-auto.align-self-start.mt-2.text-end
+                ul.navbar-nav.ms-auto.align-self-start.mt-2.text-end.text-light
                     li.nav-item
-                        a.d-inline-flex.text-decoration-none.rounded(href='/auth/sign_out') 로그아웃
+                        .me-2 #{admin.authorityName} #{admin.admin_id}님
+                    li.nav-item
+                        a.d-inline-flex.text-decoration-none.rounded.me-2(href='/auth/sign_out') 로그아웃
 .container.mt-2
 if(admin)
     include ./admin/info.pug
