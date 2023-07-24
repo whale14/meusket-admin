@@ -45,6 +45,11 @@ block content
             include ../../pagination.pug
 
     script.
+        const removeBlackForms = Array.from(document.querySelectorAll(".removeBlackForm")).map(form => {
+            const idx = form.getAttribute("data-idx");
+                return { form, idx };
+        });
+        
         document.addEventListener('DOMContentLoaded', () => {
             const buttons = document.querySelectorAll('button[data-bs-toggle="collapse"]');
             const containerElement = document.getElementById('blackList');
@@ -52,18 +57,40 @@ block content
             buttons.forEach(button => {
                 button.addEventListener('click', () => {
                 const currentIdx = button.id.match(/\d+/)[0];
-
                 // 현재 클릭한 버튼에 관련된 Collapse를 제외한 나머지를 닫음
                 collapseElementList.forEach(collapse => {
                     const collapseIdx = collapse.id.match(/\d+/)[0];
-
                     if (collapseIdx !== currentIdx) {
                         const otherBsCollapse = new bootstrap.Collapse(collapse, { toggle: false });
                         otherBsCollapse.hide();
                     }
                     });
                 });
+            }); 
+            removeBlackForms.forEach(({ form, idx }) => {
+                form.addEventListener("submit", (event) => {
+                    event.preventDefault();
+                    const xhr = new XMLHttpRequest();
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === XMLHttpRequest.DONE) {
+                            if (xhr.status === 200) {
+                                const removeBlackModal = document.getElementById(`removeBlackModal${idx}`);
+                                const closeBtn = document.getElementById(`closeBtn${idx}`);
+                                closeBtn.click();
+                                const button = document.querySelector(`button[data-bs-target="#removeBlackModal${idx}"]`);
+                                button.disabled = true;
+                                button.innerText = "해제완료";
+                            } else {
+                                const response = JSON.parse(xhr.responseText);
+                                const errorText = document.querySelector(`#removeBlackModal${idx} #errorText`);
+                                errorText.innerHTML = '<div class="text-danger mt-1 mb-1">'+ response.error +'</div>';
+                            }
+                        }
+                    };
+                    xhr.open('POST', `/member/black/unblock`, true);
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    const formData = new FormData(form); 
+                    xhr.send(new URLSearchParams(Array.from(formData.entries()))); 
+                });
             });
         });
-
-        

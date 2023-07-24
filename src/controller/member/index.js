@@ -17,7 +17,6 @@ router.post("/user/block", authRequired, ctrlU.blockUser);
 router.post("/user/remove", authRequired, ctrlU.removeUser);
 router.post("/user/revoke", authRequired, ctrlU.revokeHelper);
 router.post("/user/edit", authRequired, upload.none(), ctrlU.editUser);
-router.post("/user/sort", authRequired);
 
 router.get("/apply", authRequired, ctrlH.latestApply);
 router.get("/applies", authRequired, ctrlH.applyList);
@@ -26,7 +25,7 @@ router.post("/apply/:applyIdx(\\d+)", authRequired, ctrlH.approveHelper);
 
 router.get("/black", authRequired, ctrlB.latestBlack);
 router.get("/blacks", authRequired, ctrlB.blacksList);
-router.post("/black/remove_black", authRequired, ctrlB.removeBlack);
+router.post("/black/unblock", authRequired, upload.none(), ctrlB.removeBlack);
 
 router.get("/report", authRequired, ctrlR.latestReport);
 router.get("/reports", authRequired, ctrlR.reportsList);

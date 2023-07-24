@@ -35,8 +35,7 @@ script.
             errorMsg.innerHTML = '';
             const passwordInput = passwordForm.querySelector('input[name="password"]');
             passwordInput.value = '';
-        });
-    
+        });    
 
         passwordForm.addEventListener('submit', function(event) {
             event.preventDefault();
@@ -50,7 +49,6 @@ script.
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        console.log("200");
                         // Handle the successful response
                         // For example, display the edit modal
                         

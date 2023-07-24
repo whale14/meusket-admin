@@ -99,6 +99,7 @@ block content
                                 td #{helper.bio}
             .card-footer
                 .d-flex.justify-content-center
+                    a.btn.btn-dark.me-2(type='button' href=`/member/blacks?searchType=idx&searchText=${user.idx}&page=1`) 차단 내역
                     if user.isWorkerRegist == 1
                         button.btn.btn-dark.me-2(type='button' data-bs-toggle='modal' data-bs-target='#revokeModal')  드림이 해제
                     if user.accountState == 0
@@ -106,7 +107,7 @@ block content
                             if user.isWorkerRegist == 0 
                                 | 부름이 차단
                             else
-                                | 드림이 차단
+                                | 드림이 차단                        
                     button#removeModalBtn.btn.btn-dark.me-2(type='button' data-bs-toggle='modal' data-bs-target='#requestModal') 
                         if user.isWorkerRegist == 0
                             | 부름이 삭제

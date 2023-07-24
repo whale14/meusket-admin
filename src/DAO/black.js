@@ -33,8 +33,14 @@ const getBlacksList = async (
          from blacklist b join user u on b.u_idx=u.idx ";
     const params = [];
     if (bSearch != undefined && bSearch != "") {
-        sql += "where u." + bType + " like ?";
-        params.push(`%${bSearch}%`);
+        sql += "where u." + bType;
+        if (bType == "idx") {
+            sql += " = ?";
+            params.push(bSearch);
+        } else {
+            sql += " like ?";
+            params.push(`%${bSearch}%`);
+        }
     }
     if (unblock) {
         sql += " and isUnblock = ?";
