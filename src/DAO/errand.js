@@ -366,12 +366,11 @@ const getCntErrandForWeek = async () => {
 
 const getCntErrandForHour = async () => {
     const sql =
-        "SELECT COUNT(*) AS count, CONCAT(HOUR(er.regDate), '시-', HOUR(er.regDate) + 2, '시') AS hour_range \
+        "SELECT COUNT(*) AS count, CONCAT(FLOOR(HOUR(er.regDate)/2) * 2, '시-', FLOOR(HOUR(er.regDate)/2) * 2 + 2, '시') AS hour_range \
         FROM request er \
         WHERE HOUR(er.regDate) < 23 \
         GROUP BY hour_range";
     const results = await runQuery(sql);
-
     const hours = Array.from(
         { length: 12 },
         (_, index) => `${index * 2}시-${index * 2 + 2}시`

@@ -71,7 +71,7 @@ const errandChart = async (req, res, next) => {
         const cntForMoneyData = setChartData(
             labels,
             [{ label: "가격대", data: tdata }],
-            "bar"
+            "doughnut"
         );
 
         return res.render("stats/trade/index.pug", {
@@ -91,7 +91,7 @@ const errandChart = async (req, res, next) => {
             chartOptions,
             cntForWeekData: { data: cntForWeekData, type: "bar" },
             cntForHourData: { data: cntForHourData, type: "bar" },
-            cntForMoneyData: { data: cntForMoneyData, type: "bar" },
+            cntForMoneyData: { data: cntForMoneyData, type: "doughnut" },
         });
     } catch (err) {
         return next(err);
