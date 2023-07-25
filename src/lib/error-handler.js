@@ -12,6 +12,12 @@ const errorHandler = (err, req, res, next) => {
                 errorCode: 404,
                 errorMsg: "Not Found",
             });
+        case "NO_TARGET":
+            return res.send(
+                getAlertScript("알림을 받을 대상이 존재하지 않습니다!")
+            );
+        case "SENDING_FAILED":
+            return res.send(getAlertScript("알림을 전송하는데 실패했습니다!"));
         default:
             if (process.env.MODE !== "prod")
                 console.error("\x1b[31m%s\x1b[0m", err);

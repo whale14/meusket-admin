@@ -7,6 +7,7 @@ const ctrlU = require("./ctrlUser");
 const ctrlB = require("./ctrlBlack");
 const ctrlH = require("./ctrlHelp");
 const ctrlR = require("./ctrlReport");
+const ctrlP = require("./ctrlPush");
 
 const router = Router();
 
@@ -31,5 +32,8 @@ router.get("/report", authRequired, ctrlR.latestReport);
 router.get("/reports", authRequired, ctrlR.reportsList);
 router.get("/report/:reportIdx(\\d+)", authRequired, ctrlR.showReport);
 router.post("/report/action", authRequired, ctrlR.getActionReport);
+
+router.get("/push", authRequired, ctrlP.sendPushNotificationForm);
+router.post("/push", authRequired, ctrlP.sendPushNotification);
 
 module.exports = router;

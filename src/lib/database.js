@@ -42,12 +42,17 @@ const runTransaction = async (queries) => {
                 const [result] = await conn.query(sql);
                 results.push(result);
             } catch (error) {
+                logger.error("Error in transaction at queryIndex:", {
+                    queryIndex: error.queryIndex,
+                    message: error.error,
+                });
                 throw { queryIndex: i, error };
             }
         }
         await conn.commit();
         return results;
     } catch (error) {
+        logger.error("");
         await conn.rollback();
         throw error;
     } finally {

@@ -406,3 +406,39 @@ chating css
     min-height: 80px; /* 최소 높이 설정 */
     object-fit: cover;
 }
+/*  
+**********************************************************
+ fonts 
+**********************************************************
+*/
+@font-face {
+    font-family: "nanumGothic";
+    src: url(/fonts/nanumGothic/NanumGothic.otf) format("opentype");
+}
+
+@font-face {
+    font-family: "nanumGothicBold";
+    font-weight: bold;
+    src: url(/fonts/nanumGothic/NanumGothicBold.otf) format("opentype");
+}
+
+@font-face {
+    font-family: "nanumSquareNeo";
+    src:
+        url(/fonts/nanumSquareNeo/webfont/eot/NanumSquareNeo-Variable.eot?#iefix)
+            format("embedded-opentype"),
+        url(/fonts/nanumSquareNeo/webfont/woff/NanumSquareNeo-Variable.woff)
+            format("woff");
+}
+
+.nanumGothic {
+    font-family: "nanumGothic", sans-serif;
+}
+
+.nanumGothic-bold {
+    font-family: "nanumGothicBold", sans-serif;
+}
+
+.nanumSquareNeo {
+    font-family: "nanumSquareNeo", sans-serif;
+}

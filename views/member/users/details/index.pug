@@ -29,7 +29,7 @@ block content
                         if user.profileImageUrl
                             img.img-profile.me-2(src=user.profileImageUrl, alt="프로필 사진", width="80", height="80")
                         else
-                            img.img-profile.me-2(src="https://picsum.photos/id/275/80/80", alt="기본 이미지" width="80", height="80")
+                            img.img-profile.me-2(src="/images/defaultProfile.svg", alt="기본 이미지" width="80", height="80")
                     .d-flex.flex-column
                         if user.isWorkerRegist == 1
                             .h4#userTitle 드림이 #{user.name} 정보

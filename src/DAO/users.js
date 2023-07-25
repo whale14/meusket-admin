@@ -289,13 +289,13 @@ const deleteUser = async (idx, id) => {
 };
 
 const getWalletbyIdx = async (idx) => {
-    sql = "select * from wallet where userIdx = ?";
+    const sql = "select * from wallet where userIdx = ?";
     const result = await runQuery(sql, [idx]);
     return result[0];
 };
 
 const getCumulativeUserCount = async () => {
-    sql =
+    const sql =
         "SELECT DATE(createAt) AS date, COUNT(*) AS cum_users \
     FROM user WHERE createAt <= NOW() GROUP BY DATE(createAt) ORDER BY DATE(createAt)";
     const results = await runQuery(sql);
@@ -305,6 +305,17 @@ const getCumulativeUserCount = async () => {
         results[i].date = replaceDate(results[i], "date");
     }
     return results;
+};
+
+const getUsersFcmTokensByType = async () => {
+    let sql = "select fcmToken from user where idx = 15 or idx = 16";
+    const params = [];
+    const results = await runQuery(sql, params);
+    const fcmTokens = [];
+    for (let result of results) {
+        fcmTokens.push(result.fcmToken);
+    }
+    return fcmTokens;
 };
 
 module.exports = {
@@ -322,4 +333,5 @@ module.exports = {
     getWalletbyIdx,
     getCumulativeUserCount,
     updateUserInfo,
+    getUsersFcmTokensByType,
 };

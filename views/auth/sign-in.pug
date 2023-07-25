@@ -45,12 +45,12 @@ script.
         const xhr = new XMLHttpRequest();
         xhr.open('POST', `/auth/sign_in`);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
+        const spinnerWrapper = document.getElementById('spinnerWrapper');               
+        spinnerWrapper.style.display = '';
+        signInBtn.disabled = true;
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE) {
-                const spinnerWrapper = document.getElementById('spinnerWrapper');               
-                spinnerWrapper.style.display = '';
-                signInBtn.disabled = true;
+                
                 if (xhr.status === 200) {
                     window.location.href = '/';
                 } else {
