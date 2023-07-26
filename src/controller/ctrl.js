@@ -1,11 +1,57 @@
-const { AdminDAO, UserDAO, OrderDAO } = require("../DAO");
-const { verifyCode } = require("../lib/encryption");
+const { AdminDAO, UserDAO, HelpDAO, ErrandDAO } = require("../DAO");
+const moment = require("moment");
 
 const indexPage = async (req, res, next) => {
     try {
         const { admin } = req.session;
         if (!admin) return res.redirect("/auth/sign_in");
-        return res.render("index.pug", { admin });
+        const startMonth = moment().startOf("month").toDate();
+        const startDay = moment().startOf("day").toDate();
+        const endDay = moment().endOf("day").toDate();
+
+        const applyCount = await HelpDAO.getHelperApplyTotalCount();
+        const newUserOfMonth = await UserDAO.getUserCountBetweenTime(
+            startMonth,
+            endDay
+        );
+
+        const requestofToday = await ErrandDAO.getErrandsCount(
+            startDay,
+            endDay
+        );
+        const requestofMonth = await ErrandDAO.getErrandsCount(
+            startMonth,
+            endDay
+        );
+
+        const rewardOfToday =
+            await ErrandDAO.getRewardsSumofRequestByTimeRangeAndStatus(
+                startDay,
+                endDay
+            );
+        const rewardOfMonth =
+            await ErrandDAO.getRewardsSumofRequestByTimeRangeAndStatus(
+                startMonth,
+                endDay
+            );
+        return res.render("index.pug", {
+            admin,
+            date: {
+                startMonth: encodeURIComponent(
+                    moment(startMonth).format("MM/DD/YYYY")
+                ),
+                startDay: encodeURIComponent(
+                    moment(startDay).format("MM/DD/YYYY")
+                ),
+                endDay: encodeURIComponent(moment(endDay).format("MM/DD/YYYY")),
+            },
+            member: { applyCount, newUserOfMonth },
+            request: { requestofToday, requestofMonth },
+            reward: {
+                rewardOfToday: requestofToday == 0 ? "0" : rewardOfToday,
+                rewardOfMonth,
+            },
+        });
     } catch (err) {
         return next(err);
     }

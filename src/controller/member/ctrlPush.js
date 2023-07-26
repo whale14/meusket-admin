@@ -8,7 +8,7 @@ const sendPushNotification = async (req, res, next) => {
         //받을 대상
         const { userType } = req.body;
         const tokens = [
-            "dQVzfo53StGl9fK7rDvKX9:APA91bHkzkcvm9PSZWGpnsyyI6LI0A26iWlA8p_coQ-2TrBQHgMlvzQk_5jDXe1sZaqBfUmjIZmEkLcG0LZ3UOxk3_tXl_pVu2MNHUlehQatP4Erow8u20pxZP1J0MMp6fn36g6TMDFS",
+            "fITiKrC0Rs2oh2LUkY7zFC:APA91bHr5PuQer9oX-19oUwMu8N3uz2UUkzi-x8gd4c3uJiG9FMsvhmkZXxALnfQs3t-_IWpW-V6j8dNuq7iS5Lffp_XGNB9INn2wyQVm33yWRv3xPanfXvjO-YMkb5YXEmEgHLfBRO-",
         ];
         // await UserDAO.getUsersFcmTokensByType();
         // console.log(tokens);

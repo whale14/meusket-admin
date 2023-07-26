@@ -1,85 +1,107 @@
 // chartConfig.js
 
-// 기본 차트 정보
-const chartInfo = {
-    title: "", // 차트 제목 (기본값: 빈 문자열)
-    xAxis: {
-        title: "", // X축 제목
-    },
-    yAxis: {
-        title: "", // Y축 제목
-    },
-    series: [
-        {
-            name: "Trade Index", // 데이터 시리즈 이름
-            data: [], // 차트 데이터
-        },
-    ],
-};
-
-function getChartInfo() {
-    return chartInfo;
-}
-
-function setChartTitle(title) {
-    chartInfo.title = title;
-}
-
-function setChartXYAxis(x_title, y_title) {
-    chartInfo.xAxis = x_title;
-    chartInfo.yAxis = y_title;
-}
-
-const setChartData = (label, datas, type) => {
-    const backgroundColors = [
-        "#FF6384",
-        "#36A2EB",
-        "#FFCE56",
-        "#4BC0C0",
-        "#9966FF",
-    ];
-
-    const datasets = datas.map((data, index) => {
-        return {
-            label: data.label,
-            data: data.data,
-            backgroundColor: backgroundColors[index % backgroundColors.length],
-            borderColor: backgroundColors[index % backgroundColors.length],
-            borderWidth: 1,
+class ChartObject {
+    constructor() {
+        this.type = "";
+        this.data = {
+            labels: [],
+            datasets: [],
         };
-    });
-    if (type != "line") {
-        datasets[0]["backgroundColor"] = backgroundColors;
-        datasets[0]["borderColor"] = undefined;
-    }
-    const chartData = {
-        labels: label,
-        datasets: datasets,
-    };
-
-    return chartData;
-};
-
-const setChartOption = (stepSize) => {
-    const chartOptions = {
-        responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    precision: 0,
-                    stepSize: stepSize,
+        this.options = {
+            elements: {
+                point: {
+                    radius: 3, // 데이터 포인트의 점 크기
                 },
             },
-        },
+            showLine: true,
+            responsive: true,
+            scales: {
+                x: { ticks: {} },
+                y: { ticks: {} },
+            },
+            indexAxis: "",
+        };
+    }
+    setType(type) {
+        this.type = type;
+        return this;
+    }
+    setChartOption = (option) => {
+        this.options = option;
+        return this;
     };
-    return chartOptions;
-};
+    setOptionIndexAxis = (type) => {
+        this.options.indexAxis = type;
+        return this;
+    };
+    setOptionElementPoint = (radius) => {
+        this.options.elements.point.radius = radius;
+        return this;
+    };
+    setOptionScalesPrecision = (precision) => {
+        this.options.scales.precision = precision;
+        return this;
+    };
+    setOptionScalesAxisBeginsAtZero = (axis, bool) => {
+        if (axis.toLowerCase() === "x") {
+            this.options.scales.x.ticks.beginAtZero = bool;
+        } else if (axis.toLowerCase() === "y") {
+            this.options.scales.y.ticks.beginAtZero = bool;
+        }
+        return this;
+    };
+    setOptionScalesStepSize = (axis, size) => {
+        if (axis.toLowerCase() === "x") {
+            this.options.scales.x.ticks.stepSize = size;
+        } else if (axis.toLowerCase() === "y") {
+            this.options.scales.y.ticks.stepSize = size;
+        }
+        return this;
+    };
 
-module.exports = {
-    getChartInfo,
-    setChartTitle,
-    setChartXYAxis,
-    setChartData,
-    setChartOption,
-};
+    setChartData(labels, datas) {
+        const backgroundColors = [
+            "#FF6384",
+            "#36A2EB",
+            "#FFCE56",
+            "#4BC0C0",
+            "#9966FF",
+        ];
+
+        const datasets = datas.map((data, index) => {
+            return {
+                label: data.label,
+                data: data.data,
+                backgroundColor:
+                    backgroundColors[index % backgroundColors.length],
+                borderColor: backgroundColors[index % backgroundColors.length],
+                borderWidth: 1,
+            };
+        });
+
+        if (this.type !== "line") {
+            datasets.forEach((dataset, index) => {
+                dataset.backgroundColor =
+                    backgroundColors[index % backgroundColors.length];
+                dataset.borderColor = undefined;
+            });
+        }
+
+        this.data = {
+            labels: labels,
+            datasets: datasets,
+        };
+
+        return this;
+    }
+
+    getConfig() {
+        return {
+            type: this.type,
+            data: this.data,
+            options: this.options,
+        };
+    }
+}
+
+module.exports = ChartObject;

@@ -1,5 +1,5 @@
 //- Parameters
-//- admin
+//- admin, member, request, date
 
 extends layout.pug
 
@@ -7,35 +7,70 @@ block title
     | Meusket Admin
 
 block content
-    .container-lg
+    .container-lg.mt-3
         .row.justify-content-center.d-md-flex.flex-md-row.flex-column
-            .col-12.col-md-4.mb-4.d-flex
+            .col-12.col-lg-6.mb-4.d-flex.flex-column
+                h5.ms-1.nanumGothic-bold 회원 관리
+                .card-group
+                    .card.border-none.shadow-sm.m-1
+                        .card-header.bg-transparent.border-none
+                            .nanumGothic 승인 대기중 드림이
+                        .card-body.d-flex.align-items-center.justify-content-center
+                            h2.text-meusket.me-2 #{member.applyCount}
+                            .font-2 명
+                        .card-footer.bg-transparent.border-none.d-grid.gap-2
+                            a.btn.btn-dark.btn-sm.nanumGothic-bold.font-1(href='/member/apply' style="min-width: 127px; min-height: 30px;" ) 드림이 신청 바로가기
+                    .card.border-none.shadow-sm.m-1
+                        .card-header.bg-transparent.border-none
+                            .nanumGothic 이 달의 신규 부름이
+                        .card-body.d-flex.align-items-center.justify-content-center
+                            h2.me-2 #{member.newUserOfMonth}
+                            .font-2 명
+                        .card-footer.bg-transparent.border-none.d-grid.gap-2
+                            a.btn.btn-dark.btn-sm.font-sm.nanumGothic-bold.font-1(href=`/member/users?startDate=${date.startMonth}&endDate=${date.endDay}&page=1` style="min-width: 127px;") 회원 리스트 바로가기
+            .col-12.col-lg-6.mb-4.d-flex.flex-column
+                h5.ms-1.nanumGothic-bold 심부름 관리
+                .card-group
+                    .card.border-none.shadow-sm.m-1
+                        .card-header.bg-transparent.border-none
+                            .nanumGothic 오늘의 심부름 매칭 건수
+                        .card-body.d-flex.align-items-center.justify-content-center
+                            h2.me-2 #{request.requestofToday}
+                            .font-2 건
+                        .card-footer.bg-transparent.border-none.d-grid.gap-2
+                            a.btn.btn-dark.btn-sm.nanumGothic-bold.font-1(href=`/trade/errands?startDate=${date.startDay}&endDate=${date.endDay}&page=1` style="min-width: 127px; min-height: 30px;" ) 심부름 조회 바로가기
+                    .card.border-none.shadow-sm.m-1
+                        .card-header.bg-transparent.border-none
+                            .nanumGothic 이 달의 심부름 매칭 건수
+                        .card-body.d-flex.align-items-center.justify-content-center
+                            h2.me-2 #{request.requestofMonth}
+                            .font-2 건
+                        .card-footer.bg-transparent.border-none.d-grid.gap-2
+                            a.btn.btn-dark.btn-sm.font-sm.nanumGothic-bold.font-1(href=`/trade/errands?startDate=${date.startMonth}&endDate=${date.endDay}&page=1` style="min-width: 127px;") 심부름 조회 바로가기
+            .my-4.d-none.d-lg-block
+            .col-12.col-lg-6.mb-4.d-flex.flex-column
+                h5.ms-1.nanumGothic-bold 통계 보기
                 .card.flex-fill.border-none.shadow
                     .card-body
-                        h5.card-title.text-center 회원 관리
-                        p.card-text 전체회원 관리
-                            a.btn.btn-dark.btn-sm.float-end(href='/member/user') 바로가기
-                        p.card-text 알림 발송
-                            a.btn.btn-dark.btn-sm.float-end(href='/') 바로가기
-                        p.card-text 드림이 신청
-                            a.btn.btn-dark.btn-sm.float-end(href='/member/apply') 바로가기
-                        p.card-text 신고 회원
-                            a.btn.btn-dark.btn-sm.float-end(href='/member/report') 바로가기
-                        p.card-text 블랙리스트 관리
-                            a.btn.btn-dark.btn-sm.float-end(href='/member/black') 바로가기
-            .col-12.col-md-4.mb-4.d-flex
+                        .card-header.bg-transparent.border-none
+                            .nanumGothic 오늘의 심부름비
+                        .card-body.d-flex.align-items-center.justify-content-center
+                            h2.text-meusket.me-2 #{reward.rewardOfToday}
+                            .font-2 원
+                        .card-footer.bg-transparent.border-none.d-grid.gap-2
+                            a.btn.btn-dark.btn-sm.font-sm.nanumGothic-bold.font-1(href=`/trade/errands?startDate=${date.startMonth}&endDate=${date.endDay}&page=1` style="min-width: 127px;") 심부름 통계 바로가기
+            .col-12.col-lg-6.mb-4.d-flex.flex-column
+                h5.ms-1.nanumGothic-bold 매출 관리
                 .card.flex-fill.border-none.shadow
                     .card-body
-                        h5.card-title.text-center 심부름 매칭 관리
-                        p.card-text 심부름 조회
-                            a.btn.btn-dark.btn-sm.float-end.ms-3(href='/trade/errand') 바로가기
-                        p.card-text 신고 심부름
-                            a.btn.btn-dark.btn-sm.float-end.ms-3(href='/trade/report') 바로가기
-            .col-12.col-md-4.mb-4.d-flex
+                        .card-header.bg-transparent.border-none
+                            .nanumGothic 이 달의 심부름비(매출)
+                        .card-body.d-flex.align-items-center.justify-content-center
+                            h2.me-2 #{reward.rewardOfMonth}
+                            .font-2 원
+                        .card-footer.bg-transparent.border-none.d-grid.gap-2
+                            a.btn.btn-dark.btn-sm.font-sm.nanumGothic-bold.font-1(href=`/trade/errands?startDate=${date.startMonth}&endDate=${date.endDay}&page=1` style="min-width: 127px;") 심부름(매출) 바로가기
+            .col-12.mb-4.d-flex.flex-column
                 .card.ms-1.flex-fill.border-none.shadow
                     .card-body
-                        h5.card-title.text-center 통계 보기
-                        p.card-text 사용자 통계
-                            a.btn.btn-dark.btn-sm.float-end.ms-3(href='/stat/user') 바로가기
-                        p.card-text 심부름 통계
-                            a.btn.btn-dark.btn-sm.float-end(href='/stat/errand') 바로가기
+                        .nanumGothic 카테고리별 심부름비

@@ -27,6 +27,10 @@ const addUserID = async (object, col) => {
     return results[0]["id"];
 };
 
+const rewardCheckComma = (reward) => {
+    return reward.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 const getUserIdxbyId = async (id) => {
     sql = "select idx from user where id like ? or name like ?";
     const results = await runQuery(sql, [`%${id}%`, `%${id}%`]);
@@ -132,7 +136,7 @@ const getErrandsCount = async (
         params.push(eDate);
     }
 
-    if (status.some((item) => item.value === true)) {
+    if (status && status.some((item) => item.value === true)) {
         sql += " AND (";
         let isFirstCondition = true;
         for (i in status) {
@@ -144,7 +148,7 @@ const getErrandsCount = async (
         }
         sql += ")";
     }
-    if (rootCatIdx >= 0) {
+    if (rootCatIdx && rootCatIdx >= 0) {
         sql += " and  workCategoryIdx = ?";
         if (rootCatIdx == catIdx || catIdx < 0) {
             params.push(rootCatIdx);
@@ -435,6 +439,37 @@ const getTotalErrandRewardByStatus = async () => {
     return results[0];
 };
 
+const getRewardsSumofRequestByTimeRangeAndStatus = async (
+    start,
+    end,
+    status
+) => {
+    let sql = "select sum(reward) as rewardSum from request";
+    const params = [];
+    const conditions = [];
+
+    if (start) {
+        conditions.push("regDate >= ?");
+        params.push(start);
+    }
+    if (end) {
+        conditions.push("regDate <= ?");
+        params.push(end);
+    }
+    if (status && status.length > 0) {
+        const placeholders = status.map((_, i) => `?`).join(", ");
+        conditions.push(`status in (${placeholders})`);
+        params.push(...status);
+    }
+
+    if (conditions.length > 0) {
+        sql += ` WHERE ${conditions.join(" AND ")}`;
+    }
+    const results = await runQuery(sql, params);
+    const rewardSum = results[0]["rewardSum"] ? results[0]["rewardSum"] : "0";
+    return rewardCheckComma(rewardSum);
+};
+
 module.exports = {
     getErrandsList,
     getErrandsCount,
@@ -460,4 +495,5 @@ module.exports = {
     getUserReveiwByUserIdx,
     getCntForRewardRange,
     getTotalErrandRewardByStatus,
+    getRewardsSumofRequestByTimeRangeAndStatus,
 };

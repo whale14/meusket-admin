@@ -1,4 +1,5 @@
 const { runQuery, runTransaction } = require("../lib/database");
+const moment = require("moment");
 
 const formatDate = (date) => {
     const yr = date.getFullYear();
@@ -56,7 +57,7 @@ const getUsersBySearch = async (
     ) {
         sql += " and createAt >= ? and createAt <= ? ";
         params.push(sDate);
-        params.push(eDate);
+        params.push(moment(eDate).add(1, "days").toDate());
     }
     if (helper || black || user) {
         sql += " AND (";
@@ -121,7 +122,7 @@ const getUserSearchCount = async (
     if (sDate && eDate && sDate != "" && eDate != "") {
         sql += "and createAt >= ? and createAt <= ?";
         params.push(sDate);
-        params.push(eDate);
+        params.push(moment(eDate).add(1, "days").toDate());
     }
     if (helper || black || user) {
         sql += " AND (";
@@ -230,12 +231,11 @@ const updateUserInfo = async (
     }
 };
 
-const getNewUserInOneMonth = async () => {
+const getUserCountBetweenTime = async (start, end) => {
     const sql =
-        "select count(*) from user where createAt\
-    >= DATE_SUB(CURRENT_TIMESTAMP(), interval 30 DAY)";
-    const results = await runQuery(sql, []);
-    return results[0]["count(*)"];
+        "SELECT COUNT(*) FROM user WHERE createAt >= ? and createAt <= ?";
+    const results = await runQuery(sql, [start, end]);
+    return results[0]["COUNT(*)"];
 };
 
 const getUserUnregistered = async () => {
@@ -324,7 +324,7 @@ module.exports = {
     getUserByIdx,
     getUserSearchCount,
     updateUsertoBlack,
-    getNewUserInOneMonth,
+    getUserCountBetweenTime,
     getUserUnregistered,
     getLastVisitorByPeriod,
     getUsersCntByDate,
