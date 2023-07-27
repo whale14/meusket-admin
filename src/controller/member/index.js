@@ -33,7 +33,8 @@ router.get("/reports", authRequired, ctrlR.reportsList);
 router.get("/report/:reportIdx(\\d+)", authRequired, ctrlR.showReport);
 router.post("/report/action", authRequired, ctrlR.getActionReport);
 
-router.get("/push", authRequired, ctrlP.sendPushNotificationForm);
+router.get("/push", authRequired, ctrlP.lastestPushes);
+router.get("/pushes", authRequired, ctrlP.sendPushNotificationForm);
 router.post("/push", authRequired, ctrlP.sendPushNotification);
 
 module.exports = router;

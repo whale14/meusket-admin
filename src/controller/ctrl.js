@@ -1,5 +1,6 @@
 const { AdminDAO, UserDAO, HelpDAO, ErrandDAO } = require("../DAO");
 const moment = require("moment");
+const { ChartObject, ChartDatasets } = require("../lib/chart-config");
 
 const indexPage = async (req, res, next) => {
     try {
@@ -34,6 +35,33 @@ const indexPage = async (req, res, next) => {
                 startMonth,
                 endDay
             );
+        const avgRewardPerCategory = await ErrandDAO.getAvgRewardByCategory();
+        const labels = [];
+        const datas = [];
+        for (i in avgRewardPerCategory) {
+            labels.push(avgRewardPerCategory[i].categoryName);
+            datas.push(avgRewardPerCategory[i].avg_reward);
+        }
+        const avgRewardPerCategoryChart = new ChartObject();
+        const avgRewardChartDatasets = new ChartDatasets();
+        avgRewardChartDatasets
+            .setData(datas)
+            .setBorderColor("#CCC")
+            .setBorderWidth(0)
+            .setBackgroundColor("rgba(193, 193, 193, 0.8)")
+            .setBorderRadius(5)
+            .setHoverBackgroundColor("rgba(246, 132, 50, 1)");
+        avgRewardPerCategoryChart
+            .setChartDatasets([avgRewardChartDatasets.getConfig()])
+            .setType("bar")
+            .setChartlabels(labels)
+            .setOptionIndexAxis("y")
+            .setOptionsMaxBarWidth(10)
+            .setOptionScalesAxisGrid("y", { display: false })
+            .setOptionsTooltipTitleFontSize(0)
+            .setOptionsPulginLegend(false)
+            .setOptionScalesAxisAxisFontFamily("y", "Lato-bold");
+
         return res.render("index.pug", {
             admin,
             date: {
@@ -51,6 +79,7 @@ const indexPage = async (req, res, next) => {
                 rewardOfToday: requestofToday == 0 ? "0" : rewardOfToday,
                 rewardOfMonth,
             },
+            avgRewardPerCategoryChart,
         });
     } catch (err) {
         return next(err);

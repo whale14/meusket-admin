@@ -1,4 +1,4 @@
-const { UserDAO } = require("../../DAO");
+const { UserDAO, PushDAO } = require("../../DAO");
 const { sendFcmPushNotification } = require("../../lib/fcmPush");
 
 const sendPushNotification = async (req, res, next) => {
@@ -25,13 +25,46 @@ const sendPushNotification = async (req, res, next) => {
     }
 };
 
-const sendPushNotificationForm = async (req, res, next) => {
+const lastestPushes = async (req, res, next) => {
     try {
-        const { admin } = req.session;
-        return res.render("", { admin });
+        return res.redirect("/member/pushes?page=1");
     } catch (err) {
         return next(err);
     }
 };
 
-module.exports = { sendPushNotification, sendPushNotificationForm };
+const sendPushNotificationForm = async (req, res, next) => {
+    try {
+        const { admin } = req.session;
+        const page = parseInt(req.query.page, 10);
+        if (page < 1) throw new Error("BAD_REQUEST");
+
+        const PUSHES_PER_PAGE = 15;
+        const pushes = await PushDAO.getPushes(
+            (page - 1) * PUSHES_PER_PAGE,
+            PUSHES_PER_PAGE
+        );
+        const pushCnt = await PushDAO.getPushesCount();
+
+        const pageCnt = Math.ceil(pushCnt / PUSHES_PER_PAGE);
+        const minPage = page - 2 > 1 ? page - 2 : 1;
+        const maxPage = page + 2 < pageCnt ? page + 2 : pageCnt;
+        return res.render("member/push/index.pug", {
+            admin,
+            page,
+            minPage,
+            maxPage,
+            hasPrev: page - 2 > 1,
+            hasNext: page + 2 < pageCnt,
+            pushes,
+        });
+    } catch (err) {
+        return next(err);
+    }
+};
+
+module.exports = {
+    lastestPushes,
+    sendPushNotification,
+    sendPushNotificationForm,
+};

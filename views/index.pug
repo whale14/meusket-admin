@@ -1,5 +1,5 @@
 //- Parameters
-//- admin, member, request, date
+//- admin, member, request, date, avgRewardPerCategoryChart
 
 extends layout.pug
 
@@ -7,6 +7,7 @@ block title
     | Meusket Admin
 
 block content
+    include ./chart.pug
     .container-lg.mt-3
         .row.justify-content-center.d-md-flex.flex-md-row.flex-column
             .col-12.col-lg-6.mb-4.d-flex.flex-column
@@ -58,7 +59,7 @@ block content
                             h2.text-meusket.me-2 #{reward.rewardOfToday}
                             .font-2 원
                         .card-footer.bg-transparent.border-none.d-grid.gap-2
-                            a.btn.btn-dark.btn-sm.font-sm.nanumGothic-bold.font-1(href=`/trade/errands?startDate=${date.startMonth}&endDate=${date.endDay}&page=1` style="min-width: 127px;") 심부름 통계 바로가기
+                            a.btn.btn-dark.btn-sm.font-sm.nanumGothic-bold.font-1(href='stat/errand' style="min-width: 127px;") 심부름 통계 바로가기
             .col-12.col-lg-6.mb-4.d-flex.flex-column
                 h5.ms-1.nanumGothic-bold 매출 관리
                 .card.flex-fill.border-none.shadow
@@ -74,3 +75,8 @@ block content
                 .card.ms-1.flex-fill.border-none.shadow
                     .card-body
                         .nanumGothic 카테고리별 심부름비
+                        .d-flex.justify-content-center.mt-3
+                            canvas#avgRewardPerCategoryChart(style='max-width: 1000px; max-height:450px;')
+
+    script.
+        createChart('avgRewardPerCategoryChart',!{JSON.stringify(avgRewardPerCategoryChart)});

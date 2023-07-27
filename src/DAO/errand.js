@@ -470,6 +470,28 @@ const getRewardsSumofRequestByTimeRangeAndStatus = async (
     return rewardCheckComma(rewardSum);
 };
 
+const getAvgRewardByCategory = async (status) => {
+    let sql =
+        "SELECT wc.categoryName, AVG(r.reward) as avg_reward \
+    FROM request r JOIN work_category wc ON r.workCategoryIdx = wc.idx\
+    GROUP BY r.workCategoryIdx, wc.categoryName";
+    const params = [];
+    const conditions = [];
+    if (status && status.length > 0) {
+        const placeholders = status.map((_, i) => `?`).join(", ");
+        conditions.push(`status in (${placeholders})`);
+        params.push(...status);
+    }
+    if (conditions.length > 0) {
+        sql += ` WHERE ${conditions.join(" AND ")}`;
+    }
+    const results = await runQuery(sql, params);
+    for (i in results) {
+        results[i].avg_reward = parseInt(results[i].avg_reward * 10) / 10;
+    }
+    return results;
+};
+
 module.exports = {
     getErrandsList,
     getErrandsCount,
@@ -496,4 +518,5 @@ module.exports = {
     getCntForRewardRange,
     getTotalErrandRewardByStatus,
     getRewardsSumofRequestByTimeRangeAndStatus,
+    getAvgRewardByCategory,
 };

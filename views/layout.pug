@@ -29,6 +29,8 @@ if(admin)
                                 li
                                 a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/user') 회원리스트
                                 li
+                                a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/push') 알림 전송
+                                li
                                 a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/apply') 드림이 신청
                                 li
                                 a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/report') 신고 회원
@@ -75,6 +77,7 @@ if(admin)
 .container-xl(style="min-height: 100vh;")
     block content
 
+.container.mt-5
 nav.navbar.navbar-dark.bg-dark.text-light.justify-content-center
     .container-lg.row(style="height: 50px;")
         .col-3.d-flex.align-items-center

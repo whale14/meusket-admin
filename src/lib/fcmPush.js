@@ -2,6 +2,28 @@ const admin = require("firebase-admin");
 const logger = require("./logger");
 const serviceAccount = require("../firebase-admin.json");
 
+class fcmMessage {
+    constructor() {
+        this.notification = { title: "", body: "" };
+        this.tokens = [];
+    }
+    setNotification = (title, body) => {
+        this.notification.title = title;
+        this.notification.body = body;
+        return this;
+    };
+    setTokens = (tokens) => {
+        this.tokens = tokens;
+        return tokens;
+    };
+    getconfig() {
+        return {
+            notification: this.notification,
+            toekns: this.tokens,
+        };
+    }
+}
+
 const sendFcmPushNotification = async (title, content, userFcmTokens) => {
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
@@ -16,7 +38,6 @@ const sendFcmPushNotification = async (title, content, userFcmTokens) => {
         var tokensChunk;
         if (i + 500 > length) tokensChunk = userFcmTokens.slice(i);
         else tokensChunk = userFcmTokens.slice(i, i + 500);
-        console.log(tokensChunk);
         const payload = {
             notification: notification,
             tokens: tokensChunk,
@@ -36,4 +57,4 @@ const sendFcmPushNotification = async (title, content, userFcmTokens) => {
     }
 };
 
-module.exports = { sendFcmPushNotification };
+module.exports = { fcmMessage, sendFcmPushNotification };

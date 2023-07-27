@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 :root {
-    --bs-meusket-rgb: 231, 121, 36;
+    --bs-meusket-rgb: #f68432;
     --bs-font-size: 1rem;
 }
 
@@ -435,6 +435,16 @@ chating css
             format("woff");
 }
 
+@font-face {
+    font-family: "Lato";
+    src: url(/fonts/Lato/Lato-Regular.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "Lato-bold";
+    src: url(/fonts/Lato/Lato-Bold.ttf) format("truetype");
+}
+
 .nanumGothic {
     font-family: "nanumGothic", sans-serif;
 }
@@ -445,6 +455,10 @@ chating css
 
 .nanumSquareNeo {
     font-family: "nanumSquareNeo", sans-serif;
+}
+
+.lato {
+    font-family: "Lato", sans-serif;
 }
 
 .font-copyright {
@@ -469,5 +483,5 @@ chating css
     font-size: 20px;
 }
 .text-meusket {
-    color: rgb(var(--bs-meusket-rgb));
+    color: var(--bs-meusket-rgb);
 }
