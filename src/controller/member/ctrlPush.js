@@ -1,25 +1,52 @@
-const { UserDAO, PushDAO } = require("../../DAO");
-const { sendFcmPushNotification } = require("../../lib/fcmPush");
+const { UserDAO, PushDAO, AdminDAO } = require("../../DAO");
+const { sendFcmPushNotification } = require("../../lib/fcm-push");
 
 const sendPushNotification = async (req, res, next) => {
     try {
         //받을 내용
-        const { title, content } = req.body;
+        const { admin } = req.session;
+        const { pushTitle, pushContent, type, subject } = req.body;
         //받을 대상
-        const { userType } = req.body;
-        const tokens = [
-            "fITiKrC0Rs2oh2LUkY7zFC:APA91bHr5PuQer9oX-19oUwMu8N3uz2UUkzi-x8gd4c3uJiG9FMsvhmkZXxALnfQs3t-_IWpW-V6j8dNuq7iS5Lffp_XGNB9INn2wyQVm33yWRv3xPanfXvjO-YMkb5YXEmEgHLfBRO-",
-        ];
-        // await UserDAO.getUsersFcmTokensByType();
-        // console.log(tokens);
+        //userType -> isWorkerRegist에 등록되었냐 안되었냐로 구분.
+        const { userType, charityRange } = req.body;
+        const types = Array.isArray(type) ? type : [type];
+        const userTypes = Array.isArray(userType) ? userType : [userType];
+        if (subject != "all" && userTypes.length < 1)
+            throw new Error("BAD_REQUEST");
+
+        const tokens = await UserDAO.getUsersFcmTokensByType(
+            subject,
+            userTypes,
+            charityRange
+        );
+        console.log(tokens);
         if (tokens.length < 1) {
             throw new Error("NO_TARGET");
         }
-        if (sendFcmPushNotification(title, content, tokens) == -1) {
-            throw new Error("SENDING_FAILED");
+        for (const item of types) {
+            if (item === "kakao") {
+                console.log("kakao");
+            } else if (item === "push") {
+                if (
+                    (await sendFcmPushNotification(
+                        pushTitle,
+                        pushContent,
+                        tokens
+                    )) != 0
+                )
+                    throw new Error("SENDING_FAILED");
+            }
         }
-        return res.redirect("/");
-        return res.sendStatus(200);
+        const adminIdx = await AdminDAO.getAdminIdxById(admin.admin_id);
+        const record = await PushDAO.insertPush(
+            pushTitle,
+            pushContent,
+            adminIdx
+        );
+        if (!record) throw new Error("BAD_REQUEST");
+        const PUSHES_PER_PAGE = 15;
+        const pushes = await PushDAO.getPushes(0, PUSHES_PER_PAGE);
+        return res.status(200).json({ pushes });
     } catch (err) {
         return next(err);
     }

@@ -50,8 +50,13 @@ const getBlacksList = async (
     params.push(start);
     params.push(count);
     const results = await runQuery(sql, params);
-    for (let i = 0; i < results.length; i++)
+    for (let i = 0; i < results.length; i++) {
+        if (results[i].u_id == "admin") {
+            results[i].u_id = "deleted user";
+            results[i].name = "deleted user";
+        }
         results[i] = replaceDate(results[i]);
+    }
     return results;
 };
 

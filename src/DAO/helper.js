@@ -51,7 +51,10 @@ const updateWorkerToHelper = async (idx, recogNum) => {
             "update user set recognitionNumber = ? where idx = ?",
             [recogNum, idx],
         ],
-        ["update user set isWorkerRegist = 1 where idx = ?", [idx]],
+        [
+            "update user set isWorkerRegist = 1, updateAt = NOW() where idx = ?",
+            [idx],
+        ],
         ["delete FROM worker_approval WHERE userIdx = ?", [idx]],
     ];
     const results = await runTransaction(queries);

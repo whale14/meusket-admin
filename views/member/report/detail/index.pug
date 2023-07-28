@@ -24,7 +24,10 @@ block content
                             tr 
                                 th(scope='col') id 
                                 td.text-end 
-                                    a(href=`/member/user/${report.idx}`) #{reporter.id}
+                                    if reporter.idx == 0
+                                        | #{reporter.id}
+                                    else
+                                        a(href=`/member/user/${report.idx}`) #{reporter.id}
                             tr 
                                 th(scope='col') 이름
                                 td.text-end #{reporter.name}
@@ -46,13 +49,13 @@ block content
                             tr 
                                 th(scope='col') 신고대상
                                 td.text-end 
-                                    if reported.idx > 0
+                                    if reported.idx == 0
+                                        | #{reported.id}
+                                    else
                                         a(href=`/member/user/${reported.idx}`) #{reported.id}
-                                    else 
-                                        |탈퇴회원
                             tr 
                                 th(scope='col') 이름
-                                td.text-end #{reporter.name}
+                                td.text-end #{reported.name}
                             tr 
                                 th(scope='col') 차단횟수
                                 td.text-end #{reported.blackCount}

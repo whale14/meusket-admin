@@ -21,6 +21,11 @@ const getUserByIdx = async (idx) => {
     const results = await runQuery(sql, [idx]);
     results[0]["updateAt"] = replaceDate(results[0], "updateAt");
     results[0]["createAt"] = replaceDate(results[0], "createAt");
+    if (results[0].idx == 0) {
+        results[0].id = "deleted user";
+        results[0].name = "deleted user";
+    }
+    console.log(results[0]);
     return results[0];
 };
 
@@ -276,6 +281,13 @@ const deleteUser = async (idx, id) => {
     const queries = [
         ["update request set requesterIdx=0 where requesterIdx = ?", [idx]],
         ["update request set workerIdx=0 where workerIdx = ?", [idx]],
+        ["update blacklist set u_idx=0 where u_idx = ?", [idx]],
+        [
+            "update report_request set reporterIdx = 0 where reporterIdx = ?",
+            [idx],
+        ],
+        ["update report_user set reporterIdx = 0 where reporterIdx = ?", [idx]],
+        ["update report_user set toIdx = 0 where toIdx = ?", [idx]],
         ["delete from worker_approval where userIdx = ?", [idx]],
         ["delete from user where idx = ?", [idx]],
     ];
@@ -307,9 +319,22 @@ const getCumulativeUserCount = async () => {
     return results;
 };
 
-const getUsersFcmTokensByType = async () => {
-    let sql = "select fcmToken from user where idx = 15 or idx = 16";
+const getUsersFcmTokensByType = async (subject, userTypes, charityRange) => {
+    let sql = "select fcmToken from user";
     const params = [];
+    if (subject != "all") {
+        sql += " where ";
+        for (i in userTypes) {
+            if (i > 0) sql += "and ";
+            if (userTypes[i] == "user") {
+                sql += "isWorkerRegist = 0 ";
+            } else if (userTypes[i] == "helper") {
+                sql += "isWorkerRegist = 1 ";
+            } else if (userTypes[i] == "new") {
+                sql += "DATE_SUB(NOW(), INTERVAL 30 DAY) <= createAt";
+            }
+        }
+    }
     const results = await runQuery(sql, params);
     const fcmTokens = [];
     for (let result of results) {

@@ -85,7 +85,9 @@ const showUser = async (req, res, next) => {
 
         const user = await UserDAO.getUserByIdx(usersIdx);
         if (!user) throw new Error("NOT_EXIST");
-        const ERRAND_PER_PAGE = 5;
+        user.profileImageUrl = user.profileImageUrl
+            ? "http://" + user.profileImageUrl
+            : undefined;
 
         const errands = await ErrandDAO.getErrandsByUserIdx(usersIdx);
         const wallet = await UserDAO.getWalletbyIdx(usersIdx);

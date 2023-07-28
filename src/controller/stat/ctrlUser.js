@@ -1,6 +1,6 @@
 const { UserDAO, HelpDAO, BlackDAO, ErrandDAO } = require("../../DAO");
 const moment = require("moment");
-const ChartObject = require("../../lib/chart-config");
+const { ChartObject, ChartDatasets } = require("../../lib/chart-config");
 
 const defaultStat = async (req, res, next) => {
     try {
@@ -96,8 +96,11 @@ const userChart = async (req, res, next) => {
             formatData.push(count.cum_users);
         });
         const cumUserChart = new ChartObject();
+        const cumUserChartset = new ChartDatasets();
+        cumUserChartset.setData(formatData).setLabel("누적 부름이");
         cumUserChart
-            .setChartData(labels, [{ label: "누적 부름이", data: formatData }])
+            .setChartDatasets(cumUserChartset.getConfig())
+            .setChartlabels(labels)
             .setType("line")
             .setOptionScalesStepSize("y", 1);
 

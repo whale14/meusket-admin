@@ -87,6 +87,12 @@ const updateAdminAuthority = async (idx, authority) => {
     }
 };
 
+const getAdminIdxById = async (id) => {
+    const sql = "select idx from admin where id = ?";
+    const results = await runQuery(sql, [id]);
+    return results[0]["idx"];
+};
+
 module.exports = {
     getAdminAuthorityByIdx,
     createAdminAccount,
@@ -94,4 +100,5 @@ module.exports = {
     getAdminList,
     getAdminCount,
     updateAdminAuthority,
+    getAdminIdxById,
 };

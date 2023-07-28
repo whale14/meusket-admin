@@ -35,6 +35,6 @@ router.post("/report/action", authRequired, ctrlR.getActionReport);
 
 router.get("/push", authRequired, ctrlP.lastestPushes);
 router.get("/pushes", authRequired, ctrlP.sendPushNotificationForm);
-router.post("/push", authRequired, ctrlP.sendPushNotification);
+router.post("/push", authRequired, upload.none(), ctrlP.sendPushNotification);
 
 module.exports = router;

@@ -30,7 +30,7 @@ const replaceDate = (object, column, type) => {
 const addUserID = async (object, col) => {
     const sql = "select id from user where idx = ?";
     let results = await runQuery(sql, [object[col]]);
-    return results[0]["id"];
+    return results[0]["id"] == "admin" ? "deleted user" : results[0]["id"];
 };
 
 const getUserIdxbyId = async (id) => {

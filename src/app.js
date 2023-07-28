@@ -4,7 +4,7 @@ const session = require("express-session");
 const pjax = require("express-pjax");
 const flash = require("express-flash");
 const cron = require("node-cron");
-const morganMiddleware = require("./lib/loggerMorgan");
+const morganMiddleware = require("./lib/logger-morgan");
 
 const app = express();
 
