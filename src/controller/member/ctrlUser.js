@@ -69,6 +69,7 @@ const usersList = async (req, res, next) => {
         return next(err);
     }
 };
+
 const latestUser = async (req, res, next) => {
     try {
         return res.redirect("/member/users?page=1");
@@ -84,7 +85,9 @@ const showUser = async (req, res, next) => {
 
         const user = await UserDAO.getUserByIdx(usersIdx);
         if (!user) throw new Error("NOT_EXIST");
-        const ERRAND_PER_PAGE = 5;
+        user.profileImageUrl = user.profileImageUrl
+            ? "http://" + user.profileImageUrl
+            : undefined;
 
         const errands = await ErrandDAO.getErrandsByUserIdx(usersIdx);
         const wallet = await UserDAO.getWalletbyIdx(usersIdx);
@@ -159,23 +162,6 @@ const revokeHelper = async (req, res, next) => {
     }
 };
 
-const editUserRequest = async (req, res, next) => {
-    try {
-        const { admin } = req.session;
-        if (admin.authority > 3) throw new Error("UNAUTHORIZED");
-        const { password } = req.body;
-        const admin_info = await AdminDAO.getAdminById(admin.admin_id);
-        const isValid = await verifyCode(password, admin_info.password);
-        if (!isValid) {
-            return res.status(400).json({ error: "잘못된 비밀번호입니다!" });
-        }
-
-        return res.sendStatus(200);
-    } catch (err) {
-        return next(err);
-    }
-};
-
 const editUser = async (req, res, next) => {
     try {
         const { idx, id, name, bio, introduce, bank, accountNumber } = req.body;
@@ -208,6 +194,5 @@ module.exports = {
     blockUser,
     removeUser,
     revokeHelper,
-    editUserRequest,
     editUser,
 };

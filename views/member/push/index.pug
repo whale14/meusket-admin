@@ -1,0 +1,40 @@
+//- Parameters
+//- admin, page, minPage, maxPage, pushes
+
+extends ../../layout.pug 
+
+block title 
+    | 알림 발송 #{page}p
+
+block content
+    .container-fluid
+        include ../../title.pug
+            |  알림 발송
+            button.btn.btn-dark.btn-sm.me-auto(type='button' data-bs-toggle="modal" data-bs-target="#newPushModal") 새로운 알림 보내기
+        include ./pushForm.pug
+        .table-responsive.justify-content-center.mt-2
+            table#pushTable.table(data-toggle='table' data-pagination)
+                thead.table-light
+                    tr
+                        th(scope='col') idx 
+                        th(scope='col') 제목
+                        th(scope='col') 발송 날짜
+                        th(scope='col') 발송 관리자
+                        th(scope='col') 상세정보
+                tbody#pushTableBody
+                    each push in pushes
+                        tr
+                            th(scop='row') #{push.pidx}
+                            td #{push.title}
+                            td #{push.sendAt} 
+                            td #{push.admin_id}
+                            td
+                                a.btn.btn-dark.btn-sm(href=`/member/push/${push.idx}`) 바로가기
+                    else
+                        tr
+                            th(scope='row') 0
+                            td there is
+                            td no
+                            td push
+                            td
+            include ../../lib/pagination.pug

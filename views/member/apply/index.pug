@@ -10,6 +10,7 @@ block content
     .container-fluid
         include ../../title.pug
             |  드림이 신청
+            button.btn.btn-dark.btn-sm.me-auto(type='button' data-bs-toggle="modal" data-bs-target="#categoryModal") 카테고리 보기
         include ./category.pug
         .table-responsive.justify-content-center.mt-2
             table#worker_approvalTable.table(data-toggle='table' data-pagination)
@@ -18,6 +19,7 @@ block content
                         th(scope='col') idx 
                         th(scope='col') ID
                         th(scope='col') 예금주
+                        th(scope='col') 카테고리
                         th(scope='col') 상세정보
                 tbody
                     each approval in worker_approvals
@@ -26,6 +28,7 @@ block content
                             td 
                                 a(href=`/member/user/${approval.userIdx}`) #{approval.id}
                             td #{approval.accountName} 
+                            td #{approval.category}
                             td
                                 a.btn.btn-dark.btn-sm(href=`/member/apply/${approval.idx}`) 바로가기
                     else
@@ -34,4 +37,4 @@ block content
                             td there is
                             td no worker_approvals
                             td
-            include ../../pagination.pug
+            include ../../lib/pagination.pug

@@ -1,0 +1,76 @@
+//- Parameters
+//-- admin, errand
+
+#editModal.modal.fade(tabindex='-1' aria-labelledby='editModalLabel' aria-hidden='true')
+    .modal-dialog
+        .modal-content
+            .modal-header
+                h1#editModalLabel.modal-title.fs-5 심부름 정보 수정
+            form#editForm
+                .modal-body
+                    .mb-2
+                        label.col-form-label(for='editID') 부름이 ID:
+                        input.form-control(name='id' type='text' value=errand.u_id disabled)
+                    .mb-2
+                        label.col-form-label(for='editID') 드림이 ID:
+                        input.form-control(name='id' type='text' value=errand.h_id disabled)
+                    .mb-2
+                        label.col-form-label(for='editAccountNumber') 심부름 상태:
+                        select#editRequestStatus.form-select(name='status' aria-label="editRequestStatus")
+                            option(selected) 상태 변경
+                            option(value="2") 진행대기
+                            option(value="3") 진행중
+                            option(value="4") 심부름 완료
+                            option(value="5") 심부름 취소
+                .modal-footer
+                    input(type="hidden" name="idx" value=errand.idx)
+                    button#editBtn.btn.btn-dark(type='submit') 수정
+                    button#closeBtn.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+script.
+    
+    const editForm = document.getElementById('editForm');
+    const editBtn = document.getElementById('editBtn');
+
+    editForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData(editForm);
+        
+        xhr.open('POST', '/trade/errand/edit');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    // Handle the successful response
+                    // Close the current modal
+                    const closeBtn = document.getElementById('closeBtn');
+                    closeBtn.click();
+
+                    const response = JSON.parse(xhr.responseText);
+                    const updateStatus = response.updateStatus;
+                    const requestStatus = document.getElementById('requestStatus');
+                    let status;
+
+                    if (updateStatus == 0) {
+                        status = '<span class="badge rounded-pill bg-dark">매칭대기</span>'
+                    } else if (updateStatus == 1) {
+                        status = '<span class="badge rounded-pill bg-dark">드림이대기</span>'
+                    } else if (updateStatus == 2) {
+                        status = '<span class="badge rounded-pill bg-primary">진행대기</span>'
+                    } else if (updateStatus == 3) {
+                        status = '<span class="badge rounded-pill bg-info">진행중</span>'
+                    } else if (updateStatus == 4) {
+                        status = '<span class="badge rounded-pill bg-success">심부름완료</span>'
+                    } else if (updateStatus == 5) {
+                        status = '<span class="badge rounded-pill bg-danger">심부름취소</span>'
+                    }
+                    requestStatus.innerHTML = status;
+                    
+                } else {
+                    // Handle the error response
+                    // For example, display an error message
+                    console.error(xhr.responseText);
+                }
+            }
+        };
+        xhr.send(formData);
+    });

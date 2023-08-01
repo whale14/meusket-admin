@@ -15,7 +15,7 @@ const getHelperByIdx = async (idx) => {
 
 const getHelperApplyList = async (start, count) => {
     const sql =
-        "select *, (ROW_NUMBER() OVER (ORDER BY idx DESC)) AS pidx from worker_approval order by idx limit ?, ?";
+        "select *, (ROW_NUMBER() OVER (ORDER BY idx ASC)) AS pidx from worker_approval order by idx limit ?, ?";
     const results = await runQuery(sql, [start, count]);
     for (i in results) {
         results[i].id = await addUserID(results[i], "userIdx");
@@ -51,7 +51,10 @@ const updateWorkerToHelper = async (idx, recogNum) => {
             "update user set recognitionNumber = ? where idx = ?",
             [recogNum, idx],
         ],
-        ["update user set isWorkerRegist = 1 where idx = ?", [idx]],
+        [
+            "update user set isWorkerRegist = 1, updateAt = NOW() where idx = ?",
+            [idx],
+        ],
         ["delete FROM worker_approval WHERE userIdx = ?", [idx]],
     ];
     const results = await runTransaction(queries);

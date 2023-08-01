@@ -1,0 +1,27 @@
+//- Parameters
+//- hasNext, hasPrev, minPage, page, maxPage
+
+ul.pagination.justify-content-center.mt-4
+    script.
+        const page = #{page};
+        const curLink = window.location.href;
+
+        function navigateToLink(pageNum) {
+            const newLink = curLink.replace(`page=${page}`, `page=${pageNum}`);
+            window.location.assign(newLink);
+        }
+    if hasPrev
+        li.page-item 
+            a.page-link(href='', onclick=`navigateToLink(${minPage-1}); return false;`) &lt;
+    else
+        li.page-item.disabled
+            a.page-link &lt;
+    - for (let i = minPage; i <= maxPage; i++)
+        li.page-item
+            a.page-link(id=`page${i}`, href='', onclick=`navigateToLink(${i}); return false;`) #{i}
+    if hasNext
+        li.page-item 
+            a.page-link(href='', onclick=`navigateToLink(${maxPage+1}); return false;`) &gt;
+    else
+        li.page-item.disabled
+            a.page-link &gt;

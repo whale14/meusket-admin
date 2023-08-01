@@ -1,26 +1,46 @@
-.card.mt-1
-    .container-fluid
-        form.search-form.ms-1.mt-1.mb-1(method='get', action='' enctype='application/x-www-form-urlencoded')
-            .d-flex.mt-1
-                select.form-select(name='searchType' aria-label='searchType', style='width: auto;')
-                    option(value='id') 아이디
-                    option(value='name') 이름
-                    option(value='idx') u_idx
-                input.form-control.me-1(type='text', name='searchText', placeholder='검색', style='width=auto; max-width=50%;')
-                input(type='hidden' name='page' value='1')
-                button.btn.btn-success(type='submit') search
-            .mt-2
-                .form-check.form-check-inline 
-                    input#unblockRadios1.form-check-input(type='checkbox' name='unblock' value='0' checked=unblock=='0')
-                    label.form-check-label(for='unblockRadios1') 차단 부름이
-                .form-check.form-check-inline 
-                    input#unblockRadios2.form-check-input(type='checkbox' name='unblock' value='1' checked=unblock=='1')
-                    label.form-check-label(for='unblockRadios2') 차단해제
-            .mt-2
-                span(style='width: 140px;') 정렬: 
-                .form-check.form-check-inline 
-                    input#orderRadios1.form-check-input(type='radio' name='orderby' value='desc' checked=orderby=='desc')
-                    label.form-check-label(for='orderRadios1') 최근순
-                .form-check.form-check-inline 
-                    input#orderRadios2.form-check-input(type='radio' name='orderby' value='asc' checked=orderby=='asc')
-                    label.form-check-label(for='orderRadios2') 오래된순
+form(method='get', action='' enctype='application/x-www-form-urlencoded')
+    .card.mt-1
+        .container-fluid
+                .d-flex.mt-2
+                    select.form-select(name='searchType' aria-label='searchType', style='width: auto;')
+                        option(value='id') 아이디
+                        option(value='name') 이름
+                        option(value='idx') u_idx
+                    input.form-control.me-1(type='text', name='searchText', placeholder='검색', style='width=auto; max-width=50%;')
+                    input(type='hidden' name='page' value='1')
+                    button.btn.btn-success(type='submit' style="min-width: 65px;") 검색
+                .mt-2.mb-1
+                    .form-check.form-check-inline 
+                        input#unblockRadios1.form-check-input(type='checkbox' name='unblock' value='0' checked=unblock=='0')
+                        label.form-check-label(for='unblockRadios1') 차단 부름이
+                    .form-check.form-check-inline 
+                        input#unblockRadios2.form-check-input(type='checkbox' name='unblock' value='1' checked=unblock=='1')
+                        label.form-check-label(for='unblockRadios2') 차단해제
+    .d-flex.justify-content-end.mt-1.mb-2
+        span.me-1 정렬: 
+        .form-check.form-check-inline 
+            input#orderRadios1.form-check-input(type='radio' name='orderby' value='desc' checked=orderby=='desc')
+            label.form-check-label(for='orderRadios1') 최근순
+        .form-check.form-check-inline 
+            input#orderRadios2.form-check-input(type='radio' name='orderby' value='asc' checked=orderby=='asc')
+            label.form-check-label(for='orderRadios2') 오래된순
+
+script.
+    const updateSortOption = (selectedOption) => {
+        const url = new URL(window.location.href);
+        if (url.searchParams.has('orderby')) {
+            url.searchParams.set('orderby', selectedOption);
+        } else {
+            url.searchParams.append('orderby', selectedOption);
+        }
+        window.history.pushState({}, '', url);
+        window.location.reload();
+    }
+    const orderRadios = document.querySelectorAll('input[name="orderby"]');
+     orderRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            // Get the sorting option selected by the user
+            const selectedOption = document.querySelector('input[name="orderby"]:checked').value;
+            updateSortOption(selectedOption);
+        });
+     });

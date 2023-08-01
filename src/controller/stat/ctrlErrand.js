@@ -1,5 +1,5 @@
 const { ErrandDAO, UserDAO } = require("../../DAO");
-const { setChartOption, setChartData } = require("../../lib/chart-config");
+const { ChartObject, ChartDatasets } = require("../../lib/chart-config");
 
 const defaultStat = async (req, res, next) => {
     try {
@@ -29,10 +29,9 @@ const errandChart = async (req, res, next) => {
         const successCount = errandCountByStatus
             .filter((item) => [2, 3, 4].includes(item.status))
             .reduce((total, item) => total + item.requestCount, 0);
-        const errandSuccessRate = ((successCount * 10) / totalCount) * 10;
+        const errandSuccessRate =
+            parseInt((successCount * 1000) / totalCount) / 10;
 
-        //차트 생성
-        const chartOptions = setChartOption(1);
         //요일별 차트
         const cntForWeekday = await ErrandDAO.getCntErrandForWeek();
         var labels = [];
@@ -41,11 +40,19 @@ const errandChart = async (req, res, next) => {
             tdata.push(row.count);
             labels.push(row.day_of_week);
         });
-        const cntForWeekData = setChartData(
-            labels,
-            [{ label: "요일", data: tdata }],
-            "bar"
-        );
+        const cntForWeekChart = new ChartObject();
+        const cntForWeekChartDataset = new ChartDatasets();
+        cntForWeekChartDataset
+            .setData(tdata)
+            .setLabel("요일")
+            .setBackgroundColor("rgba(193, 193, 193, 0.8)")
+            .setHoverBackgroundColor("rgba(246, 132, 50, 1)");
+        cntForWeekChart
+            .setChartDatasets([cntForWeekChartDataset.getConfig()])
+            .setChartlabels(labels)
+            .setType("bar")
+            .setOptionsMaxBarWidth(15)
+            .setOptionScalesStepSize("y", 2);
         //시간대별 차트
         const cntForHour = await ErrandDAO.getCntErrandForHour();
         labels = [];
@@ -54,11 +61,19 @@ const errandChart = async (req, res, next) => {
             tdata.push(row.count);
             labels.push(row.hour_range);
         });
-        const cntForHourData = setChartData(
-            labels,
-            [{ label: "시간대", data: tdata }],
-            "bar"
-        );
+        const cntForHourChart = new ChartObject();
+        const cntForHourChartDataset = new ChartDatasets();
+        cntForHourChartDataset
+            .setData(tdata)
+            .setLabel("시간대")
+            .setBackgroundColor("rgba(193, 193, 193, 0.8)")
+            .setHoverBackgroundColor("rgba(246, 132, 50, 1)");
+        cntForHourChart
+            .setChartDatasets([cntForHourChartDataset.getConfig()])
+            .setChartlabels(labels)
+            .setType("bar")
+            .setOptionsMaxBarWidth(15)
+            .setOptionScalesStepSize("y", 2);
         //가격대별 라트
         const cntForMoney = await ErrandDAO.getCntForRewardRange();
         labels = [];
@@ -67,11 +82,19 @@ const errandChart = async (req, res, next) => {
             tdata.push(row.count);
             labels.push(row.reward_range);
         });
-        const cntForMoneyData = setChartData(
-            labels,
-            [{ label: "가격대", data: tdata }],
-            "bar"
-        );
+        const cntForMoneyChart = new ChartObject();
+        const cntForMoneyChartDataset = new ChartDatasets();
+        cntForMoneyChartDataset
+            .setData(tdata)
+            .setLabel("가격대")
+            .setBackgroundColor("rgba(193, 193, 193, 0.8)")
+            .setHoverBackgroundColor("rgba(246, 132, 50, 1)");
+        cntForMoneyChart
+            .setChartDatasets([cntForMoneyChartDataset.getConfig()])
+            .setChartlabels(labels)
+            .setType("doughnut")
+            .setOptionsMaxBarWidth(15)
+            .setOptionScalesStepSize("y", 2);
 
         return res.render("stats/trade/index.pug", {
             admin,
@@ -87,10 +110,9 @@ const errandChart = async (req, res, next) => {
                 mostExpensiveCategory,
                 mostCheapCategory,
             ],
-            chartOptions,
-            cntForWeekData: { data: cntForWeekData, type: "bar" },
-            cntForHourData: { data: cntForHourData, type: "bar" },
-            cntForMoneyData: { data: cntForMoneyData, type: "bar" },
+            cntForWeekData: cntForWeekChart,
+            cntForHourData: cntForHourChart,
+            cntForMoneyData: cntForMoneyChart,
         });
     } catch (err) {
         return next(err);

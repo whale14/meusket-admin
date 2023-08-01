@@ -24,7 +24,11 @@ const replaceDate = (object, type) => {
 const addUserID = async (object, col) => {
     const sql = "select id from user where idx = ?";
     let results = await runQuery(sql, [object[col]]);
-    return results[0]["id"];
+    return results[0]["id"] == "admin" ? "deleted user" : results[0]["id"];
+};
+
+const rewardCheckComma = (reward) => {
+    return reward.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
 const getUserIdxbyId = async (id) => {
@@ -132,7 +136,7 @@ const getErrandsCount = async (
         params.push(eDate);
     }
 
-    if (status.some((item) => item.value === true)) {
+    if (status && status.some((item) => item.value === true)) {
         sql += " AND (";
         let isFirstCondition = true;
         for (i in status) {
@@ -144,7 +148,7 @@ const getErrandsCount = async (
         }
         sql += ")";
     }
-    if (rootCatIdx >= 0) {
+    if (rootCatIdx && rootCatIdx >= 0) {
         sql += " and  workCategoryIdx = ?";
         if (rootCatIdx == catIdx || catIdx < 0) {
             params.push(rootCatIdx);
@@ -366,12 +370,11 @@ const getCntErrandForWeek = async () => {
 
 const getCntErrandForHour = async () => {
     const sql =
-        "SELECT COUNT(*) AS count, CONCAT(HOUR(er.regDate), '시-', HOUR(er.regDate) + 2, '시') AS hour_range \
+        "SELECT COUNT(*) AS count, CONCAT(FLOOR(HOUR(er.regDate)/2) * 2, '시-', FLOOR(HOUR(er.regDate)/2) * 2 + 2, '시') AS hour_range \
         FROM request er \
         WHERE HOUR(er.regDate) < 23 \
         GROUP BY hour_range";
     const results = await runQuery(sql);
-
     const hours = Array.from(
         { length: 12 },
         (_, index) => `${index * 2}시-${index * 2 + 2}시`
@@ -436,6 +439,72 @@ const getTotalErrandRewardByStatus = async () => {
     return results[0];
 };
 
+const getRewardsSumofRequestByTimeRangeAndStatus = async (
+    start,
+    end,
+    status
+) => {
+    let sql = "select sum(reward) as rewardSum from request";
+    const params = [];
+    const conditions = [];
+
+    if (start) {
+        conditions.push("regDate >= ?");
+        params.push(start);
+    }
+    if (end) {
+        conditions.push("regDate <= ?");
+        params.push(end);
+    }
+    if (status && status.length > 0) {
+        const placeholders = status.map((_, i) => `?`).join(", ");
+        conditions.push(`status in (${placeholders})`);
+        params.push(...status);
+    }
+
+    if (conditions.length > 0) {
+        sql += ` WHERE ${conditions.join(" AND ")}`;
+    }
+    const results = await runQuery(sql, params);
+    const rewardSum = results[0]["rewardSum"] ? results[0]["rewardSum"] : "0";
+    return rewardCheckComma(rewardSum);
+};
+
+const getAvgRewardByCategory = async (status) => {
+    let sql =
+        "SELECT wc.categoryName, AVG(r.reward) as avg_reward \
+    from work_category wc LEFT JOIN request r ON r.workCategoryIdx = wc.idx where wc.idx != wc.rootIndex ";
+    const params = [];
+    const conditions = [];
+    if (status && status.length > 0) {
+        const placeholders = status.map((_, i) => `?`).join(", ");
+        conditions.push(`status in (${placeholders})`);
+        params.push(...status);
+    }
+    if (conditions.length > 0) {
+        sql += ` ${conditions.join(" AND ")}`;
+    }
+    sql += " GROUP BY wc.idx, wc.categoryName ORDER BY wc.idx";
+    const results = await runQuery(sql, params);
+    for (i in results) {
+        results[i].avg_reward = parseInt(results[i].avg_reward * 10) / 10;
+    }
+    return results;
+};
+
+const updateRequestInfo = async (status, idx) => {
+    const sql = "update request set status = ? where idx = ?";
+    const params = [];
+    params.push(status);
+    params.push(idx);
+    try {
+        const results = await runQuery(sql, params);
+        return 0;
+    } catch (err) {
+        return err;
+    }
+};
+
 module.exports = {
     getErrandsList,
     getErrandsCount,
@@ -461,4 +530,7 @@ module.exports = {
     getUserReveiwByUserIdx,
     getCntForRewardRange,
     getTotalErrandRewardByStatus,
+    getRewardsSumofRequestByTimeRangeAndStatus,
+    getAvgRewardByCategory,
+    updateRequestInfo,
 };

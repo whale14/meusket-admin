@@ -1,4 +1,5 @@
 const { runQuery, runTransaction } = require("../lib/database");
+const moment = require("moment");
 
 const formatDate = (date) => {
     const yr = date.getFullYear();
@@ -20,6 +21,10 @@ const getUserByIdx = async (idx) => {
     const results = await runQuery(sql, [idx]);
     results[0]["updateAt"] = replaceDate(results[0], "updateAt");
     results[0]["createAt"] = replaceDate(results[0], "createAt");
+    if (results[0].idx == 0) {
+        results[0].id = "deleted user";
+        results[0].name = "deleted user";
+    }
     return results[0];
 };
 
@@ -56,7 +61,7 @@ const getUsersBySearch = async (
     ) {
         sql += " and createAt >= ? and createAt <= ? ";
         params.push(sDate);
-        params.push(eDate);
+        params.push(moment(eDate).add(1, "days").toDate());
     }
     if (helper || black || user) {
         sql += " AND (";
@@ -121,7 +126,7 @@ const getUserSearchCount = async (
     if (sDate && eDate && sDate != "" && eDate != "") {
         sql += "and createAt >= ? and createAt <= ?";
         params.push(sDate);
-        params.push(eDate);
+        params.push(moment(eDate).add(1, "days").toDate());
     }
     if (helper || black || user) {
         sql += " AND (";
@@ -230,12 +235,11 @@ const updateUserInfo = async (
     }
 };
 
-const getNewUserInOneMonth = async () => {
+const getUserCountBetweenTime = async (start, end) => {
     const sql =
-        "select count(*) from user where createAt\
-    >= DATE_SUB(CURRENT_TIMESTAMP(), interval 30 DAY)";
-    const results = await runQuery(sql, []);
-    return results[0]["count(*)"];
+        "SELECT COUNT(*) FROM user WHERE createAt >= ? and createAt <= ?";
+    const results = await runQuery(sql, [start, end]);
+    return results[0]["COUNT(*)"];
 };
 
 const getUserUnregistered = async () => {
@@ -276,6 +280,13 @@ const deleteUser = async (idx, id) => {
     const queries = [
         ["update request set requesterIdx=0 where requesterIdx = ?", [idx]],
         ["update request set workerIdx=0 where workerIdx = ?", [idx]],
+        ["update blacklist set u_idx=0 where u_idx = ?", [idx]],
+        [
+            "update report_request set reporterIdx = 0 where reporterIdx = ?",
+            [idx],
+        ],
+        ["update report_user set reporterIdx = 0 where reporterIdx = ?", [idx]],
+        ["update report_user set toIdx = 0 where toIdx = ?", [idx]],
         ["delete from worker_approval where userIdx = ?", [idx]],
         ["delete from user where idx = ?", [idx]],
     ];
@@ -289,13 +300,13 @@ const deleteUser = async (idx, id) => {
 };
 
 const getWalletbyIdx = async (idx) => {
-    sql = "select * from wallet where userIdx = ?";
+    const sql = "select * from wallet where userIdx = ?";
     const result = await runQuery(sql, [idx]);
     return result[0];
 };
 
 const getCumulativeUserCount = async () => {
-    sql =
+    const sql =
         "SELECT DATE(createAt) AS date, COUNT(*) AS cum_users \
     FROM user WHERE createAt <= NOW() GROUP BY DATE(createAt) ORDER BY DATE(createAt)";
     const results = await runQuery(sql);
@@ -307,13 +318,37 @@ const getCumulativeUserCount = async () => {
     return results;
 };
 
+const getUsersFcmTokensByType = async (subject, userTypes, charityRange) => {
+    let sql = "select fcmToken from user";
+    const params = [];
+    if (subject != "all") {
+        sql += " where ";
+        for (i in userTypes) {
+            if (i > 0) sql += "and ";
+            if (userTypes[i] == "user") {
+                sql += "isWorkerRegist = 0 ";
+            } else if (userTypes[i] == "helper") {
+                sql += "isWorkerRegist = 1 ";
+            } else if (userTypes[i] == "new") {
+                sql += "DATE_SUB(NOW(), INTERVAL 30 DAY) <= createAt";
+            }
+        }
+    }
+    const results = await runQuery(sql, params);
+    const fcmTokens = [];
+    for (let result of results) {
+        fcmTokens.push(result.fcmToken);
+    }
+    return fcmTokens;
+};
+
 module.exports = {
     getUserTotalCount,
     getUsersBySearch,
     getUserByIdx,
     getUserSearchCount,
     updateUsertoBlack,
-    getNewUserInOneMonth,
+    getUserCountBetweenTime,
     getUserUnregistered,
     getLastVisitorByPeriod,
     getUsersCntByDate,
@@ -322,4 +357,5 @@ module.exports = {
     getWalletbyIdx,
     getCumulativeUserCount,
     updateUserInfo,
+    getUsersFcmTokensByType,
 };

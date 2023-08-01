@@ -1,5 +1,5 @@
 const moment = require("moment");
-const { ErrandDAO, ChatDAO } = require("../../DAO");
+const { ErrandDAO, ChatDAO, CancelDAO } = require("../../DAO");
 
 const errandsList = async (req, res, next) => {
     try {
@@ -122,6 +122,9 @@ const showErrand = async (req, res, next) => {
         if (errand.recruitmentStatus != 0 && !recruitments)
             throw new Error("NOT_EXIST");
 
+        const cancel = await CancelDAO.getCancelByIdx(errandIdx);
+        if (errand.status == 5 && !cancel) throw new Error("NOT_EXIST");
+
         const chat_room = await ChatDAO.getChatByReqIdx(errandIdx);
         const chat_content = chat_room
             ? await ChatDAO.getChatContentByIdx(chat_room.idx)
@@ -131,6 +134,7 @@ const showErrand = async (req, res, next) => {
             errand,
             recruitments,
             reviews,
+            cancel,
             chat: { room: chat_room, content: chat_content },
         });
     } catch (err) {
@@ -138,8 +142,20 @@ const showErrand = async (req, res, next) => {
     }
 };
 
+const editRequest = async (req, res, next) => {
+    try {
+        const { idx, status } = req.body;
+        console.log(req.body);
+        await ErrandDAO.updateRequestInfo(status, idx);
+        return res.status(200).json({ updateStatus: status });
+    } catch (err) {
+        return res.status(400).json({ error: "업데이트 실패!" });
+    }
+};
+
 module.exports = {
     latestErrand,
     errandsList,
     showErrand,
+    editRequest,
 };

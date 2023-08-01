@@ -1,0 +1,148 @@
+
+#newPushModal.modal.fade(tabindex='-1' aria-labelledby='newPushModalLabel' aria-hidden='true')
+    .modal-dialog
+        .modal-content
+            .modal-header
+                h1#newPushModalLabel.modal-title.fs-5 새로운 알림 보내기
+                button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+            form#pushForm(enctype="multipart/form-data")
+                .modal-body
+                    .mb-1 
+                        .form-check.form-check-inline
+                            input#inlineCheck1.form-check-input(type='checkbox' name='type' value="push")
+                            label.form-check-label(for='inlineCheck1') 앱푸쉬
+                        .form-check.form-check-inline
+                            input#inlineCheck2.form-check-input(type='checkbox' name='type' value="kakao")
+                            label.form-check-label(for='inlineCheck2') 카카오톡(구현X)
+                    .border-top.my-2
+                    .mb-1#sendSubjectRadio.my-1
+                        .form-check.form-check-inline
+                            input#inlineRadio1.form-check-input(type='radio' name='subject' value="all" onchange='toggleSubjectForm(this)' checked)
+                            label.form-check-label(for='inlineRadio1') 전체발송
+                        .form-check.form-check-inline
+                            input#inlineRadio2.form-check-input(type='radio' name='subject' value="part" onchange='toggleSubjectForm(this)')
+                            label.form-check-label(for='inlineRadio2') 부분발송
+                    #pushSubjectUsers.my-1.mt-2(style='display: none')
+                        #subjectUser
+                            .form-check.form-check-inline
+                                input#inlineCheck3.form-check-input(type='checkbox' name='userType' value="user")
+                                label.form-check-label(for='inlineCheck3') 부름이만
+                            .form-check.form-check-inline
+                                input#inlineCheck4.form-check-input(type='checkbox' name='userType' value="helper")
+                                label.form-check-label(for='inlineCheck4') 드림이만
+                            .form-check.form-check-inline
+                                input#inlineCheck5.form-check-input(type='checkbox' name='userType' value="new")
+                                label.form-check-label(for='inlineCheck5') 신규회원
+                        #charityRange.mt-2
+                            label.form-label(for='charityRange') 기부금 범위
+                            input#charityRange.form-range(type='range' min="0" max="10000000")
+                    .border-top.my-2
+                    .my-1
+                        select#writtenPush.form-select(name='writtenPush', aria-label='writtenPush')
+                            option#defaultOption(selected) 지정된 문구 보내기
+                            option(value="test") 테스트
+                    .my-1
+                        label.form-label(for='pushTitle') 알림 제목
+                        input#pushTitle.mt-1.form-control(name='pushTitle', type='text', aria-label='pushTitle',value='', placeholder='제목을 입력하세요')
+                    .my-1
+                        label.form-label(for='pushContent') 알림 내용
+                        textarea#pushContent.form-control(name='pushContent', type='text', aria-label='pushContent', value='', placeholder='내용을 입력하세요')
+                    .my-1
+                        label.form-label(for='pushImage') 알림 이미지(선택 사항, 300KB 미만)
+                        input#pushImage.form-control(type='file' accept='image/*')
+                .modal-footer
+                    button#sendPushBtn.btn.btn-dark(type='submit') 알림 보내기
+                    button#closeBtn.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+script.
+    function toggleSubjectForm(element) {
+        const pushSubjectUsers = document.getElementById('pushSubjectUsers');
+        if (element.value === 'all') {
+            pushSubjectUsers.style.display = 'none';
+        } else if (element.value === 'part') {
+            pushSubjectUsers.style.display = 'block';
+        }
+    }
+    const writtenPush = document.getElementById('writtenPush');
+    writtenPush.addEventListener("change", function(){
+        const selectedPush = this.value;
+        if(selectedPush == "test"){
+            document.getElementById('pushTitle').value = "테스트";
+            document.getElementById('pushContent').value = "테스트입니다";
+        }
+    })
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const pushForm = document.getElementById('pushForm');
+        const subjectUsers = document.getElementById('pushSubjectUsers');
+        const closeBtn = document.getElementById('closeBtn');
+
+        function updatePushTableBody(pushes) {
+            // tbody#pushTableBody의 내용을 비우기
+            const pushTableBody = document.getElementById("pushTableBody");
+            pushTableBody.innerHTML = '';
+
+            // 주어진 데이터를 사용하여 새로운 행 추가
+            for (const push of pushes) {
+                const newRow = document.createElement('tr');
+
+                newRow.innerHTML = `
+                    <th scope="row">${push.pidx}</th>
+                    <td>${push.title}</td>
+                    <td>${push.sendAt}</td>
+                    <td>${push.admin_id}</td>
+                    <td>
+                        <a class="btn btn-dark btn-sm" href="/member/push/${push.idx}">바로가기</a>
+                    </td>
+                `;
+
+                pushTableBody.appendChild(newRow);
+            }
+        }    
+        function updatePushForm() {
+            const typeCheckboxes = document.querySelectorAll("input[name='userType']");
+            for (const checkbox of typeCheckboxes) {
+                checkbox.checked = false;
+            }
+            subjectUsers.style.display = 'none';
+            // 전체발송 radio button 체크
+            const allRadio = document.getElementById("inlineRadio1");
+            allRadio.checked = true;
+            // 알림 제목과 알림 내용 지우기
+            document.getElementById("pushTitle").value = "";
+            document.getElementById("pushContent").value = "";
+            document.getElementById("pushImage").value = "";
+            document.getElementById("defaultOption").selected = true;
+        }
+        closeBtn.addEventListener('click', function(event){
+            updatePushForm();
+        })
+        pushForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const xhr = new XMLHttpRequest();
+            const pushImageInput = document.getElementById("pushImage");
+            const formData = new FormData(pushForm);
+            formData.append("pushImage", pushImageInput.files[0])
+
+            xhr.open('POST', '/member/push');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Handle the successful response
+                        // Close the current modal
+                        const closeBtn = document.getElementById('closeBtn');
+                        closeBtn.click();
+
+                        const response = JSON.parse(xhr.responseText);
+                        const pushes = response.pushes;
+                        updatePushTableBody(pushes);
+                        updatePushForm();
+                    } else {
+                        // Handle the error response
+                        // For example, display an error message
+                        console.error(xhr.responseText);
+                    }
+                }
+            };
+            xhr.send(formData);
+        });
+    });

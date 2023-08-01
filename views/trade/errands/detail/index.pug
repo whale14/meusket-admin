@@ -7,16 +7,16 @@ block title
     | 심부름 정보
 
 block content
-    //- include cancel.pug
-    include review.pug
-    include recruit.pug
+    include ./review.pug
+    include ./recruit.pug
+    include ./edit.pug
     include ../../chat.pug
+    include ../../../lib/adminRequest.pug
     .container-fluid.w-80
         include ../../../title.pug
-            a.text-dark(href='#' onclick='history.back(); return false;')
-                |  심부름리스트
+            a.text-dark(href='#' onclick='history.back(); return false;') 심부름리스트
             i.bi.bi-chevron-double-right 
-                |  #{errand.idx} 
+            |  #{errand.idx} 
         .container-fluid.w-90
             .ccard
                 .container.px-5.mb-5
@@ -25,24 +25,25 @@ block content
                         // Post content
                         article
                             // Post header
-                            header.mb-4
-                            // Post title
-                            h2.fw-bolder.mb-1 #{errand.title}
+                            .d-flex.align-items-center.mt-1
+                                h2.fw-bolder.mb-1 #{errand.title}
+                                button#editModalBtn.btn.btn-link.text-decoration-underline.ms-auto(type='button' data-bs-toggle='modal' data-bs-target='#requestModal') 심부름 정보 수정
                             // Post meta content
                             .text-muted.fst-italic.mb-2 #{errand.request_time}
                             // Post categories
-                            if errand.status == 0
-                                span.badge.rounded-pill.bg-dark 매칭대기
-                            if errand.status == 1
-                                span.badge.rounded-pill.bg-dark 드림이대기
-                            if errand.status == 2
-                                span.badge.rounded-pill.bg-primary 진행대기
-                            if errand.status == 3
-                                span.badge.rounded-pill.bg-info 진행중
-                            if errand.status == 4
-                                span.badge.rounded-pill.bg-success 심부름완료
-                            if errand.status == 5
-                                span.badge.rounded-pill.bg-danger 심부름취소
+                            #requestStatus
+                                if errand.status == 0
+                                    span.badge.rounded-pill.bg-dark 매칭대기
+                                if errand.status == 1
+                                    span.badge.rounded-pill.bg-dark 드림이대기
+                                if errand.status == 2
+                                    span.badge.rounded-pill.bg-primary 진행대기
+                                if errand.status == 3
+                                    span.badge.rounded-pill.bg-info 진행중
+                                if errand.status == 4
+                                    span.badge.rounded-pill.bg-success 심부름완료
+                                if errand.status == 5
+                                    span.badge.rounded-pill.bg-danger 심부름취소
                             // Post content
                             p.fs-5.mb-4
                         .container-xl
@@ -84,6 +85,8 @@ block content
                                                 tr
                                                     th(scope='col') 심부름날짜
                                                         td.text-end #{errand.workDate}
+                                    if cancel 
+                                        include cancel.pug
         .d-flex.justify-content-center.mt-2
             button.btn.btn-dark.me-2(type='button' data-bs-toggle='modal' data-bs-target='#chatModal' disabled=!(chat.content))  채팅 내역   
             button.btn.btn-dark.me-2(type='button' data-bs-toggle='modal' data-bs-target='#reviewModal' disabled = errand.status !== 4)  리뷰 보기

@@ -4,10 +4,9 @@
 extends ../../layout.pug 
 
 block title 
-    | 부름이리스트 #{page}p
+    | 전체회원관리 #{page}p
 
 block content
-    
     .container-fluid
         include ../../title.pug
             |  전체 회원 관리
@@ -40,4 +39,4 @@ block content
                             td there is
                             td no users
                             td
-            include ../../pagination.pug
+            include ../../lib/pagination.pug

@@ -30,7 +30,7 @@ const replaceDate = (object, column, type) => {
 const addUserID = async (object, col) => {
     const sql = "select id from user where idx = ?";
     let results = await runQuery(sql, [object[col]]);
-    return results[0]["id"];
+    return results[0]["id"] == "admin" ? "deleted user" : results[0]["id"];
 };
 
 const getUserIdxbyId = async (id) => {
@@ -42,7 +42,8 @@ const getUserIdxbyId = async (id) => {
     return results;
 };
 
-const getReportRequestList = async (
+const getReportList = async (
+    name,
     start,
     count,
     sDate,
@@ -51,7 +52,7 @@ const getReportRequestList = async (
     sText,
     order
 ) => {
-    let sql = "select * from report_request";
+    let sql = "select * from report_" + name;
     const params = [];
     if (sDate != "" && eDate != "") {
         sql += " where reportDate >= ? AND reportDate <= ?";
@@ -97,8 +98,8 @@ const getReportRequestList = async (
     return results;
 };
 
-const getReportRequestCount = async (sDate, eDate, status, sText) => {
-    let sql = "select count(*) as count from report_request";
+const getReportCount = async (name, sDate, eDate, status, sText) => {
+    let sql = "select count(*) as count from report_" + name;
     const params = [];
     if (sDate != "" && eDate != "") {
         sql += " where reportDate >= ? AND reportDate <= ?";
@@ -135,23 +136,23 @@ const getReportRequestCount = async (sDate, eDate, status, sText) => {
     return results[0]["count"];
 };
 
-const getReportRequestByIdx = async (idx) => {
-    const sql = "select * from report_request where idx = ?";
+const getReportByIdx = async (name, idx) => {
+    const sql = "select * from report_" + name + " where idx = ?";
     const results = await runQuery(sql, [idx]);
     results[0].reportDate = replaceDate(results[0], "reportDate", "2");
     return results[0];
 };
 
-const updateReportRequest = async (idx, sol) => {
+const updateRequest = async (name, idx, sol) => {
     const sql =
-        "update report_request set solution = ?, status = 1 where idx = ?";
+        "update report_" + name + " set solution = ?, status = 1 where idx = ?";
     const results = await runQuery(sql, [sol, idx]);
     return results.changedRows >= 0 ? 1 : 0;
 };
 
 module.exports = {
-    getReportRequestList,
-    getReportRequestCount,
-    getReportRequestByIdx,
-    updateReportRequest,
+    getReportList,
+    getReportCount,
+    getReportByIdx,
+    updateRequest,
 };

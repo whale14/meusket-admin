@@ -3,46 +3,45 @@ script(type='text/javascript' src='https://cdn.jsdelivr.net/momentjs/latest/mome
 script(type='text/javascript' src='https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js')
 link(rel='stylesheet' type='text/css' href='https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css')
 
-.card
-    .container-fluid
-        form.ms-1(method='get', action='' enctype='application/x-www-form-urlencoded')
-            .d-flex.mt-1.align-items-center
-                span(style="flex-shrink: 0; width: 4.2rem;") 가입날짜
-                i.bi.bi-caret-right-fill
-                input#startDate.form-control.form-control-sm(type='text' name='startDate' value=sDate)
-                span.ms-1.me-1 ~
-                input#endDate.form-control.form-control-sm(type='text' name='endDate' value=eDate)
-            .mt-2
-                .form-check.form-check-inline
-                    input#userCheckbox1.form-check-input(type='checkbox' name='user' value='true' checked=user)
-                    label.form-check-label(for='userCheckbox1') 부름이
-                .form-check.form-check-inline
-                    input#userCheckbox2.form-check-input(type='checkbox' name='helper' value='true' checked=helper)
-                    label.form-check-label(for='userCheckbox2') 드림이
-                //- .form-check.form-check-inline
-                //-     input#userCheckbox3.form-check-input(type='checkbox' name='withdraw' value='true' checked=withdraw)
-                //-     label.form-check-label(for='userCheckbox3') 탈퇴
-                .form-check.form-check-inline
-                    input#userCheckbox4.form-check-input(type='checkbox' name='black' value='true' checked=black)
-                    label.form-check-label(for='userCheckbox4') 정지
-            .d-flex.mt-2.mb-1
-                select.form-select(name='type' aria-label='type', style='width: auto;')
-                    option(value='id') 아이디
-                    option(value='name') 이름
-                input#searchInput.form-control(type='text', name='search',aria-label='search' placeholder='검색')
-                input(type='hidden' name='page' value=1)
-                button#searchButton.btn.btn-success.ms-1(type='submit') search
-            .mt-3.mb-2 
-                span(style='width: 140px;') 정렬: 
-                .form-check.form-check-inline 
-                    input#orderRadios1.form-check-input(type='radio' name='orderby' value='idx' checked=orderby=='idx')
-                    label.form-check-label(for='orderRadios1') idx순
-                .form-check.form-check-inline 
-                    input#orderRadios2.form-check-input(type='radio' name='orderby' value='createAt' checked=orderby=='createAt')
-                    label.form-check-label(for='orderRadios2') 최근가입순
-                .form-check.form-check-inline 
-                    input#orderRadios3.form-check-input(type='radio' name='orderby' value='name' checked=orderby=='name')
-                    label.form-check-label(for='orderRadios3') 이름순
+form#searchForm(method='get', action='', enctype='application/x-www-form-urlencoded')
+    .card
+        .container-fluid
+            .ms-1
+                .d-flex.mt-1.align-items-center
+                    span(style="flex-shrink: 0; width: 4.2rem;") 가입날짜
+                    i.bi.bi-caret-right-fill
+                    input#startDate.form-control.form-control-sm(type='text' name='startDate' value=sDate)
+                    span.ms-1.me-1 ~
+                    input#endDate.form-control.form-control-sm(type='text' name='endDate' value=eDate)
+                .mt-2
+                    .form-check.form-check-inline
+                        input#userCheckbox1.form-check-input(type='checkbox' name='user' value='true' checked=user)
+                        label.form-check-label(for='userCheckbox1') 부름이
+                    .form-check.form-check-inline
+                        input#userCheckbox2.form-check-input(type='checkbox' name='helper' value='true' checked=helper)
+                        label.form-check-label(for='userCheckbox2') 드림이
+                    .form-check.form-check-inline
+                        input#userCheckbox4.form-check-input(type='checkbox' name='black' value='true' checked=black)
+                        label.form-check-label(for='userCheckbox4') 블랙
+                .d-flex.mt-2.mb-2
+                    select.form-select(name='type' aria-label='type', style='width: auto;')
+                        option(value='id') 아이디
+                        option(value='name') 이름
+                    input#searchInput.form-control(type='text', name='search',aria-label='search' placeholder='검색')
+                    input(type='hidden' name='page' value=1)
+                    button#searchButton.btn.btn-success.ms-1(type='submit' style="min-width: 65px;") 검색
+    .d-flex.justify-content-end.mt-1.mb-2 
+        span.me-2 정렬: 
+        #sortingForm
+            .form-check.form-check-inline 
+                input#orderRadios1.form-check-input(type='radio' name='orderby' value='idx' checked=orderby=='idx')
+                label.form-check-label(for='orderRadios1') idx순
+            .form-check.form-check-inline 
+                input#orderRadios2.form-check-input(type='radio' name='orderby' value='createAt' checked=orderby=='createAt')
+                label.form-check-label(for='orderRadios2') 최근가입순
+            .form-check.form-check-inline 
+                input#orderRadios3.form-check-input(type='radio' name='orderby' value='name' checked=orderby=='name')
+                label.form-check-label(for='orderRadios3') 이름순
 
 script.
     $(function() {
@@ -59,3 +58,22 @@ script.
             maxYear: parseInt(moment().format('YYYY'),10)
         });
     });
+
+    const updateSortOption = (selectedOption) => {
+        const url = new URL(window.location.href);
+        if (url.searchParams.has('orderby')) {
+            url.searchParams.set('orderby', selectedOption);
+        } else {
+            url.searchParams.append('orderby', selectedOption);
+        }
+        window.history.pushState({}, '', url);
+        window.location.reload();
+    }
+    const orderRadios = document.querySelectorAll('input[name="orderby"]');
+     orderRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            // Get the sorting option selected by the user
+            const selectedOption = document.querySelector('input[name="orderby"]:checked').value;
+            updateSortOption(selectedOption);
+        });
+     });

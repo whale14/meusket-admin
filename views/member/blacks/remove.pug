@@ -1,19 +1,19 @@
 //- Parameters
 //- black, blacks
 
-button.btn.btn-dark.btn-sm(type='button' data-bs-toggle="modal" data-bs-target="#removeBlackModal" style="width: 4.2rem;") 해제
+button.btn.btn-dark.btn-sm(type='button' data-bs-toggle="modal" data-bs-target=`#removeBlackModal${black.idx}` style="width: 4.2rem;") 해제
 
-#removeBlackModal.modal.fade(tabindex='-1' aria-labelledby='removeBlackModalLabel' aria-hidden='true')
+.modal.fade(tabindex='-1' aria-labelledby='removeBlackModalLabel' aria-hidden='true' id=`removeBlackModal${black.idx}`)
   .modal-dialog
     .modal-content
       .modal-header
         h1#removeBlackModalLabel.modal-title.fs-5 악성 고객 해제
         button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
-      .modal-body
-        | #{black.u_id} 님을 악성 고객에서 해제하겠습니까?
-      .modal-footer
-        form(method='POST' action='/member/black/remove_black')
-            input(type='hidden' name='u_idx' value=black.u_idx)
-            //- input(type='hidden' name='search' value=blacks.blackSearch)
-            button.btn.btn-dark(type='submit') 정지 해제
-        button.btn.btn-light(type='button' data-bs-dismiss='modal') 취소
+      form.removeBlackForm(data-idx=`${black.idx}`)
+        .modal-body
+          | #{black.u_id} 님을 악성 고객에서 해제하겠습니까?
+          #errorText
+        .modal-footer
+          input(type='hidden' name='u_idx' value=black.u_idx)
+          button.btn.btn-dark(type='submit') 정지 해제
+          button.btn.btn-light(type='button' data-bs-dismiss='modal' id=`closeBtn${black.idx}`) 취소

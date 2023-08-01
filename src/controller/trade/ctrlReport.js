@@ -36,7 +36,8 @@ const reportsList = async (req, res, next) => {
         }
 
         const REPORT_PER_PAGE = 10;
-        const reports = await ReportDAO.getReportRequestList(
+        const reports = await ReportDAO.getReportList(
+            "request",
             (page - 1) * REPORT_PER_PAGE,
             REPORT_PER_PAGE,
             startDate,
@@ -45,7 +46,8 @@ const reportsList = async (req, res, next) => {
             search
         );
 
-        const reportsCount = await ReportDAO.getReportRequestCount(
+        const reportsCount = await ReportDAO.getReportCount(
+            "request",
             startDate,
             endDate,
             searchStatus,
@@ -78,7 +80,7 @@ const showReport = async (req, res, next) => {
         const { admin } = req.session;
         const reportIdx = req.params.reportIdx;
 
-        const report = await ReportDAO.getReportRequestByIdx(reportIdx);
+        const report = await ReportDAO.getReportByIdx("request", reportIdx);
         const errand = await ErrandDAO.getErrandByIdx(report.requestIdx);
         const reporter = await UserDAO.getUserByIdx(report.reporterIdx);
         const chat_room = await ChatDAO.getChatByReqIdx(errand.idx);
@@ -129,7 +131,7 @@ const getActionReport = async (req, res, next) => {
                 "YYYY-MM-DD HH:mm"
             )}\n대상자: ${subject}\n이유: ${blockReason}\n상세사유: ${solution}\n`;
         if (period > 0) sol += `기간: ${period}\n`;
-        if ((await ReportDAO.updateReportRequest(idx, sol)) == 0)
+        if ((await ReportDAO.updateRequest("request", idx, sol)) == 0)
             throw new Error("BAD_REQUEST");
 
         return res.redirect(`/trade/report/${idx}`);

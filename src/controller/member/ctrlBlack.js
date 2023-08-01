@@ -57,11 +57,10 @@ const blacksList = async (req, res, next) => {
 const removeBlack = async (req, res, next) => {
     try {
         const { u_idx } = req.body;
-
         if ((await BlackDAO.deleteRidBlackByUidx(u_idx)) === [0, 0]) {
-            throw new Error("BAD_REQUEST");
+            return res.status(400).json({ error: "잘못된 접근입니다." });
         }
-        return res.redirect(`/member/black`);
+        return res.sendStatus(200);
     } catch (err) {
         return next;
     }

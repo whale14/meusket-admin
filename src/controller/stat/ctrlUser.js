@@ -1,6 +1,6 @@
 const { UserDAO, HelpDAO, BlackDAO, ErrandDAO } = require("../../DAO");
-const { setChartData, setChartOption } = require("../../lib/chart-config");
 const moment = require("moment");
+const { ChartObject, ChartDatasets } = require("../../lib/chart-config");
 
 const defaultStat = async (req, res, next) => {
     try {
@@ -13,9 +13,15 @@ const defaultStat = async (req, res, next) => {
 const userIndex = async (req, res, next) => {
     try {
         const { admin } = req.session;
+        const startMonth = moment().startOf("month").toDate();
+        const startDay = moment().startOf("day").toDate();
+        const endDay = moment().endOf("day").toDate();
 
         const userCnt = parseInt(await UserDAO.getUserTotalCount());
-        const newUserCnt = await UserDAO.getNewUserInOneMonth();
+        const newUserCnt = await UserDAO.getUserCountBetweenTime(
+            startMonth,
+            endDay
+        );
         // const outUserCnt = await UserDAO.getUserUnregistered();
         // const dailyUserCnt = parseInt(await UserDAO.getLastVisitorByPeriod(1));
         // const weeklyUserCnt = parseInt(await UserDAO.getLastVisitorByPeriod(7));
@@ -83,18 +89,22 @@ const userChart = async (req, res, next) => {
         }
         var labels = [];
         var formatData = [];
-
+        //누적 부름이 가입자
         const cumUserCounts = await UserDAO.getCumulativeUserCount();
         cumUserCounts.map((count) => {
             labels.push(count.date);
             formatData.push(count.cum_users);
         });
-        const cumUserChartData = setChartData(
-            labels,
-            [{ label: "누적 부름이", data: formatData }],
-            "line"
-        );
+        const cumUserChart = new ChartObject();
+        const cumUserChartset = new ChartDatasets();
+        cumUserChartset.setData(formatData).setLabel("누적 부름이");
+        cumUserChart
+            .setChartDatasets(cumUserChartset.getConfig())
+            .setChartlabels(labels)
+            .setType("line")
+            .setOptionScalesStepSize("y", 1);
 
+        //2주간 부름이 가입자
         const today = moment(moment().toDate()).format("YYYY-MM-DD");
         const twoWeeksAgo = moment(
             moment().subtract(14, "days").toDate()
@@ -120,14 +130,11 @@ const userChart = async (req, res, next) => {
             );
             formatData.push(userCount ? userCount.count : 0);
         }
-
-        // // 차트 데이터 설정
-        const registerTwoWeeksChartData = setChartData(
-            labels,
-            [{ label: "신규 부름이", data: formatData }],
-            "line"
-        );
-        const chartOptions = setChartOption(1);
+        const newUserForTwoWeeksChart = new ChartObject();
+        newUserForTwoWeeksChart
+            .setChartData(labels, [{ label: "누적 부름이", data: formatData }])
+            .setType("bar")
+            .setOptionScalesStepSize("y", 1);
 
         return res.render("stats/user/requester/userChart.pug", {
             admin,
@@ -135,9 +142,8 @@ const userChart = async (req, res, next) => {
             top10ErrandsUsers,
             top10MoneyUsers,
             topScoreUsers,
-            registerCumultive: { data: cumUserChartData, type: "line" },
-            registerTwoWeeks: { data: registerTwoWeeksChartData, type: "line" },
-            chartOptions,
+            registerCumultive: cumUserChart,
+            registerTwoWeeks: newUserForTwoWeeksChart,
         });
     } catch (err) {
         return next(err);

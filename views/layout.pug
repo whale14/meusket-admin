@@ -1,60 +1,120 @@
 include ./header.pug
-
-nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.sticky-top
-    .container-fluid
-        a.navbar-brand.align-self-start(href='/') Meusket Admin
-        button.navbar-toggler(type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
-            span.navbar-toggler-icon
-        if(admin)
+nav.navbar.sticky-top.bg-white(style="top: 0; z-index: 999;")
+    .container-lg
+        .d-flex.flex-fill.row.row-cols-3(style="height: 50px;")
+            .col.d-flex.align-items-center
+                a.navbar-brand.ms-3(href='/')
+                    img(src='/images/mainLogo.svg', alt='메인 로고' width='80px' height='40px')
+            .col.d-flex.align-items-center
+                h4.mx-auto.mt-1.nanumSquareNeo ADMIN
+            .col.d-flex.align-items-center
+                if(admin)
+                    p.ms-auto
+                        .d-none.d-md-block.me-1 #{admin.authorityName} 
+                        .me-1 #{admin.admin_id}님 
+                        a(href='/auth/sign_out')
+                            img.me-2(src='/images/logout.svg', alt='로그아웃' width='30px' height='30px')
+if(admin)
+    nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.sticky-top(style='top: 66px; z-index: 998;')
+        .container-lg
+            button.navbar-toggler.ms-3(type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+                span.navbar-toggler-icon
             #navbarSupportedContent.collapse.navbar-collapse
-                ul.navbar-nav.me-auto.mb-2.mb-lg-0.text-light
-                    li.nav-item.dropdown
-                        ul.list-unstyled.ps-0
-                    li.mb-1.me-3
-                        button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#member-collapse' aria-expanded='false')
-                            | 회원관리
-                        ul#member-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small
-                            li
-                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/user') 회원리스트
-                            li
-                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/apply') 드림이 신청
-                            li
-                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='') 신고 회원
-                            li
-                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/black') 블랙리스트
-                    li.mb-1.me-3
-                        button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#order-collapse' aria-expanded='false')
-                            | 심부름 매칭 관리
-                        ul#order-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small
-                            li  
-                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/trade/errand') 심부름 매칭
-                            li
-                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/trade/report') 신고 심부름
-                    li.mb-1.me-3
-                        button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#stats-collapse' aria-expanded='false')
-                            | 통계 보기
-                        ul#stats-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small
-                            li
-                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/stat/user') 사용자 통계
-                            li
-                            a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/stat/user') 심부름 통계
-                    li.border-top.my-3
-                    li.mb-1
-                        button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1(data-bs-toggle='collapse' data-bs-target='#account-collapse' aria-expanded='false')
-                            | 계정 관리
-                        #account-collapse.collapse
-                            ul.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small
+                .d-flex.flex-fill.justify-content-between
+                    ul.navbar-nav.mb-2.mb-lg-0.text-light.row.flex-fill
+                        li.mb-1.col
+                            button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#member-collapse' aria-expanded='true')
+                                | 회원관리
+                            ul#member-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small.show
+                                li
+                                a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/user') 회원리스트
+                                li
+                                a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/push') 알림 전송
+                                li
+                                a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/apply') 드림이 신청
+                                li
+                                a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/report') 신고 회원
+                                li
+                                a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/black') 블랙리스트
+                        li.mb-1.col
+                            button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#trade-collapse' aria-expanded='true')
+                                | 심부름 관리
+                            ul#trade-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small.show
+                                li  
+                                a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/trade/errand') 심부름 조회
+                                li
+                                a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/trade/report') 신고 심부름
+                        li.mb-1.col
+                            button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#stats-collapse' aria-expanded='true')
+                                | 통계 보기
+                            ul#stats-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small.show
+                                li
+                                a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/stat/user') 사용자 통계
+                                li
+                                a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/stat/errand') 심부름 통계
+                        li.mb-1.col-sm
+                            button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#sales-collapse' aria-expanded='true')
+                                | 매출 현황
+                            ul#sales-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small.show
+                                li
+                                a.d-inline-flex.text-decoration-none.rounded(href='/') 심부름비 현황
+                                li
+                                a.d-inline-flex.text-decoration-none.rounded(href='/') 기부금 현황
+                        li.border-top.my-3.d-block.d-lg-none
+                        li.mb-1.col-sm
+                            button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#account-collapse' aria-expanded='true')
+                                | 계정 관리
+                            ul#account-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small.show
                                 li
                                 a.d-inline-flex.text-decoration-none.rounded(role='button' data-bs-toggle="modal" data-bs-target="#showAdminModal") 정보보기
                                 li
                                 a.d-inline-flex.text-decoration-none.rounded(href='/edit') 정보변경
                                 li
                                 a.d-inline-flex.text-decoration-none.rounded(href='/manage') 관리자 승인 및 관리
-                ul.navbar-nav.ms-auto.align-self-start.mt-2.text-end
-                    li.nav-item
-                        a.d-inline-flex.text-decoration-none.rounded(href='/auth/sign_out') 로그아웃
 .container.mt-2
 if(admin)
     include ./admin/info.pug
-.container-xl
+.container-xl(style="min-height: 100vh;")
     block content
+
+.container.mt-5
+nav.navbar.navbar-dark.bg-dark.text-light.justify-content-center
+    .container-lg.row(style="height: 50px;")
+        .col-3.d-flex.align-items-center
+            img(src='/images/mainLogoDark.svg', alt='메인 로고 다크' width='80px' height='40px')
+        .col-9.d-flex.align-items-center
+            .ms-auto.nanumSquareNeo.font-copyright Copyright 2023 MeUsKet All Rights Reserved
+
+script.
+    const toggleBtns = document.querySelectorAll('button.btn.btn-toggle.d-inline-flex');
+    const toggleLists = document.querySelectorAll('ul.btn-toggle-nav.list-unstyled');
+    
+    function updateCollapse() {
+        if (window.innerWidth < 992) {
+            toggleBtns.forEach((btn) => {
+                btn.setAttribute("aria-expanded", "false");
+            });
+            toggleLists.forEach((list) => {
+                if (!list.classList.contains("fade")) {
+                list.classList.add("fade");
+                }
+                if (list.classList.contains("show")) {
+                list.classList.remove("show");
+                }
+            });
+        } else {
+            toggleBtns.forEach((btn) => {
+                btn.setAttribute("aria-expanded", "true");
+            });
+            toggleLists.forEach((list) => {
+                if (list.classList.contains("fade")) {
+                list.classList.remove("fade");
+                }
+                if (!list.classList.contains("show")) {
+                list.classList.add("show");
+                }
+            });
+            }
+    }
+    window.addEventListener("resize", updateCollapse);
+    document.addEventListener("DOMContentLoaded", updateCollapse);

@@ -8,22 +8,22 @@ link(rel='stylesheet' type='text/css' href='https://cdn.jsdelivr.net/npm/dateran
 .card
     .container-fluid
         form
-            .d-flex.mt-1
+            .d-flex.mt-2.align-items-center
                 label.form-control-label(for='startDate')
                     i.bi.bi-caret-right-fill
                 input#startDate.form-control.form-control-sm(type='text' name='startDate' value=sDate)
                 label.form-control-label.ms-1.me-1(for='endDate') ~
                 input#endDate.form-control.form-control-sm(type='text' name='endDate' value=eDate)
-            .d-flex.mt-1.mb-1.align-items-center
+            .d-flex.mt-2.mb-2.align-items-center
                 .form-check.form-check-inline
                     input#errandCheckbox1.form-check-input(type='checkbox' name='status' value='0' checked=status[0].value)
-                    label.form-check-label(for='errandCheckbox1', style='width: 65px;') 신고접수
+                    label.form-check-label(for='errandCheckbox1', style='width: 65px;') 처리필요
                 .form-check.form-check-inline
                     input#errandCheckbox2.form-check-input(type='checkbox' name='status' value='1' checked=status[1].value)
                     label.form-check-label(for='errandCheckbox2', style='width: 65px;') 처리완료
                 input#searchInput.form-control(type='text', name='search',aria-label='search' placeholder='신고자 id,이름 검색')
                 input(type='hidden' name='page' value=1)
-                button.btn.btn-dark.btn-sm.mb-1.float-end.ms-1(type='submit', style='width: 70px;') 검색    
+                button.btn.btn-success.float-end.ms-1(type='submit', style="min-width: 65px;") 검색    
 
 script.
     $(function() {

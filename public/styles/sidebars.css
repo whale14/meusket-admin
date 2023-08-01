@@ -1,7 +1,8 @@
 @charset "UTF-8";
 
 :root {
-    --bs-meusket-rgb: 236, 166, 80;
+    --bs-meusket-rgb: #f68432;
+    --bs-font-size: 1rem;
 }
 
 main {
@@ -33,29 +34,28 @@ navbar css
     background-color: var(--bs-tertiary-bg);
 }
 
-.btn-toggle::before {
+.btn-toggle[aria-expanded="true"] {
+    color: rgba(var(--bs-emphasis-color-rgb), 0.85);
+}
+.btn-toggle::after {
     width: 1.25em;
     line-height: 0;
     content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba(255,255,255,.8)' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
     transition: transform 0.35s ease;
     transform-origin: 0.5em 50%;
+    margin-left: 5px;
+    transform: rotate(180deg);
 }
-
-[data-bs-theme="dark"] .btn-toggle::before {
-    content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%28255,255,255,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
-}
-
-.btn-toggle[aria-expanded="true"] {
-    color: rgba(var(--bs-emphasis-color-rgb), 0.85);
-}
-.btn-toggle[aria-expanded="true"]::before {
+.btn-toggle[aria-expanded="true"]::after {
     transform: rotate(90deg);
+}
+[data-bs-theme="dark"] .btn-toggle::after {
+    content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%28255,255,255,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
 }
 
 .btn-toggle-nav a {
     padding: 0.1875rem 0.5rem;
-    margin-top: 0.125rem;
-    margin-left: 1.25rem;
+    margin-top: 0.15rem;
 }
 .btn-toggle-nav a:hover,
 .btn-toggle-nav a:focus {
@@ -365,7 +365,7 @@ chating css
 .chat-msg.self > .cm-msg-text {
     float: right;
     margin-right: 10px;
-    background: #eca650;
+    background: var(--bs-meusket-rgb);
     color: white;
 }
 .chat-msg.self > .cm-msg-time {
@@ -395,4 +395,93 @@ chating css
         margin-left: auto;
         margin-right: 0;
     }
+}
+
+.img-profile {
+    border-radius: 50%; /* 동그랗게 만들기 */
+    border: 1px solid rgb(185, 185, 185, 0.5); /* 테두리 추가 및 회색으로 설정 */
+    width: 80px;
+    height: 80px;
+    min-width: 80px; /* 최소 너비 설정 */
+    min-height: 80px; /* 최소 높이 설정 */
+    object-fit: cover;
+}
+
+.font-sm {
+    font-size: small;
+}
+/*  
+**********************************************************
+ fonts 
+**********************************************************
+*/
+@font-face {
+    font-family: "nanumGothic";
+    src: url(/fonts/nanumGothic/NanumGothic.otf) format("opentype");
+}
+
+@font-face {
+    font-family: "nanumGothicBold";
+    font-weight: bold;
+    src: url(/fonts/nanumGothic/NanumGothicBold.otf) format("opentype");
+}
+
+@font-face {
+    font-family: "nanumSquareNeo";
+    src:
+        url(/fonts/nanumSquareNeo/webfont/eot/NanumSquareNeo-Variable.eot?#iefix)
+            format("embedded-opentype"),
+        url(/fonts/nanumSquareNeo/webfont/woff/NanumSquareNeo-Variable.woff)
+            format("woff");
+}
+
+@font-face {
+    font-family: "Lato";
+    src: url(/fonts/Lato/Lato-Regular.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "Lato-bold";
+    src: url(/fonts/Lato/Lato-Bold.ttf) format("truetype");
+}
+
+.nanumGothic {
+    font-family: "nanumGothic", sans-serif;
+}
+
+.nanumGothic-bold {
+    font-family: "nanumGothicBold", sans-serif;
+}
+
+.nanumSquareNeo {
+    font-family: "nanumSquareNeo", sans-serif;
+}
+
+.lato {
+    font-family: "Lato", sans-serif;
+}
+
+.font-copyright {
+    font-size: small;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.font-1 {
+    font-size: 12px;
+}
+.font-2 {
+    font-size: 14px;
+}
+.font-3 {
+    font-size: 16px;
+}
+.font-4 {
+    font-size: 18px;
+}
+.font-5 {
+    font-size: 20px;
+}
+.text-meusket {
+    color: var(--bs-meusket-rgb);
 }

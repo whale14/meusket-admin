@@ -33,8 +33,14 @@ const getBlacksList = async (
          from blacklist b join user u on b.u_idx=u.idx ";
     const params = [];
     if (bSearch != undefined && bSearch != "") {
-        sql += "where u." + bType + " like ?";
-        params.push(`%${bSearch}%`);
+        sql += "where u." + bType;
+        if (bType == "idx") {
+            sql += " = ?";
+            params.push(bSearch);
+        } else {
+            sql += " like ?";
+            params.push(`%${bSearch}%`);
+        }
     }
     if (unblock) {
         sql += " and isUnblock = ?";
@@ -44,8 +50,13 @@ const getBlacksList = async (
     params.push(start);
     params.push(count);
     const results = await runQuery(sql, params);
-    for (let i = 0; i < results.length; i++)
+    for (let i = 0; i < results.length; i++) {
+        if (results[i].u_id == "admin") {
+            results[i].u_id = "deleted user";
+            results[i].name = "deleted user";
+        }
         results[i] = replaceDate(results[i]);
+    }
     return results;
 };
 

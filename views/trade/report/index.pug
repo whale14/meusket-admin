@@ -7,30 +7,32 @@ block title
     | 신고 심부름리스트 #{page}p
 
 block content
-    include ../../title.pug
-    |  신고리스트
     .container-fluid
+        include ../../title.pug
+            |  신고리스트
         include search.pug
-        .table-responsive.justify-content-center.mt-2
+        .table-responsive.justify-content-center.mt-3
             table.table(data-toggle='table' data-pagination)
                 thead.table-light
                     tr
-                        th(scope='col') idx 
-                        th(scope='col') 심부름 idx
+                        th(scope='col' style='width: auto;') idx 
                         th(scope='col') 신고자
-                        th(scope='col') 요청날짜
-                        th(scope='col') 상세보기
+                        th(scope='col' style='width: 20%;') 요청날짜
+                        th(scope='col' style='width: 15%;') 상세보기
+                        th.d-none.d-md-table-cell(scope='col' style='width: 10%;') 처리상태
                 tbody 
                     each report in reports
                         tr
                             td #{report.idx}
-                            td #{report.requestIdx}
                             td #{report.id}
                             td #{report.reportDate}
                             td 
-                                a.btn.btn-dark.btn-sm(href=`/trade/report/${report.idx}`) 상세정보
-
-                            
+                                a.btn.btn-dark.btn-sm(href=`/trade/report/${report.idx}` style="width: 4.2rem;") 상세정보
+                            td.d-none.d-md-table-cell
+                                if report.status == 0
+                                    .badge.text-bg-warning 처리필요
+                                else 
+                                    .badge.text-bg-success 처리완료
                     else
                         tr
                             th(scope='row') 0
@@ -39,4 +41,4 @@ block content
                             td reports
                             td
         
-            include ../../pagination.pug
+            include ../../lib/pagination.pug

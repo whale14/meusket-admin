@@ -28,11 +28,14 @@ include ../header.pug
                                                     value=admin && admin.password ? admin.password : ''
                                                     )
                     #errorText
-                    button.btn.btn-dark.me-1(type='submit') 로그인
+                    button#signInBtn.btn.btn-dark.me-1(type='submit') 로그인
+                        #spinnerWrapper.spinner-border.spinner-border-sm.ms-1(role="status" style="display: none;")
+                        span.visually-hidden Loading...
                     a.btn.btn-dark(type='submit' href='/auth/sign_up') 회원가입
 script.
     const signInForm = document.getElementById('signInForm');
     const errorText = document.getElementById('errorText');
+    const signInBtn = document.getElementById('signInBtn');
 
     signInForm.addEventListener('submit', function(event) {
         event.preventDefault();
@@ -42,12 +45,17 @@ script.
         const xhr = new XMLHttpRequest();
         xhr.open('POST', `/auth/sign_in`);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
+        const spinnerWrapper = document.getElementById('spinnerWrapper');               
+        spinnerWrapper.style.display = '';
+        signInBtn.disabled = true;
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE) {
+                
                 if (xhr.status === 200) {
                     window.location.href = '/';
                 } else {
+                    spinnerWrapper.style.display = 'none';
+                    signInBtn.disabled = false;
                     const response = JSON.parse(xhr.responseText);
                     errorText.innerHTML = '<div class="text-danger mt-1 mb-1">'+ response.error +'</div>';
                 }
