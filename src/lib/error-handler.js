@@ -18,6 +18,8 @@ const errorHandler = (err, req, res, next) => {
             );
         case "SENDING_FAILED":
             return res.send(getAlertScript("알림을 전송하는데 실패했습니다!"));
+        case "FILE SIZE ERROR":
+            return res.send(getAlertScript("파일 사이즈가 너무 큽니다!"));
         default:
             if (process.env.MODE !== "prod")
                 console.error("\x1b[31m%s\x1b[0m", err);

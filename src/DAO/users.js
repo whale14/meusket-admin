@@ -25,7 +25,6 @@ const getUserByIdx = async (idx) => {
         results[0].id = "deleted user";
         results[0].name = "deleted user";
     }
-    console.log(results[0]);
     return results[0];
 };
 

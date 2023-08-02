@@ -473,8 +473,7 @@ const getRewardsSumofRequestByTimeRangeAndStatus = async (
 const getAvgRewardByCategory = async (status) => {
     let sql =
         "SELECT wc.categoryName, AVG(r.reward) as avg_reward \
-    FROM request r JOIN work_category wc ON r.workCategoryIdx = wc.idx\
-    GROUP BY r.workCategoryIdx, wc.categoryName";
+    from work_category wc LEFT JOIN request r ON r.workCategoryIdx = wc.idx where wc.idx != wc.rootIndex ";
     const params = [];
     const conditions = [];
     if (status && status.length > 0) {
@@ -483,13 +482,27 @@ const getAvgRewardByCategory = async (status) => {
         params.push(...status);
     }
     if (conditions.length > 0) {
-        sql += ` WHERE ${conditions.join(" AND ")}`;
+        sql += ` ${conditions.join(" AND ")}`;
     }
+    sql += " GROUP BY wc.idx, wc.categoryName ORDER BY wc.idx";
     const results = await runQuery(sql, params);
     for (i in results) {
         results[i].avg_reward = parseInt(results[i].avg_reward * 10) / 10;
     }
     return results;
+};
+
+const updateRequestInfo = async (status, idx) => {
+    const sql = "update request set status = ? where idx = ?";
+    const params = [];
+    params.push(status);
+    params.push(idx);
+    try {
+        const results = await runQuery(sql, params);
+        return 0;
+    } catch (err) {
+        return err;
+    }
 };
 
 module.exports = {
@@ -519,4 +532,5 @@ module.exports = {
     getTotalErrandRewardByStatus,
     getRewardsSumofRequestByTimeRangeAndStatus,
     getAvgRewardByCategory,
+    updateRequestInfo,
 };

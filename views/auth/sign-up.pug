@@ -21,6 +21,9 @@ block content
                     label.col-form-label(for="name") 이름
                     input#name.form-control(type='text' name='name' aria-label='name')
                 .mb-3
+                    label.col-form-label(for="phone") 전화번호
+                    input#phone.form-control(type='text' name='phone' aria-label='phone')
+                .mb-3
                     label.col-form-label(for="password") 비밀번호(8자 이상, 대소문자, 특수문자, 숫자 중 세가지 이상 조합)
                     input#password.form-control(type='password' name='password' aria-label='password',)
                     if pw_error 

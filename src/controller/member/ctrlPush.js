@@ -1,11 +1,23 @@
 const { UserDAO, PushDAO, AdminDAO } = require("../../DAO");
 const { sendFcmPushNotification } = require("../../lib/fcm-push");
+const {
+    firebaseUpload,
+    firebaseGetUrl,
+} = require("../../lib/firebase-storage");
 
 const sendPushNotification = async (req, res, next) => {
     try {
+        if (req.file && req.file.size > 300 * 1024)
+            throw new Error("FILE SIZE ERROR");
         //받을 내용
         const { admin } = req.session;
         const { pushTitle, pushContent, type, subject } = req.body;
+        const pushImage = req.file ? req.file : undefined;
+        pushImage.url = undefined;
+        if (pushImage) {
+            await firebaseUpload(pushImage.path);
+            pushImage.url = await firebaseGetUrl(pushImage.path);
+        }
         //받을 대상
         //userType -> isWorkerRegist에 등록되었냐 안되었냐로 구분.
         const { userType, charityRange } = req.body;
@@ -19,7 +31,6 @@ const sendPushNotification = async (req, res, next) => {
             userTypes,
             charityRange
         );
-        console.log(tokens);
         if (tokens.length < 1) {
             throw new Error("NO_TARGET");
         }
@@ -31,6 +42,7 @@ const sendPushNotification = async (req, res, next) => {
                     (await sendFcmPushNotification(
                         pushTitle,
                         pushContent,
+                        pushImage.url,
                         tokens
                     )) != 0
                 )
@@ -41,6 +53,7 @@ const sendPushNotification = async (req, res, next) => {
         const record = await PushDAO.insertPush(
             pushTitle,
             pushContent,
+            pushImage.path,
             adminIdx
         );
         if (!record) throw new Error("BAD_REQUEST");
@@ -90,8 +103,19 @@ const sendPushNotificationForm = async (req, res, next) => {
     }
 };
 
+const showPush = async (req, res, next) => {
+    try {
+        const pushIdx = req.params.pushIdx;
+        const { admin } = req.session;
+        const push = await PushDAO.getPushByIdx(pushIdx);
+    } catch (err) {
+        return next(err);
+    }
+};
+
 module.exports = {
     lastestPushes,
     sendPushNotification,
     sendPushNotificationForm,
+    showPush,
 };

@@ -34,12 +34,12 @@ const getPushesCount = async () => {
     return results[0]["count(*)"];
 };
 
-const insertPush = async (title, content, adminIdx) => {
+const insertPush = async (title, content, path, adminIdx) => {
     // Format the sendAt date using the replaceDate function if needed
 
     const sql =
-        "insert INTO app_push (title, content, adminIdx) VALUES (?, ?, ?)";
-    const params = [title, content, adminIdx];
+        "insert INTO app_push (title, content, imagePath, adminIdx) VALUES (?, ?, ?, ?)";
+    const params = [title, content, path, adminIdx];
 
     try {
         const result = await runQuery(sql, params);
@@ -51,4 +51,10 @@ const insertPush = async (title, content, adminIdx) => {
     }
 };
 
-module.exports = { getPushes, getPushesCount, insertPush };
+const getPushByIdx = async (idx) => {
+    const sql = "select * from app_push where idx = ?";
+    const results = await runQuery(sql, [idx]);
+    return results;
+};
+
+module.exports = { getPushes, getPushesCount, insertPush, getPushByIdx };

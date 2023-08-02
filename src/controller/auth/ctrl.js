@@ -38,6 +38,7 @@ const signIn = async (req, res, next) => {
             name: admin.name,
             authority: authority,
             authorityName: admin.authorName,
+            phone: admin.phone,
         };
         return res.sendStatus(200);
     } catch (err) {
@@ -81,7 +82,7 @@ const signUpForm = async (req, res, next) => {
 
 const signUp = async (req, res, next) => {
     try {
-        const { admin_id, password, name } = req.body;
+        const { admin_id, password, name, phone } = req.body;
         if (!admin_id || admin_id.length < 5 || admin_id.length > 20) {
             return res.render("auth/sign-up.pug", {
                 id_error: "아이디가 올바르지 않습니다.",

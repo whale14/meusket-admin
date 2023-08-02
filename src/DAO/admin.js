@@ -12,10 +12,11 @@ const getAdminById = async (id) => {
     return results[0];
 };
 
-const createAdminAccount = async (id, name, password) => {
+const createAdminAccount = async (id, name, password, phone) => {
     try {
-        const sql = "insert into admin (id, name, password) values (?, ?, ?)";
-        await runQuery(sql, [id, name, password]);
+        const sql =
+            "insert into admin (id, name, phone, password) values (?, ?, ?, ?)";
+        await runQuery(sql, [id, name, phone, password]);
         console.log("Admin Account Created!");
         return 1;
     } catch (err) {

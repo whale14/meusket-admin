@@ -142,8 +142,20 @@ const showErrand = async (req, res, next) => {
     }
 };
 
+const editRequest = async (req, res, next) => {
+    try {
+        const { idx, status } = req.body;
+        console.log(req.body);
+        await ErrandDAO.updateRequestInfo(status, idx);
+        return res.status(200).json({ updateStatus: status });
+    } catch (err) {
+        return res.status(400).json({ error: "업데이트 실패!" });
+    }
+};
+
 module.exports = {
     latestErrand,
     errandsList,
     showErrand,
+    editRequest,
 };

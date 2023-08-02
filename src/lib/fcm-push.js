@@ -6,6 +6,21 @@ class fcmMessage {
     constructor() {
         this.notification = { title: "", body: "" };
         this.tokens = [];
+        this.android = {
+            notification: {
+                imageUrl: "",
+            },
+        };
+        this.apns = {
+            payload: {
+                aps: {
+                    "mutable-content": 1,
+                },
+            },
+            fcm_options: {
+                image: "",
+            },
+        };
     }
     setNotification = (title, body) => {
         this.notification.title = title;
@@ -14,7 +29,12 @@ class fcmMessage {
     };
     setTokens = (tokens) => {
         this.tokens = tokens;
-        return tokens;
+        return this;
+    };
+    setPushImage = (imageUrl) => {
+        this.apns.fcm_options.image = imageUrl;
+        this.android.notification.imageUrl = imageUrl;
+        return this;
     };
     getconfig() {
         return {
@@ -41,14 +61,19 @@ const sendMessage = async (fcm) => {
     }
 };
 
-const sendFcmPushNotification = async (title, content, userFcmTokens) => {
+const sendFcmPushNotification = async (
+    title,
+    content,
+    image,
+    userFcmTokens
+) => {
     if (!admin.apps.length) {
         admin.initializeApp({
             credential: admin.credential.cert(serviceAccount),
         });
     }
     const fcm = new fcmMessage();
-    fcm.setNotification(title, content);
+    fcm.setNotification(title, content).setPushImage(image);
     const length = userFcmTokens.length;
     try {
         for (let i = 0; i < length; i += 500) {
