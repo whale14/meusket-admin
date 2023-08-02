@@ -39,11 +39,7 @@
                     .border-top.my-2
                     .my-1
                         select#writtenPush.form-select(name='writtenPush', aria-label='writtenPush')
-<<<<<<< HEAD
-                            option(selected) 지정된 문구 보내기
-=======
                             option#defaultOption(selected) 지정된 문구 보내기
->>>>>>> origin/fcmImage
                             option(value="test") 테스트
                     .my-1
                         label.form-label(for='pushTitle') 알림 제목
@@ -51,16 +47,11 @@
                     .my-1
                         label.form-label(for='pushContent') 알림 내용
                         textarea#pushContent.form-control(name='pushContent', type='text', aria-label='pushContent', value='', placeholder='내용을 입력하세요')
-<<<<<<< HEAD
-                .modal-footer
-                    button.btn.btn-dark(type='submit') 알림 보내기
-=======
                     .my-1
                         label.form-label(for='pushImage') 알림 이미지(선택 사항, 300KB 미만)
                         input#pushImage.form-control(type='file' accept='image/*')
                 .modal-footer
                     button#sendPushBtn.btn.btn-dark(type='submit') 알림 보내기
->>>>>>> origin/fcmImage
                     button#closeBtn.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
 script.
     function toggleSubjectForm(element) {
@@ -81,11 +72,6 @@ script.
     })
     document.addEventListener('DOMContentLoaded', () => {
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> origin/fcmImage
         const pushForm = document.getElementById('pushForm');
         const subjectUsers = document.getElementById('pushSubjectUsers');
         const closeBtn = document.getElementById('closeBtn');
@@ -104,13 +90,9 @@ script.
                     <td>${push.title}</td>
                     <td>${push.sendAt}</td>
                     <td>${push.admin_id}</td>
-<<<<<<< HEAD
-                    <td></td>
-=======
                     <td>
                         <a class="btn btn-dark btn-sm" href="/member/push/${push.idx}">바로가기</a>
                     </td>
->>>>>>> origin/fcmImage
                 `;
 
                 pushTableBody.appendChild(newRow);
@@ -128,11 +110,8 @@ script.
             // 알림 제목과 알림 내용 지우기
             document.getElementById("pushTitle").value = "";
             document.getElementById("pushContent").value = "";
-<<<<<<< HEAD
-=======
             document.getElementById("pushImage").value = "";
             document.getElementById("defaultOption").selected = true;
->>>>>>> origin/fcmImage
         }
         closeBtn.addEventListener('click', function(event){
             updatePushForm();
@@ -140,15 +119,10 @@ script.
         pushForm.addEventListener('submit', function(event) {
             event.preventDefault();
             const xhr = new XMLHttpRequest();
-<<<<<<< HEAD
-            const formData = new FormData(pushForm);
-            console.log("submit", pushForm, formData);
-=======
             const pushImageInput = document.getElementById("pushImage");
             const formData = new FormData(pushForm);
             formData.append("pushImage", pushImageInput.files[0])
 
->>>>>>> origin/fcmImage
             xhr.open('POST', '/member/push');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
