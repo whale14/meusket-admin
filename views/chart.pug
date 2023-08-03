@@ -1,9 +1,0 @@
-script.
-    function createChart(chartId, chartObject) {
-        var chartCtx = document.getElementById(chartId).getContext('2d');
-        var chart = new Chart(chartCtx, {
-            type: chartObject.type,
-            data: chartObject.data,
-            options: chartObject.options
-        });
-    }

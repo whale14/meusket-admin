@@ -10,7 +10,7 @@ block content
     .container-fluid
         include ../../title.pug
             |  알림 발송
-            button.btn.btn-dark.btn-sm.me-auto(type='button' data-bs-toggle="modal" data-bs-target="#newPushModal") 새로운 알림 보내기
+            button#sendBtn.btn.btn-dark.btn-sm.me-auto(type='button' data-bs-toggle="modal" data-bs-target="#newPushModal") 새로운 알림 보내기
         include ./pushForm.pug
         .table-responsive.justify-content-center.mt-2
             table#pushTable.table(data-toggle='table' data-pagination)

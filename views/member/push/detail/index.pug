@@ -1,0 +1,94 @@
+//- Parameters
+//- admin, push
+
+extends ../../../layout.pug
+
+block title 
+    | 심부름 정보
+
+block content
+    include ../pushForm.pug
+    .container-fluid.w-80
+        include ../../../title.pug
+            a.text-dark(href='#' onclick='history.back(); return false;') 알림 전송
+            i.bi.bi-chevron-double-right 
+            |  #{push.idx} 
+        .container-fluid.w-90
+            .container.px-5.mb-4
+                .row.gx-5
+                    .col-lg-9
+                    // Post content
+                    article
+                        // Post header
+                        .d-flex.align-items-center
+                            .flex-shrink-0
+                                if push.imagePath
+                                    img.img-profile.me-2(src=`/uploads/${push.imagePath}`, alt="푸쉬 사진", width="80", height="80")
+                                else
+                                    img.img-profile.me-2(src="/images/defaultProfile.svg", alt="기본 이미지" width="80", height="80")
+                            .d-flex.flex-column.ms-2
+                                h2.fw-bolder.mb-1 #{push.title}
+                                //- button#editModalBtn.btn.btn-link.text-decoration-underline.ms-auto(type='button' data-bs-toggle='modal' data-bs-target='#requestModal') 심부름 정보 수정
+                                .text-muted.fst-italic.mb-2 #{push.sendAt}
+                        // Post content
+                        p.fs-5.mb-4
+                    .container-xl
+                            .card.mb-1
+                                .card-header.bg-transparent 
+                                    table.table.table-borderless.mb-0.mt-0 
+                                        tr 
+                                            th(scope='col') 발송관리자
+                                            td.text-end #{push.admin_id}
+                                        tr 
+                                            th(scope='col') 관리자 이름
+                                            td.text-end #{push.admin_name}
+                                        tr 
+                                            th(scope='col') 관리자 번호
+                                            td.text-end #{push.admin_phone}
+                                .card-body 
+                                    table.table.table-borderless.mb-0.mt-0 
+                                        //- tr 
+                                        //-     th(scope='col') 위치
+                                        //-         td.text-end #{errand.address}
+                                        tr 
+                                            th(scope='col') 제목
+                                                td.text-end #{push.title}
+                                        tr 
+                                            th(scope='col') 발송날짜
+                                                td.text-end #{push.sendAt}
+                                        tr 
+                                            th(scope='col') 내용
+                                                td.text-end #{push.content}
+        .d-flex.justify-content-center.mt-2
+            button#resendBtn.btn.btn-dark.me-2(type='button' data-bs-toggle='modal' data-bs-target='#newPushModal')  재발송
+    script.
+        const resendBtn = document.getElementById('resendBtn');
+        resendBtn.addEventListener('click', () => {
+            const defaultOption = document.getElementById('defaultOption');
+            var pushTitle = '#{push.title}';
+            var pushContent = '#{push.content}';
+            var pushImage = '#{push.imagePath}'
+            defaultOption.innerText = "다른 문구 선택하기";
+
+            document.getElementById('pushTitle').value = pushTitle;
+            document.getElementById('pushContent').value = pushContent;
+            document.getElementById('replaceBtn').style.display = 'block';
+            const previewImage = document.getElementById("previewImage");
+            const pushImageInput = document.getElementById("pushImage");
+            if(pushImage){
+                pushImageInput.style.display = 'none';
+                previewImage.innerHTML = "";
+                const preImg = document.createElement('img');
+                preImg.classList.add('me-2');
+                preImg.setAttribute('src', `/uploads/${pushImage}`);
+                preImg.setAttribute('alt', '푸쉬 사진');
+                preImg.setAttribute('height', '80');
+                preImg.setAttribute('id', 'previewImg'); 
+                previewImage.appendChild(preImg);
+            }
+        });
+        document.getElementById('replaceBtn').addEventListener('click', () => {
+            document.getElementById("previewImage").innerHTML = "";
+            document.getElementById('replaceBtn').style.display = 'none';
+            const pushImageInput = document.getElementById("pushImage").style.display = 'block';
+        });

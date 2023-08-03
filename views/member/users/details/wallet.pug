@@ -1,0 +1,119 @@
+//- Parameters
+//-- admin, user, errands
+
+.offcanvas.offcanvas-bottom#offcanvasWallet(data-bs-scroll='true' tabindex='-1' aria-labelledby='offcanvasWalletLabel', style='max-height: 100%;')
+    .container-md    
+        .offcanvas-header
+            h4#offcanvasWalletLabel.offcanvas-title 정산 내역
+            button.btn-close.text-reset(type='button' data-bs-dismiss='offcanvas' aria-label='Close')
+        .offcanvas-body
+            .d-flex.flex-fill
+                h5.flex-fill.row.row-cols-3#monthPagination
+                    .col.d-flex
+                        button#prevBtn.btn.btn-white.border-0.rounded-circle.p-0.me-auto(disabled)
+                            i.bi.bi-chevron-left
+                    .col.d-flex.justify-content-center
+                        | 8월 내역
+                    .col.d-flex
+                        button#nextBtn.btn.btn-white.border-0.rounded-circle.p-0.ms-auto(disabled)
+                            i.bi.bi-chevron-right
+
+            .table-responsive.text-center
+                table.table
+                    thead
+                        tr 
+                            th(scope='col') 정산일자
+                            th(scope='col') 적립/사용 내용
+                            th(scope='col') 적립/사용 내역
+                    tbody.table-group-divider#settleTableBody
+                            tr
+                                td there
+                                td is no
+                                td settle
+
+script.
+    function loadWalletData(month) {
+        const xhr = new XMLHttpRequest();
+        const userIdx = '#{user.idx}';
+        if(month != undefined){
+            const url = `/member/user/wallet/${userIdx}?month=${month}`
+            xhr.open('GET', url);
+        }
+        else{
+            xhr.open('GET', '/member/user/wallet/' + userIdx);
+        }
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    // Handle the successful response
+                    const response = JSON.parse(xhr.responseText);
+                    const settle = response.settle;
+                    const page = response.page;
+                    updatePagination(page);
+                    if(settle.length > 0)
+                        updateSettleTable(settle);
+                } else {
+                    // Handle the error response
+                    // For example, display an error message
+                    console.error(xhr.responseText);
+                }
+            }
+        };
+        xhr.send();
+    }
+    function updateSettleTable(settle){
+        const settleTable = document.getElementById('settleTableBody');
+        settleTable.innerHTML = '';
+        for (let i = 0; i < settle.length; i++) {
+            const settleItem = settle[i];
+            const tr = document.createElement('tr');
+            const tdSettleDate = document.createElement('td');
+            const tdSettleDetail = document.createElement('td');
+            const tdSettleAmount = document.createElement('td');
+            tdSettleDate.innerHTML = settleItem.settleAt;
+            tdSettleDetail.innerHTML = settleItem.content;
+            tdSettleAmount.innerHTML = settleItem.money;
+            tr.appendChild(tdSettleDate);
+            tr.appendChild(tdSettleDetail);
+            tr.appendChild(tdSettleAmount);
+            settleTable.appendChild(tr);
+        }
+    }
+    function updatePagination(page){
+        const monthPagination = document.getElementById('monthPagination');
+        const [col1, currentMonth, col3] = monthPagination.children;
+        const [prevBtn] = col1.children;
+        //- const [currentMonth] = col2.children;
+        const [nextBtn] = col3.children;
+        const { hasPrev, hasNext, month } = page;
+        const [year, monthNumber] = month.split("-");
+        currentMonth.textContent = `${monthNumber}월 내역`;
+        prevBtn.disabled = !hasPrev;
+        nextBtn.disabled = !hasNext;
+        
+        const prevMonth = String(Number(monthNumber) - 1).padStart(2, "0");
+        const nextMonth = String(Number(monthNumber) + 1).padStart(2, "0");
+        prevBtn.setAttribute("data-month", `${year}-${prevMonth}`);
+        nextBtn.setAttribute("data-month", `${year}-${nextMonth}`);
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const walletBtn = document.getElementById('walletBtn');
+
+        walletBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            loadWalletData();
+        });
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        prevBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            const targetMonth = this.getAttribute('data-month');
+            loadWalletData(targetMonth);
+        });
+        nextBtn.addEventListener('click', function(event) {
+            event.preventDefault();
+            const targetMonth = this.getAttribute('data-month');
+            loadWalletData(targetMonth);
+        });
+    });

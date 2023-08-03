@@ -12,6 +12,7 @@ block content
     include ./block.pug
     include ./remove.pug
     include ./revoke.pug
+    include ./wallet.pug
     include ../../../lib/adminRequest.pug
     include ./edit.pug
     if user.isWorkerRegist == 1
@@ -58,7 +59,7 @@ block content
                         tr
                             th
                             th(scope='col') money
-                            th(scope='col') preMoney
+                            th(scope='col') 정산 내역
                             if user.isWorkerRegist == 1
                                 th(scope='col') 입금은행
                                 th(scope='col') 계좌번호
@@ -69,8 +70,9 @@ block content
                         tr 
                             if wallet
                                 td
-                                td #{wallet.money}
-                                td #{wallet.preMoney}
+                                td #{wallet}
+                                td 
+                                    button#walletBtn.btn.btn-dark.btn-sm(type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasWallet' aria-labelledby="offcanvasWalletLabel") 정산내역
                             else 
                                 td
                                 td 0

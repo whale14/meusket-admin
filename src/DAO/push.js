@@ -51,10 +51,18 @@ const insertPush = async (title, content, path, adminIdx) => {
     }
 };
 
-const getPushByIdx = async (idx) => {
-    const sql = "select * from app_push where idx = ?";
+const getPushAndAdminByIdx = async (idx) => {
+    const sql =
+        "select push.*, admin.id as admin_id, admin.name as admin_name, \
+        admin.phone as admin_phone from app_push push \
+        join admin on push.adminIdx = admin.idx where push.idx = ?";
     const results = await runQuery(sql, [idx]);
-    return results;
+    return replaceDate(results[0]);
 };
 
-module.exports = { getPushes, getPushesCount, insertPush, getPushByIdx };
+module.exports = {
+    getPushes,
+    getPushesCount,
+    insertPush,
+    getPushAndAdminByIdx,
+};

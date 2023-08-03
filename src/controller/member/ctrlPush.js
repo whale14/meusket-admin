@@ -13,8 +13,8 @@ const sendPushNotification = async (req, res, next) => {
         const { admin } = req.session;
         const { pushTitle, pushContent, type, subject } = req.body;
         const pushImage = req.file ? req.file : undefined;
-        pushImage.url = undefined;
         if (pushImage) {
+            pushImage.url = "";
             await firebaseUpload(pushImage.path);
             pushImage.url = await firebaseGetUrl(pushImage.path);
         }
@@ -42,7 +42,7 @@ const sendPushNotification = async (req, res, next) => {
                     (await sendFcmPushNotification(
                         pushTitle,
                         pushContent,
-                        pushImage.url,
+                        pushImage ? pushImage.url : undefined,
                         tokens
                     )) != 0
                 )
@@ -53,7 +53,7 @@ const sendPushNotification = async (req, res, next) => {
         const record = await PushDAO.insertPush(
             pushTitle,
             pushContent,
-            pushImage.path,
+            pushImage ? pushImage.filename : undefined,
             adminIdx
         );
         if (!record) throw new Error("BAD_REQUEST");
@@ -107,7 +107,11 @@ const showPush = async (req, res, next) => {
     try {
         const pushIdx = req.params.pushIdx;
         const { admin } = req.session;
-        const push = await PushDAO.getPushByIdx(pushIdx);
+        const push = await PushDAO.getPushAndAdminByIdx(pushIdx);
+        return res.render("member/push/detail/index.pug", {
+            admin,
+            push,
+        });
     } catch (err) {
         return next(err);
     }

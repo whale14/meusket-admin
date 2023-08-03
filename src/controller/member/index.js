@@ -17,6 +17,7 @@ router.post("/user/block", authRequired, ctrlU.blockUser);
 router.post("/user/remove", authRequired, ctrlU.removeUser);
 router.post("/user/revoke", authRequired, ctrlU.revokeHelper);
 router.post("/user/edit", authRequired, upload.none(), ctrlU.editUser);
+router.get("/user/wallet/:userIdx(\\d+)", authRequired, ctrlU.showWallet);
 
 router.get("/apply", authRequired, ctrlH.latestApply);
 router.get("/applies", authRequired, ctrlH.applyList);

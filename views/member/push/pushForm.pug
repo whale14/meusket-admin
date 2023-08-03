@@ -49,11 +49,34 @@
                         textarea#pushContent.form-control(name='pushContent', type='text', aria-label='pushContent', value='', placeholder='내용을 입력하세요')
                     .my-1
                         label.form-label(for='pushImage') 알림 이미지(선택 사항, 300KB 미만)
+                        #previewImage(display='none')
+                        button#replaceBtn.btn.btn-dark.mt-2(type='button' display='none') 다른 사진
                         input#pushImage.form-control(type='file' accept='image/*')
                 .modal-footer
                     button#sendPushBtn.btn.btn-dark(type='submit') 알림 보내기
                     button#closeBtn.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
 script.
+    function getImageData(image) {
+        const canvas = document.createElement('canvas');
+        canvas.width = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+
+        const context = canvas.getContext('2d');
+        context.drawImage(image, 0, 0);
+
+        return dataURItoBlob(canvas.toDataURL('image/png'));
+    }
+
+    function dataURItoBlob(dataURI) {
+        const byteString = atob(dataURI.split(',')[1]);
+        const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], {type:mimeString});
+    }
     function toggleSubjectForm(element) {
         const pushSubjectUsers = document.getElementById('pushSubjectUsers');
         if (element.value === 'all') {
@@ -70,11 +93,25 @@ script.
             document.getElementById('pushContent').value = "테스트입니다";
         }
     })
-    document.addEventListener('DOMContentLoaded', () => {
 
+    document.addEventListener('DOMContentLoaded', () => {
+        let currentAction = "";
+        const resendBtn = document.getElementById('resendBtn');
+        if(resendBtn){
+            resendBtn.addEventListener('click', () => {
+                currentAction = "resend";
+            });
+        }
+        const sendBtn = document.getElementById('sendBtn');
+        if(sendBtn){
+            sendBtn.addEventListener('click', () => {
+                currentAction = 'send';
+            });
+        }
         const pushForm = document.getElementById('pushForm');
         const subjectUsers = document.getElementById('pushSubjectUsers');
         const closeBtn = document.getElementById('closeBtn');
+        
 
         function updatePushTableBody(pushes) {
             // tbody#pushTableBody의 내용을 비우기
@@ -84,16 +121,13 @@ script.
             // 주어진 데이터를 사용하여 새로운 행 추가
             for (const push of pushes) {
                 const newRow = document.createElement('tr');
-
-                newRow.innerHTML = `
-                    <th scope="row">${push.pidx}</th>
+                newRow.innerHTML = `<th scope="row">${push.pidx}</th>
                     <td>${push.title}</td>
                     <td>${push.sendAt}</td>
                     <td>${push.admin_id}</td>
                     <td>
                         <a class="btn btn-dark btn-sm" href="/member/push/${push.idx}">바로가기</a>
-                    </td>
-                `;
+                    </td>`;
 
                 pushTableBody.appendChild(newRow);
             }
@@ -120,9 +154,16 @@ script.
             event.preventDefault();
             const xhr = new XMLHttpRequest();
             const pushImageInput = document.getElementById("pushImage");
+            const previewImage = document.getElementById("previewImg");
+            //- console.log(pushImageInput.files[0]);
             const formData = new FormData(pushForm);
-            formData.append("pushImage", pushImageInput.files[0])
-
+            if(pushImageInput && pushImageInput.files.length > 0){
+                formData.append("pushImage", pushImageInput.files[0]);
+            }
+            if (previewImage) {
+                const imageData = getImageData(previewImage);
+                formData.append('pushImage', imageData, 'preview.png');
+            }
             xhr.open('POST', '/member/push');
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
@@ -134,8 +175,10 @@ script.
 
                         const response = JSON.parse(xhr.responseText);
                         const pushes = response.pushes;
-                        updatePushTableBody(pushes);
-                        updatePushForm();
+                        if(currentAction != "resend"){
+                            updatePushTableBody(pushes);
+                            updatePushForm();
+                        }
                     } else {
                         // Handle the error response
                         // For example, display an error message

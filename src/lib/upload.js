@@ -3,6 +3,7 @@ const fs = require("fs");
 const randomstring = require("randomstring");
 const moment = require("moment");
 const path = require("path");
+const util = require("util");
 
 try {
     fs.readdirSync("uploads"); // 폴더 확인
@@ -18,7 +19,7 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         const uniqueSuffix =
             moment().format("YY_MM_DD_HH:mm") + "-" + randomstring.generate(5);
-        cb(null, uniqueSuffix + "-" + path.extname(file.originalname)); // 파일이름 + 날짜 + 확장자 이름으로 저장
+        cb(null, uniqueSuffix + path.extname(file.originalname)); // 파일이름 + 날짜 + 확장자 이름으로 저장
     },
 });
 

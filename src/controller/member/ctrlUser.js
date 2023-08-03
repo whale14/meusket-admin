@@ -1,6 +1,5 @@
-const { UserDAO, ErrandDAO, HelpDAO, AdminDAO } = require("../../DAO");
+const { UserDAO, ErrandDAO, HelpDAO, WalletDAO } = require("../../DAO");
 const moment = require("moment");
-const { verifyCode } = require("../../lib/encryption");
 
 const usersList = async (req, res, next) => {
     try {
@@ -90,7 +89,7 @@ const showUser = async (req, res, next) => {
             : undefined;
 
         const errands = await ErrandDAO.getErrandsByUserIdx(usersIdx);
-        const wallet = await UserDAO.getWalletbyIdx(usersIdx);
+        const wallet = await WalletDAO.getSumOfMoneyByUserIdx(usersIdx);
         let helper = null;
         if (user.isWorkerRegist === 1) {
             const helperIdx = user.idx;
@@ -187,10 +186,24 @@ const editUser = async (req, res, next) => {
     }
 };
 
+const showWallet = async (req, res, next) => {
+    const userIdx = req.params.userIdx;
+    console.log(req.query);
+    const month = req.query.month
+        ? req.query.month
+        : moment().format("YYYY-MM");
+    const wallet = await WalletDAO.getWalletByUserIdx(userIdx, month);
+    const page = await WalletDAO.getWalletHasNextPrevPage(userIdx, month);
+    page.month = month;
+    console.log(page);
+    return res.status(200).json({ settle: wallet, page });
+};
+
 module.exports = {
     usersList,
     latestUser,
     showUser,
+    showWallet,
     blockUser,
     removeUser,
     revokeHelper,

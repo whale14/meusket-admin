@@ -299,12 +299,6 @@ const deleteUser = async (idx, id) => {
     }
 };
 
-const getWalletbyIdx = async (idx) => {
-    const sql = "select * from wallet where userIdx = ?";
-    const result = await runQuery(sql, [idx]);
-    return result[0];
-};
-
 const getCumulativeUserCount = async () => {
     const sql =
         "SELECT DATE(createAt) AS date, COUNT(*) AS cum_users \
@@ -354,7 +348,6 @@ module.exports = {
     getUsersCntByDate,
     deleteUser,
     getUserIdNameByIdx,
-    getWalletbyIdx,
     getCumulativeUserCount,
     updateUserInfo,
     getUsersFcmTokensByType,
