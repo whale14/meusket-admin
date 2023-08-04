@@ -6,6 +6,7 @@ const auth = require("./auth");
 const member = require("./member");
 const trade = require("./trade");
 const stat = require("./stat");
+const upload = require("../lib/upload");
 
 const router = Router();
 
@@ -15,11 +16,13 @@ router.use("/trade", trade);
 router.use("/stat", stat);
 
 router.get("/", ctrl.indexPage);
-router.get("/edit", authRequired, ctrl.editProfileForm);
-router.post("/edit", authRequired, ctrl.editProfile);
+router
+    .get("/edit", authRequired, ctrl.editProfileForm)
+    .post("/edit", authRequired, upload.none(), ctrl.editProfile);
 
-router.get("/manage", authRequired, ctrl.latestAdmin);
+router
+    .get("/manage", authRequired, ctrl.latestAdmin)
+    .post("/manage", authRequired, ctrl.manageAdmin);
 router.get("/manages", authRequired, ctrl.manageAdminForm);
-router.post("/manage", authRequired, ctrl.manageAdmin);
 
 module.exports = router;

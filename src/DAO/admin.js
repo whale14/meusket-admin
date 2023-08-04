@@ -94,6 +94,17 @@ const getAdminIdxById = async (id) => {
     return results[0]["idx"];
 };
 
+const updateAdmin = async (id, name, phone, password, cur_id) => {
+    const sql =
+        "update admin set id = ?, name = ?, phone = ?, password = ? where id = ?";
+    const results = await runQuery(sql, [id, name, phone, password, cur_id]);
+    if (results.affectedRows > 0) {
+        return 1; // 성공적으로 업데이트되었을 경우
+    } else {
+        return 0; // 업데이트 실패
+    }
+};
+
 module.exports = {
     getAdminAuthorityByIdx,
     createAdminAccount,
@@ -102,4 +113,5 @@ module.exports = {
     getAdminCount,
     updateAdminAuthority,
     getAdminIdxById,
+    updateAdmin,
 };

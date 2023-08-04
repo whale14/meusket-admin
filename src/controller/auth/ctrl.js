@@ -1,5 +1,9 @@
 const { AdminDAO } = require("../../DAO");
-const { generateCode, verifyCode } = require("../../lib/encryption");
+const {
+    generateCode,
+    verifyCode,
+    isValidPassword,
+} = require("../../lib/encryption");
 
 const signIn = async (req, res, next) => {
     try {
@@ -96,21 +100,8 @@ const signUp = async (req, res, next) => {
                 admin: req.body,
             });
         }
-        const hasUpperCase = /[A-Z]/.test(password);
-        const hasLowerCase = /[a-z]/.test(password);
-        const hasNumber = /[0-9]/.test(password);
-        const hasSpecialChar = /[!@#$%^&*()\-_=+{};:,<.>]/.test(password);
 
-        const conditions = [
-            hasUpperCase,
-            hasLowerCase,
-            hasNumber,
-            hasSpecialChar,
-        ];
-
-        const fulfilledConditions = conditions.filter((condition) => condition);
-
-        if (!password || password.length < 8 || fulfilledConditions < 3) {
+        if (!password || password.length < 8 || isValidPassword(password) < 0) {
             return res.render("auth/sign-up.pug", {
                 pw_error: "비밀번호가 올바르지 않습니다.",
                 admin: req.body,

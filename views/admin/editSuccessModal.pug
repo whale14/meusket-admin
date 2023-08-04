@@ -1,0 +1,15 @@
+//- Parameters
+//-- admin, message, redirectUrl
+
+#editSuccessModal.modal.fade(tabindex='-1' aria-labelledby='editSuccessModalLabel' aria-hidden='true' data-bs-backdrop="static")
+    .modal-dialog
+        .modal-content
+            .modal-header
+                h1#editSuccessModalLabel.modal-title.fs-5 정보 변경 완료
+                a.btn-close(type='button' href='/')
+            .modal-body
+                | 정보 변경을 완료했습니다!
+            .modal-footer
+                a.btn.btn-light(type='button' href='/') 확인
+
+script.

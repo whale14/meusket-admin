@@ -1,6 +1,11 @@
 const { AdminDAO, UserDAO, HelpDAO, ErrandDAO } = require("../DAO");
 const moment = require("moment");
 const { ChartObject, ChartDatasets } = require("../lib/chart-config");
+const {
+    verifyCode,
+    isValidPassword,
+    generateCode,
+} = require("../lib/encryption");
 
 const indexPage = async (req, res, next) => {
     try {
@@ -98,37 +103,40 @@ const editProfileForm = async (req, res, next) => {
 
 const editProfile = async (req, res, next) => {
     try {
+        const { admin_id, name, phone, new_password, cur_password } = req.body;
         const { admin } = req.session;
-        const { admin_id, name, new_password, cur_password } = req.body;
-        const newAdmin = { admin_id, name };
-
-        const password = await AdminDAO.getAdminPasswordById(admin.admin_id);
-
-        if (!cur_password || password != cur_password) {
-            res.render("admin/edit.pug", {
-                admin: newAdmin,
-                password_not_match: true,
-            });
-            return;
+        const error = {};
+        if (admin_id.length < 5 || admin_id.length > 20) {
+            error.id = "아이디가 올바르지 않습니다.";
+            return res.status(400).json({ error });
         }
-        if (!new_password) {
-            res.render("admin/edit.pug", {
-                admin: newAdmin,
-                password_not_fill: true,
-            });
-            return;
+        const cur_admin = await AdminDAO.getAdminById(admin.admin_id);
+        const hashedCurrPassword = await generateCode(cur_password);
+        const isValid = await verifyCode(cur_password, cur_admin.password);
+        if (!isValid) {
+            error.cur_password = "비밀번호가 일치하지 않습니다.";
+            return res.status(400).json({ error });
         }
-        const updateAdmin = await AdminDAO.updateAdmin(
-            admin.admin_id,
-            newAdmin.admin_id,
-            newAdmin.name,
-            new_password
-        );
-        req.session.admin = {
-            admin_id: updateAdmin.admin_id,
-            name: updateAdmin.name,
-        };
-        return res.redirect("/");
+        if (phone.length < 11 || phone.length > 14) {
+            error.phone = "올바르지 않은 전화번호입니다.";
+        }
+        if (new_password.length < 8 || isValidPassword(new_password) < 3)
+            error.password = "올바르지 않은 비밀번호입니다.";
+        if (Object.keys(error).length > 0) {
+            return res.status(400).json({ error });
+        }
+        const hashedNewPassword = await generateCode(new_password);
+        if (
+            await AdminDAO.updateAdmin(
+                admin_id,
+                name,
+                phone,
+                hashedNewPassword,
+                admin.admin_id
+            )
+        )
+            return res.sendStatus(200);
+        throw new Error("BAD_REQUEST");
     } catch (err) {
         return next(err);
     }

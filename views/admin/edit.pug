@@ -7,25 +7,81 @@ block title
   | 관리자 정보 변경
 
 block content
+  include ./editSuccessModal.pug
   .card.ms-5.me-5#editAdminCard(aria-labelledby='editAdminCardLabel')
     .card-header.bg-dark.text-light 관리자 정보 변경
     .card-body
-      form(method="post")
+      form#editForm(method="post")
         .mb-3 
           label.col-form-label(for="admin_id") 새 아이디
-          input#admin_id.form-control(type='text' value=`${admin.admin_id}` name='admin_id' aria-label='admin_id')
+          input#admin_id.form-control(type='text' value="" name='admin_id' aria-label='admin_id' required)
+          #errorId
         .mb-3
           label.col-form-label(for="name") 새 관리자 이름
-          input#name.form-control(type='text' value=`${admin.name}` name='name' aria-label='name')
+          input#name.form-control(type='text' value="" name='name' aria-label='name' required)
+          #errorName
+        .mb-3
+          label.col-form-label(for="phone") 새 전화번호
+          input#phone.form-control(type='text' placeholder=`${admin.phone}` name='phone' aria-label='phone' required)
+          #errorPhone
+          
         .mb-3
           label.col-form-label(for="new_password") 새 비밀번호
-          input#new_password.form-control(type='password' name='new_password' aria-label='new_password',)
-          if password_not_fill === true 
-            .text-danger 새로운 비밀번호를 입력하세요.
+          input#new_password.form-control(type='password' name='new_password' aria-label='new_password' required)
+          #errorNewPassword
         hr
         .mb-3
           label.col-form-label(for="cur_password") 현재 비밀번호
-          input#cur_password.form-control(type='password' name='cur_password' aria-label='cur_password')
-          if password_not_match === true
-            .text-danger 비밀번호가 일치하지 않습니다.
+          input#cur_password.form-control(type='password' name='cur_password' aria-label='cur_password' required)
+          #errorCurPassword
+          
         button.btn.btn-dark(type='submit') 변경
+  script.
+    const editForm = document.getElementById('editForm');
+    editForm.addEventListener('submit', function(event){
+      event.preventDefault();
+      const xhr = new XMLHttpRequest();
+      const formData = new FormData(editForm);
+      xhr.open('POST', `/edit`);
+      xhr.onreadystatechange = function() {
+        const errorId = document.getElementById('errorId');
+        const errorName = document.getElementById('errorName');
+        const errorPhone = document.getElementById('errorPhone');
+        const errorNewPassword = document.getElementById('errorNewPassword');
+        const errorCurPassword = document.getElementById('errorCurPassword');
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          if (xhr.status === 200) {
+            // Handle the successful response
+            //모달 열거임
+            errorId.innerHTML = '';
+            errorName.innerHTML = '';
+            errorPhone.innerHTML = '';
+            errorNewPassword.innerHTML = '';
+            errorCurPassword.innerHTML = '';
+            const editSuccessModal = document.getElementById('editSuccessModal');
+            const bootstrapModal = new bootstrap.Modal(editSuccessModal);
+            bootstrapModal.show();
+          } else {
+            const response = JSON.parse(xhr.responseText);
+            const error = response.error;
+            // Handle the error response
+            const errorId = document.getElementById('errorId');
+            const errorName = document.getElementById('errorName');
+            const errorPhone = document.getElementById('errorPhone');
+            const errorNewPassword = document.getElementById('errorNewPassword');
+            const errorCurPassword = document.getElementById('errorCurPassword');     
+            if(error.id)
+              errorId.innerHTML = '<div class="text-danger mt-1 mb-1">'+ error.id +'</div>';
+            if(error.cur_password)
+              errorCurPassword.innerHTML = '<div class="text-danger mt-1 mb-1">'+ error.cur_password +'</div>';
+            if(error.password)
+              errorNewPassword.innerHTML = '<div class="text-danger mt-1 mb-1">'+ error.password +'</div>';
+            if(error.name)
+              errorName.innerHTML = '<div class="text-danger mt-1 mb-1">'+ error.name +'</div>';
+            if(error.phone)
+              errorPhone.innerHTML = '<div class="text-danger mt-1 mb-1">'+ error.phone +'</div>';
+          }
+        }
+      };
+      xhr.send(formData);
+    })
