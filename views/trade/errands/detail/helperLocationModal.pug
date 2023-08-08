@@ -1,0 +1,42 @@
+.div
+    h1#editModalLabel.modal-title.fs-5.text-center 드림이 위치
+    .d-flex.justify-content-center.mt-2
+        #map(style="width: 100%;  height:350px; max-width:800px; max-height:350px")
+
+script(type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6a82cf5c9b4e6db488a44507be1732a9")
+script.
+    document.addEventListener('DOMContentLoaded', () => {
+        const lat = "#{errand.latitude}";
+        const long = "#{errand.longitude}";
+        const container = document.getElementById('map');
+        var options = {
+            center: new kakao.maps.LatLng(lat, long),
+            level: 4
+        };
+        var map = new kakao.maps.Map(container, options);
+        var markerPosition  = new kakao.maps.LatLng(lat, long); 
+
+        // 마커를 생성합니다
+        var marker = new kakao.maps.Marker({
+            position: markerPosition
+        });
+
+        marker.setMap(map);
+        //- var polyline = new kakao.maps.Polyline({
+        //-     map: map,
+        //-     path: [
+        //-         new kakao.maps.LatLng(33.450701, 126.570667),
+        //-         new kakao.maps.LatLng(33.452739313807456, 126.5709308145358),
+        //-         new kakao.maps.LatLng(33.45178067090639, 126.5726886938753) 
+        //-     ],
+        //-     strokeWeight: 2,
+        //-     strokeColor: '#FF00FF',
+        //-     strokeOpacity: 0.8,
+        //-     strokeStyle: 'dashed'
+        //- });
+        //- polyline.setMap(map); 
+        window.addEventListener('resize', function(event){
+            map.relayout();
+        })
+
+    });

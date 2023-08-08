@@ -4,6 +4,7 @@ const { authRequired } = require("../auth/middleware");
 
 const ctrlE = require("./ctrlErrand");
 const ctrlR = require("./ctrlReport");
+const ctrl = require("./ctrl");
 
 const router = Router();
 
@@ -17,5 +18,9 @@ router.get("/reports", authRequired, ctrlR.reportsList);
 router.get("/report/:reportIdx(\\d+)", authRequired, ctrlR.showReport);
 router.post("/report/action", authRequired, ctrlR.getActionReport);
 router.post("/report/update", authRequired, ctrlR.updateReport);
+
+router
+    .get("/change-category", authRequired, ctrl.changeCategoryForm)
+    .post("/change-category", authRequired, ctrl.changeCategory);
 
 module.exports = router;

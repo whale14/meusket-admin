@@ -201,12 +201,15 @@ const getReviewByIdx = async (idx) => {
     return results;
 };
 
-const getErrandsByUserIdx = async (requesterIdx) => {
-    const sql = "select * from request where requesterIdx = ?";
-    const results = await runQuery(sql, [requesterIdx]);
+const getErrandsByUserIdx = async (requesterIdx, type, start, count) => {
+    const sql =
+        "select * from request where " + type + " = ? order by idx limit ?, ?";
+    const results = await runQuery(sql, [requesterIdx, start, count]);
     for (let i = 0; i < results.length; i++) {
         results[i] = replaceDate(results[i]);
-        results[i].h_id = await addUserID(results[i], "workerIdx");
+        if (type == "requesterIdx")
+            results[i].h_id = await addUserID(results[i], "workerIdx");
+        else results[i].u_id = await addUserID(results[i], "requesterIdx");
     }
     return results;
 };
@@ -241,7 +244,7 @@ const getWorkCategoryByIdx = async (r_idx) => {
     const sql = "select idx, categoryName from work_category where idx  = ?";
     const result = await runQuery(sql, [r_idx]);
 
-    if (result[0]) return result[0]["categoryName"];
+    if (result[0]) return result[0];
     else return undefined;
 };
 
@@ -254,7 +257,7 @@ const getWorkRootCategory = async () => {
 
 const getWorkCategoryByRootIdx = async (r_idx) => {
     const sql =
-        "select idx, categoryName from work_category where rootIndex = ? order by idx";
+        "select idx, categoryName from work_category where rootIndex = ? and idx != rootIndex order by idx";
     const results = await runQuery(sql, [r_idx]);
     return results;
 };

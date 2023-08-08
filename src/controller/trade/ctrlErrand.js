@@ -113,16 +113,19 @@ const showErrand = async (req, res, next) => {
 
         if (!errand) throw new Error("NOT_EXIST");
 
-        errand.category = await ErrandDAO.getWorkCategoryByIdx(
-            errand.workCategoryIdx
-        );
+        errand.category = (
+            await ErrandDAO.getWorkCategoryByIdx(errand.workCategoryIdx)
+        ).categoryName;
         const recruitments = await ErrandDAO.getRecruitmentByIdx(errandIdx);
 
         const reviews = await ErrandDAO.getReviewByIdx(errandIdx);
         if (errand.recruitmentStatus != 0 && !recruitments)
             throw new Error("NOT_EXIST");
 
-        const cancel = await CancelDAO.getCancelByIdx(errandIdx);
+        const cancel =
+            errand.status == 5
+                ? await CancelDAO.getCancelByIdx(errandIdx)
+                : undefined;
         if (errand.status == 5 && !cancel) throw new Error("NOT_EXIST");
 
         const chat_room = await ChatDAO.getChatByReqIdx(errandIdx);

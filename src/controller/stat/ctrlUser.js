@@ -97,9 +97,14 @@ const userChart = async (req, res, next) => {
         });
         const cumUserChart = new ChartObject();
         const cumUserChartset = new ChartDatasets();
-        cumUserChartset.setData(formatData).setLabel("누적 부름이");
+        cumUserChartset
+            .setData(formatData)
+            .setLabel("누적 부름이")
+            .setBackgroundColor("rgba(193, 193, 193, 0.8)")
+            .setBorderColor("rgba(193, 193, 193, 0.8)")
+            .setBorderWidth(1);
         cumUserChart
-            .setChartDatasets(cumUserChartset.getConfig())
+            .setChartDatasets([cumUserChartset.getConfig()])
             .setChartlabels(labels)
             .setType("line")
             .setOptionScalesStepSize("y", 1);
@@ -131,9 +136,16 @@ const userChart = async (req, res, next) => {
             formatData.push(userCount ? userCount.count : 0);
         }
         const newUserForTwoWeeksChart = new ChartObject();
+        const newUserForTwoWeeksChartDataset = new ChartDatasets();
+        newUserForTwoWeeksChartDataset
+            .setData(formatData)
+            .setLabel("누적 부름이")
+            .setBackgroundColor("rgba(193, 193, 193, 0.8)")
+            .setHoverBackgroundColor("rgba(246, 132, 50, 1)");
         newUserForTwoWeeksChart
-            .setChartData(labels, [{ label: "누적 부름이", data: formatData }])
+            .setChartDatasets([newUserForTwoWeeksChartDataset.getConfig()])
             .setType("bar")
+            .setOptionsMaxBarWidth(15)
             .setOptionScalesStepSize("y", 1);
 
         return res.render("stats/user/requester/userChart.pug", {

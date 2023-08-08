@@ -1,0 +1,126 @@
+#changeCategoryModal.modal.fade(tabindex='-1' aria-labelledby='changeCategoryModalLabel' aria-hidden='true')
+  .modal-dialog
+    .modal-content
+        .modal-header
+            h1#changeCategoryModalLabel.modal-title.fs-5 심부름 카테고리 변경
+            button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+        .modal-body
+            select#rootCategorySelect.form-select(aria-label="rootCategory")
+                option(selected) 상위카테고리 선택
+            form#changeCategoryForm
+        .modal-footer
+            button#closeBtn.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+
+script.
+    const rootCategorySelect = document.getElementById('rootCategorySelect');
+    function updateRootCategory(rootCategories){
+        rootCategories.forEach(function(rootCategory){
+            const option = document.createElement("option");
+            option.value = rootCategory.idx;
+            option.textContent = rootCategory.categoryName;
+            rootCategorySelect.appendChild(option);
+        });
+    }
+    function updateChangeCategoryForm(rootCategory, subcategories){
+        const changeCategoryForm = document.getElementById('changeCategoryForm');
+        changeCategoryForm.innerHTML = "";
+        //rootCategory
+        const rootCategoryFormTitle = document.createElement("div");
+        rootCategoryFormTitle.setAttribute("class", "h5 my-2");
+        rootCategoryFormTitle.setAttribute("for", "rootCategoryName");
+        rootCategoryFormTitle.innerText = "상위 카테고리 변경";
+        changeCategoryForm.appendChild(rootCategoryFormTitle);
+
+        const rootCategoryInput = document.createElement("input");
+        rootCategoryInput.setAttribute("class", "form-control");
+        rootCategoryInput.setAttribute("id", "rootCategoryName");
+        rootCategoryInput.setAttribute("disabled", true);
+        rootCategoryInput.setAttribute("value", `${rootCategory.categoryName}`);
+        rootCategoryInput.name = "rootCategoryName";
+        changeCategoryForm.appendChild(rootCategoryInput);
+
+        const rootCategoryIdxInput = document.createElement("input");
+        rootCategoryIdxInput.type = "hidden";
+        rootCategoryIdxInput.name = "rootCategoryIdx";
+        rootCategoryIdxInput.value = rootCategory.idx;        
+        changeCategoryForm.appendChild(rootCategoryIdxInput);
+        
+        //subcategories
+        const line = document.createElement("div");
+        line.setAttribute("class", "border-top my-2");
+        changeCategoryForm.appendChild(line);
+        const subcategoryFormTitle = document.createElement("div");
+        subcategoryFormTitle.setAttribute("class", "h5");
+        subcategoryFormTitle.innerText = "하위 카테고리 변경"
+        changeCategoryForm.appendChild(subcategoryFormTitle);
+        subcategories.forEach(function(subcategory){    
+            const subInputGroup= document.createElement("div");
+            subInputGroup.setAttribute("class", "input-group mt-2")
+
+            const subcategoryInput = document.createElement("input");
+            subcategoryInput.setAttribute("class", "form-control");
+            subcategoryInput.setAttribute("id", `subcategory${subcategory.idx}Name`);
+            subcategoryInput.setAttribute("value", `${subcategory.categoryName}`);
+            subcategoryInput.setAttribute("disabled", true);
+            subcategoryInput.type = 'text'
+            subcategoryInput.name = `subcategory${subcategory.idx}Name`;
+
+            const subcategoryIdxInput = document.createElement("input");
+            subcategoryIdxInput.type = "hidden";
+            subcategoryIdxInput.name = `subcategory${subcategory.idx}Idx`;
+            subcategoryIdxInput.value = subcategory.idx;
+
+            const changeBtn = document.createElement("button");
+            changeBtn.setAttribute("class", "btn btn-dark");
+            changeBtn.setAttribute("id", "changeBtn");
+            changeBtn.type = "button";
+            changeBtn.innerText = "변경";
+            changeBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+                const subcategoryInput = this.previousElementSibling.previousElementSibling;
+                subcategoryInput.removeAttribute('disabled');
+            });
+
+            subInputGroup.appendChild(subcategoryInput);
+            subInputGroup.appendChild(subcategoryIdxInput);
+            subInputGroup.appendChild(changeBtn);
+            changeCategoryForm.appendChild(subInputGroup);
+        })        
+    }
+    function enableInput(input) {
+        input.removeAttribute('disabled');
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const changeCategoryBtn = document.getElementById('changeCategoryBtn');
+        changeCategoryBtn.addEventListener('click', function (event){
+            event.preventDefault();
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `/trade/change-category`);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        const response = JSON.parse(xhr.responseText);
+                        updateRootCategory(response.rootCategories);
+                    }
+                }
+            }
+            xhr.send();
+        })
+        rootCategorySelect.addEventListener('change', function(event){
+            event.preventDefault();
+            const rootIndex = this.value;
+            if (Number.isInteger(parseInt(rootIndex))) { 
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', `/trade/change-category?rootIndex=${rootIndex}`);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            const response = JSON.parse(xhr.responseText);
+                            updateChangeCategoryForm(response.rootCategory, response.categories);
+                        }
+                    }
+                }
+                xhr.send();
+            }
+        });
+    });

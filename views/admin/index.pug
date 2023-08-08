@@ -21,12 +21,14 @@ block content
                         th(scope='col') 현재 권한
                         th(scope='col') 승인 및 관리
                 tbody 
+                    - var modalArray = [];
                     each user in admins
+                        - modalArray.push(`#manage${user.idx}Modal`);
                         tr
                             th(scop='row') #{user.pidx}
                             td #{user.id}
                             td #{user.name} 
-                            td #{user.author} 
+                            td(id=`authority${user.idx}`) #{user.author} 
                             td 
                                 button.btn.btn-dark.btn-sm(type='button' data-bs-toggle="modal" data-bs-target=`#manage${user.idx}Modal`) 
                                     if user.authority == 0
@@ -41,3 +43,27 @@ block content
                             td admins 
                             td
             include ../lib/pagination.pug
+    script.
+        for(var i = 0; i < modalArray.length; i++){
+            document.getElementById(modalArray[i]).addEventListener('submit', function(event){
+                event.preventDefault();
+                const authority = document.getElementById('adminAuthority').value;
+                const adminIdx = document.getElementById('userIdx').value;
+
+                const xhr = new XMLHttpRequest();            
+                xhr.open('POST', `/manage`);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function() {
+                    if (xhr.status === 200) {
+                        const adminAuthorityName = document.getElementById(`authority${adminIdx}`);
+                        const manageModal = document.getElementById(`manage${adminIdx}Modal`);
+                        const bootstrapModal = new bootstrap.Modal(manageModal);
+                        bootstrapModal.hide();
+                        const response = JSON.parse(xhr.responseText);
+                        console.log(response.author);
+                        adminAuthorityName.innerText = response.author;                    
+                    }
+                }
+                xhr.send(`authority=${authority}&idx=${adminIdx}`);
+            })
+        }

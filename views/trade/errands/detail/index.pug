@@ -12,13 +12,14 @@ block content
     include ./edit.pug
     include ../../chat.pug
     include ../../../lib/adminRequest.pug
+    
     .container-fluid.w-80
         include ../../../title.pug
             a.text-dark(href='#' onclick='history.back(); return false;') 심부름리스트
             i.bi.bi-chevron-double-right 
             |  #{errand.idx} 
         .container-fluid.w-90
-            .ccard
+            #requestInfo
                 .container.px-5.mb-5
                     .row.gx-5
                         .col-lg-9
@@ -73,6 +74,8 @@ block content
                                             tr 
                                                 th(scope='col') 내용
                                                     td.text-end #{errand.content}
+                                        if errand.status == 3
+                                            include ./helperLocationModal.pug
                                     .card-footer.bg-transparent
                                         table.table.table-borderless.mb-0.mt-0
                                             tr
@@ -83,7 +86,7 @@ block content
                                                     th(scope='col') 드림이
                                                         td.text-end #{errand.h_id}
                                                 tr
-                                                    th(scope='col') 심부름날짜
+                                                    th(scope='col') 수행날짜
                                                         td.text-end #{errand.workDate}
                                     if cancel 
                                         include cancel.pug

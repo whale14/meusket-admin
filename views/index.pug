@@ -80,3 +80,19 @@ block content
 
     script.
         createChart('avgRewardPerCategoryChart',!{JSON.stringify(avgRewardPerCategoryChart)});
+        function toggleLayoutBtns(){
+            const toggleLayoutBtns = document.querySelectorAll('button.btn.btn-toggle.d-inline-flex.btn-layout');
+            const toggleLayoutLists = document.querySelectorAll('ul.btn-toggle-nav.list-unstyled.collapse-layout');
+            toggleLayoutBtns.forEach((btn) => {
+                btn.setAttribute("aria-expanded", "true");
+            });
+            toggleLayoutLists.forEach((list) => {
+                if (list.classList.contains("fade")) {
+                list.classList.remove("fade");
+                }
+                if (!list.classList.contains("show")) {
+                list.classList.add("show");
+                }
+            });
+        }
+        document.addEventListener("DOMContentLoaded", toggleLayoutBtns);

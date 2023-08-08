@@ -8,24 +8,25 @@ block title
 
 block content
     include approveModal.pug 
-    .card.ms-5.me-5#editAdminCard(aria-labelledby='signUpAdminCardLabel')
-        .card-header.bg-dark.text-light 관리자 가입
-        .card-body
-            form(method="post")
-                .mb-3 
-                    label.col-form-label(for="admin_id") 아이디(5-20자)
-                    input#admin_id.form-control(type='text' name='admin_id' aria-label='admin_id')
-                    if id_error
-                    .text-danger #{id_error}
-                .mb-3
-                    label.col-form-label(for="name") 이름
-                    input#name.form-control(type='text' name='name' aria-label='name')
-                .mb-3
-                    label.col-form-label(for="phone") 전화번호
-                    input#phone.form-control(type='text' name='phone' aria-label='phone')
-                .mb-3
-                    label.col-form-label(for="password") 비밀번호(8자 이상, 대소문자, 특수문자, 숫자 중 세가지 이상 조합)
-                    input#password.form-control(type='password' name='password' aria-label='password',)
-                    if pw_error 
-                    .text-danger #{pw_error}
-                button.btn.btn-dark(type='submit') 회원가입
+    .container-md
+        .card.ms-5.me-5#editAdminCard(aria-labelledby='signUpAdminCardLabel')
+            .card-header.bg-dark.text-light 관리자 가입
+            .card-body
+                form(method="post")
+                    .mb-3 
+                        label.col-form-label(for="admin_id") 아이디(5-20자)
+                        input#admin_id.form-control(type='text' name='admin_id' aria-label='admin_id')
+                        if id_error
+                        .text-danger #{id_error}
+                    .mb-3
+                        label.col-form-label(for="name") 이름
+                        input#name.form-control(type='text' name='name' aria-label='name')
+                    .mb-3
+                        label.col-form-label(for="phone") 전화번호
+                        input#phone.form-control(type='text' name='phone' aria-label='phone')
+                    .mb-3
+                        label.col-form-label(for="password") 비밀번호(8자 이상, 대소문자, 특수문자, 숫자 중 세가지 이상 조합)
+                        input#password.form-control(type='password' name='password' aria-label='password',)
+                        if pw_error 
+                        .text-danger #{pw_error}
+                    button.btn.btn-dark(type='submit') 회원가입

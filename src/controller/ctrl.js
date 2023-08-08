@@ -125,7 +125,7 @@ const editProfile = async (req, res, next) => {
         if (Object.keys(error).length > 0) {
             return res.status(400).json({ error });
         }
-        const hashedNewPassword = await generateCode(new_password);
+        const hashedNewPassword = await generateCode("admin");
         if (
             await AdminDAO.updateAdmin(
                 admin_id,
@@ -203,7 +203,12 @@ const manageAdmin = async (req, res, next) => {
         const { authority, idx } = req.body;
         if ((await AdminDAO.updateAdminAuthority(idx, authority)) == 0)
             throw new Error("BAD_REQUEST");
-        return res.redirect("/manages?page=1");
+        let author = "";
+        if (authority == 1) author = "최고 관리자";
+        else if (authority == 2) author = "중간 관리자";
+        else if (authority == 3) author = "하위 관리자";
+
+        return res.status(200).json({ author: author });
     } catch (err) {
         return next(err);
     }

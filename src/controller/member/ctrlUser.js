@@ -88,7 +88,6 @@ const showUser = async (req, res, next) => {
             ? "http://" + user.profileImageUrl
             : undefined;
 
-        const errands = await ErrandDAO.getErrandsByUserIdx(usersIdx);
         const wallet = await WalletDAO.getSumOfMoneyByUserIdx(usersIdx);
         let helper = null;
         if (user.isWorkerRegist === 1) {
@@ -98,14 +97,10 @@ const showUser = async (req, res, next) => {
             if (helper.bio && helper.bio.length > 10) {
                 helper.bio = helper.bio.substring(0, 10) + "...";
             }
-
-            const errands = await ErrandDAO.getErrandsByHelperIdx(helperIdx);
-            helper.errands = errands;
         }
         return res.render("member/users/details/index.pug", {
             admin,
             user,
-            errands,
             helper,
             wallet,
         });
@@ -188,15 +183,32 @@ const editUser = async (req, res, next) => {
 
 const showWallet = async (req, res, next) => {
     const userIdx = req.params.userIdx;
-    console.log(req.query);
+
     const month = req.query.month
         ? req.query.month
         : moment().format("YYYY-MM");
     const wallet = await WalletDAO.getWalletByUserIdx(userIdx, month);
     const page = await WalletDAO.getWalletHasNextPrevPage(userIdx, month);
     page.month = month;
-    console.log(page);
     return res.status(200).json({ settle: wallet, page });
+};
+
+const showRequest = async (req, res, next) => {
+    try {
+        const userIdx = req.params.userIdx;
+        const REQUEST_PER_PAGE = 10;
+        const page = parseInt(req.query.page);
+        const type = req.query.type == 1 ? "workerIdx" : "requesterIdx";
+        const requests = await ErrandDAO.getErrandsByUserIdx(
+            userIdx,
+            type,
+            (page - 1) * REQUEST_PER_PAGE,
+            REQUEST_PER_PAGE
+        );
+        return res.status(200).json({ requests });
+    } catch (err) {
+        return next(err);
+    }
 };
 
 module.exports = {
@@ -208,4 +220,5 @@ module.exports = {
     removeUser,
     revokeHelper,
     editUser,
+    showRequest,
 };

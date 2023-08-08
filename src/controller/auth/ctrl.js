@@ -113,7 +113,8 @@ const signUp = async (req, res, next) => {
             (await AdminDAO.createAdminAccount(
                 admin_id,
                 name,
-                hashedPassword
+                hashedPassword,
+                phone
             )) == 1
         ) {
             const message = "신청이 완료되었습니다. 관리자 승인이 필요합니다!";

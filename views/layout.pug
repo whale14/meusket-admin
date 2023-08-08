@@ -11,10 +11,12 @@ nav.navbar.sticky-top.bg-white(style="top: 0; z-index: 999;")
                 if(admin)
                     p.ms-auto
                         .d-none.d-md-block.me-1 #{admin.authorityName} 
-                        .me-1 #{admin.admin_id}님 
+                        .me-1 #{admin.name}님 
                         a(href='/auth/sign_out')
                             img.me-2(src='/images/logout.svg', alt='로그아웃' width='30px' height='30px')
 if(admin)
+    include ./admin/info.pug
+    include ./trade/changeCategoryModal.pug
     nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.sticky-top(style='top: 66px; z-index: 998;')
         .container-lg
             button.navbar-toggler.ms-3(type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
@@ -23,9 +25,9 @@ if(admin)
                 .d-flex.flex-fill.justify-content-between
                     ul.navbar-nav.mb-2.mb-lg-0.text-light.row.flex-fill
                         li.mb-1.col
-                            button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#member-collapse' aria-expanded='true')
+                            button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4.btn-layout(data-bs-toggle='collapse' data-bs-target='#member-collapse' aria-expanded='false')
                                 | 회원관리
-                            ul#member-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small.show
+                            ul#member-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small.collapse-layout
                                 li
                                 a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/user') 회원리스트
                                 li
@@ -37,34 +39,36 @@ if(admin)
                                 li
                                 a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/member/black') 블랙리스트
                         li.mb-1.col
-                            button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#trade-collapse' aria-expanded='true')
+                            button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4.btn-layout(data-bs-toggle='collapse' data-bs-target='#trade-collapse' aria-expanded='false')
                                 | 심부름 관리
-                            ul#trade-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small.show
+                            ul#trade-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small.collapse-layout
                                 li  
                                 a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/trade/errand') 심부름 조회
                                 li
                                 a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/trade/report') 신고 심부름
+                                li
+                                a#changeCategoryBtn.d-inline-flex.text-decoration-none.rounded(role='button' data-bs-toggle="modal" data-bs-target="#changeCategoryModal") 카테고리 변경
                         li.mb-1.col
-                            button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#stats-collapse' aria-expanded='true')
+                            button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4.btn-layout(data-bs-toggle='collapse' data-bs-target='#stats-collapse' aria-expanded='false')
                                 | 통계 보기
-                            ul#stats-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small.show
+                            ul#stats-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small.collapse-layout
                                 li
                                 a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/stat/user') 사용자 통계
                                 li
                                 a.link-body-emphasis.d-inline-flex.text-decoration-none.rounded(href='/stat/errand') 심부름 통계
                         li.mb-1.col-sm
-                            button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#sales-collapse' aria-expanded='true')
+                            button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4.btn-layout(data-bs-toggle='collapse' data-bs-target='#sales-collapse' aria-expanded='false')
                                 | 매출 현황
-                            ul#sales-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small.show
+                            ul#sales-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small.fade.collapse-layout
                                 li
                                 a.d-inline-flex.text-decoration-none.rounded(href='/') 심부름비 현황
                                 li
                                 a.d-inline-flex.text-decoration-none.rounded(href='/') 기부금 현황
                         li.border-top.my-3.d-block.d-lg-none
                         li.mb-1.col-sm
-                            button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4(data-bs-toggle='collapse' data-bs-target='#account-collapse' aria-expanded='true')
+                            button.btn.btn-toggle.d-inline-flex.align-items-center.border-0.collapsed.mt-1.me-4.btn-layout(data-bs-toggle='collapse' data-bs-target='#account-collapse' aria-expanded='false')
                                 | 계정 관리
-                            ul#account-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small.show
+                            ul#account-collapse.collapse.btn-toggle-nav.list-unstyled.fw-normal.pb-1.small.collapse-layout
                                 li
                                 a.d-inline-flex.text-decoration-none.rounded(role='button' data-bs-toggle="modal" data-bs-target="#showAdminModal") 정보보기
                                 li
@@ -72,8 +76,6 @@ if(admin)
                                 li
                                 a.d-inline-flex.text-decoration-none.rounded(href='/manage') 관리자 승인 및 관리
 .container.mt-2
-if(admin)
-    include ./admin/info.pug
 .container-xl(style="min-height: 100vh;")
     block content
 
@@ -86,10 +88,10 @@ nav.navbar.navbar-dark.bg-dark.text-light.justify-content-center
             .ms-auto.nanumSquareNeo.font-copyright Copyright 2023 MeUsKet All Rights Reserved
 
 script.
-    const toggleBtns = document.querySelectorAll('button.btn.btn-toggle.d-inline-flex');
-    const toggleLists = document.querySelectorAll('ul.btn-toggle-nav.list-unstyled');
-    
+
     function updateCollapse() {
+        const toggleBtns = document.querySelectorAll('button.btn.btn-toggle.d-inline-flex.btn-layout');
+        const toggleLists = document.querySelectorAll('ul.btn-toggle-nav.list-unstyled.collapse-layout');
         if (window.innerWidth < 992) {
             toggleBtns.forEach((btn) => {
                 btn.setAttribute("aria-expanded", "false");
@@ -102,19 +104,7 @@ script.
                 list.classList.remove("show");
                 }
             });
-        } else {
-            toggleBtns.forEach((btn) => {
-                btn.setAttribute("aria-expanded", "true");
-            });
-            toggleLists.forEach((list) => {
-                if (list.classList.contains("fade")) {
-                list.classList.remove("fade");
-                }
-                if (!list.classList.contains("show")) {
-                list.classList.add("show");
-                }
-            });
-            }
+        } 
     }
     window.addEventListener("resize", updateCollapse);
     document.addEventListener("DOMContentLoaded", updateCollapse);

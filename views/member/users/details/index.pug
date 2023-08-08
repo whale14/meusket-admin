@@ -15,8 +15,7 @@ block content
     include ./wallet.pug
     include ../../../lib/adminRequest.pug
     include ./edit.pug
-    if user.isWorkerRegist == 1
-        include ./helper_errand.pug
+
     .container-fluid.w-80
         include ../../../title.pug
             a.text-dark(href='/member/user') 전체 회원 관리
@@ -37,7 +36,7 @@ block content
                         else 
                             .h4#userTitle 부름이 #{user.name} 정보
                         button#editModalBtn.btn.btn-link.text-decoration-underline.me-auto(type='button' data-bs-toggle='modal' data-bs-target='#requestModal') 정보수정
-                    button.btn.btn-dark.btn-sm.ms-auto(type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasErrand' aria-labelledby="offcanvasErrandLabel") 심부름 요청 내역
+                    button#requesterBtn.btn.btn-dark.btn-sm.ms-auto(type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasErrand' aria-labelledby="offcanvasErrandLabel") 심부름 요청 내역
             .table-responsives
                 table.table.table-striped.align-middle
                     thead
@@ -54,11 +53,10 @@ block content
                             td #{user.id}
                             td #{user.createAt}
                             td #{user.updateAt}
-                            //- td #{user.profileImageUrl
                     thead
                         tr
                             th
-                            th(scope='col') money
+                            th(scope='col') 현재 포인트
                             th(scope='col') 정산 내역
                             if user.isWorkerRegist == 1
                                 th(scope='col') 입금은행
@@ -95,7 +93,7 @@ block content
                             tr 
                                 td
                                 td 
-                                    button.btn.btn-dark.btn-sm(type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasHelperErrand' aria-labelledby="offcanvasErrandLabel") 심부름 내역
+                                    button#workerBtn.btn.btn-dark.btn-sm(type='button' data-bs-toggle='offcanvas' data-bs-target='#offcanvasErrand' aria-labelledby="offcanvasErrandLabel") 심부름 내역
                                 td #{helper.workCategory}
                                 td #{helper.transportation}
                                 td #{helper.bio}
