@@ -8,6 +8,7 @@ const ChatDAO = require("./chat");
 const CancelDAO = require("./cancel");
 const PushDAO = require("./push");
 const WalletDAO = require("./wallet");
+const CategoryDAO = require("./work_category");
 
 module.exports = {
     AdminDAO,
@@ -20,4 +21,5 @@ module.exports = {
     CancelDAO,
     PushDAO,
     WalletDAO,
+    CategoryDAO,
 };

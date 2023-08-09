@@ -14,11 +14,11 @@ script.
             level: 4
         };
         var map = new kakao.maps.Map(container, options);
-        var markerPosition  = new kakao.maps.LatLng(lat, long); 
+        var startPosition  = new kakao.maps.LatLng(lat, long); 
 
         // 마커를 생성합니다
         var marker = new kakao.maps.Marker({
-            position: markerPosition
+            position: startPosition
         });
 
         marker.setMap(map);

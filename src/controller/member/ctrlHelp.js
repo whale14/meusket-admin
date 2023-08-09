@@ -1,11 +1,11 @@
-const { HelpDAO, UserDAO } = require("../../DAO");
+const { HelpDAO, UserDAO, CategoryDAO } = require("../../DAO");
 const { generateCode } = require("../../lib/encryption");
 
 const applyList = async (req, res, next) => {
     try {
         const { admin } = req.session;
         const page = parseInt(req.query.page, 10);
-        const work_category = await HelpDAO.getWorkCategory();
+        const work_category = await CategoryDAO.getWorkCategory();
 
         if (page < 1) throw new Error("BAD_REQUEST");
 

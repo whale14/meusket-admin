@@ -295,7 +295,7 @@ const deleteUser = async (idx, id) => {
         return true; // Transaction succeeded
     } catch (error) {
         console.log(`Query at index ${error.queryIndex} failed.`);
-        return false; // Transaction failed
+        return error; // Transaction failed
     }
 };
 

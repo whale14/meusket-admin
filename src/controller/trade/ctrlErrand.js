@@ -1,5 +1,5 @@
 const moment = require("moment");
-const { ErrandDAO, ChatDAO, CancelDAO } = require("../../DAO");
+const { ErrandDAO, ChatDAO, CancelDAO, CategoryDAO } = require("../../DAO");
 
 const errandsList = async (req, res, next) => {
     try {
@@ -33,16 +33,16 @@ const errandsList = async (req, res, next) => {
         const { searchType, search } = req.query;
 
         //카테고리들 가져와서 pug로 넘기는 부분
-        const rootCategories = await ErrandDAO.getWorkRootCategory();
+        const rootCategories = await CategoryDAO.getWorkRootCategory();
         const categories = [];
         for (i in rootCategories) {
-            const categoriesByRoot = await ErrandDAO.getWorkCategoryByRootIdx(
+            const categoriesByRoot = await CategoryDAO.getWorkCategoryByRootIdx(
                 i
             );
             categories.push(categoriesByRoot);
         }
 
-        const subCategory = await ErrandDAO.getWorkCategoryByRootIdx(
+        const subCategory = await CategoryDAO.getWorkCategoryByRootIdx(
             rootCategoryIdx
         );
 
@@ -114,7 +114,7 @@ const showErrand = async (req, res, next) => {
         if (!errand) throw new Error("NOT_EXIST");
 
         errand.category = (
-            await ErrandDAO.getWorkCategoryByIdx(errand.workCategoryIdx)
+            await CategoryDAO.getWorkCategoryByIdx(errand.workCategoryIdx)
         ).categoryName;
         const recruitments = await ErrandDAO.getRecruitmentByIdx(errandIdx);
 

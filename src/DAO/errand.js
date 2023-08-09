@@ -240,28 +240,6 @@ const getIsRejectedByIdx = async (r_idx) => {
     return result[0].isRejected;
 };
 
-const getWorkCategoryByIdx = async (r_idx) => {
-    const sql = "select idx, categoryName from work_category where idx  = ?";
-    const result = await runQuery(sql, [r_idx]);
-
-    if (result[0]) return result[0];
-    else return undefined;
-};
-
-const getWorkRootCategory = async () => {
-    const sql = "select * from work_category where idx=rootIndex";
-    const results = await runQuery(sql);
-
-    return results;
-};
-
-const getWorkCategoryByRootIdx = async (r_idx) => {
-    const sql =
-        "select idx, categoryName from work_category where rootIndex = ? and idx != rootIndex order by idx";
-    const results = await runQuery(sql, [r_idx]);
-    return results;
-};
-
 const getRecruitmentByIdx = async (e_idx) => {
     const sql = "select * from request_recruitment where requestIdx = ?";
     const results = await runQuery(sql, e_idx);
@@ -517,9 +495,6 @@ module.exports = {
     getTotalErrandCount,
     getErrandsByHelperIdx,
     getIsRejectedByIdx,
-    getWorkCategoryByIdx,
-    getWorkRootCategory,
-    getWorkCategoryByRootIdx,
     getRecruitmentByIdx,
     getManyErrandsUserTop5,
     getMuchMoneyUserTop5,

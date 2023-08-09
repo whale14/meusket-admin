@@ -21,6 +21,6 @@ router.post("/report/update", authRequired, ctrlR.updateReport);
 
 router
     .get("/change-category", authRequired, ctrl.changeCategoryForm)
-    .post("/change-category", authRequired, ctrl.changeCategory);
+    .post("/change-category", upload.none(), authRequired, ctrl.changeCategory);
 
 module.exports = router;

@@ -62,15 +62,24 @@ const runTransaction = async (queries) => {
 
 const isDatabaseChangeOperation = (pstmt) => {
     // INSERT 문인 경우
-    if (pstmt.trim().startsWith("insert")) {
+    if (
+        pstmt.trim().startsWith("insert") ||
+        pstmt.trim().startsWith("INSERT")
+    ) {
         return true;
     }
     // UPDATE 문인 경우
-    if (pstmt.trim().startsWith("update")) {
+    if (
+        pstmt.trim().startsWith("update") ||
+        pstmt.trim().startsWith("UPDATE")
+    ) {
         return true;
     }
     // DELETE 문인 경우
-    if (pstmt.trim().startsWith("delete")) {
+    if (
+        pstmt.trim().startsWith("delete") ||
+        pstmt.trim().startsWith("DELETE")
+    ) {
         return true;
     }
     // 이 외의 경우는 변경 작업이 아닌 것으로 판단

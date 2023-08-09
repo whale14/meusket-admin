@@ -8,22 +8,53 @@
             select#rootCategorySelect.form-select(aria-label="rootCategory")
                 option(selected) 상위카테고리 선택
             form#changeCategoryForm
-        .modal-footer
-            button#closeBtn.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
-
+#editCategorySuccessModal.modal.fade(tabindex='-1' aria-labelledby='editCategorySuccessModalLabel' aria-hidden='true' data-bs-backdrop="static")
+    .modal-dialog
+        .modal-content
+            .modal-header
+                h1#editCategorySuccessModalLabel.modal-title.fs-5 변경 완료
+                button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+            .modal-body
+                | 변경을 완료했습니다!
+            .modal-footer
+                button.btn.btn-secondary(type='button' data-bs-dismiss='modal') 확인
 script.
     const rootCategorySelect = document.getElementById('rootCategorySelect');
+    function submitForm(event){
+        event.preventDefault();
+        const formData = new FormData(document.getElementById("changeCategoryForm"));
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/trade/change-category");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    const changeCategoryModal = document.querySelector('#changeCategoryModal');
+                    const modal = bootstrap.Modal.getInstance(changeCategoryModal);
+                    modal.hide();
+
+                    const successModal = document.querySelector("#editCategorySuccessModal");
+                    const successModalInstance = new bootstrap.Modal(successModal);
+                    successModalInstance.show();
+                }
+            }
+        }
+        xhr.send(formData);
+    }
+    function createOptionElement(text, value) {
+        const option = document.createElement('option');
+        option.innerText = text;
+        option.value = value;
+        return option;
+    }
     function updateRootCategory(rootCategories){
         rootCategories.forEach(function(rootCategory){
-            const option = document.createElement("option");
-            option.value = rootCategory.idx;
-            option.textContent = rootCategory.categoryName;
+            const option = createOptionElement(rootCategory.categoryName, rootCategory.idx);
             rootCategorySelect.appendChild(option);
         });
     }
+    
     function updateChangeCategoryForm(rootCategory, subcategories){
         const changeCategoryForm = document.getElementById('changeCategoryForm');
-        changeCategoryForm.innerHTML = "";
         //rootCategory
         const rootCategoryFormTitle = document.createElement("div");
         rootCategoryFormTitle.setAttribute("class", "h5 my-2");
@@ -31,19 +62,35 @@ script.
         rootCategoryFormTitle.innerText = "상위 카테고리 변경";
         changeCategoryForm.appendChild(rootCategoryFormTitle);
 
+        const rootInputGroup = document.createElement("div");
+        rootInputGroup.setAttribute("class", "input-group mt-2")
+
         const rootCategoryInput = document.createElement("input");
         rootCategoryInput.setAttribute("class", "form-control");
         rootCategoryInput.setAttribute("id", "rootCategoryName");
         rootCategoryInput.setAttribute("disabled", true);
         rootCategoryInput.setAttribute("value", `${rootCategory.categoryName}`);
         rootCategoryInput.name = "rootCategoryName";
-        changeCategoryForm.appendChild(rootCategoryInput);
+        rootInputGroup.appendChild(rootCategoryInput);
 
         const rootCategoryIdxInput = document.createElement("input");
         rootCategoryIdxInput.type = "hidden";
         rootCategoryIdxInput.name = "rootCategoryIdx";
         rootCategoryIdxInput.value = rootCategory.idx;        
-        changeCategoryForm.appendChild(rootCategoryIdxInput);
+        rootInputGroup.appendChild(rootCategoryIdxInput);
+
+        const changeRootBtn = document.createElement("button");
+        changeRootBtn.setAttribute("class", "btn btn-dark");
+        changeRootBtn.setAttribute("id", "changeBtn");
+        changeRootBtn.type = "button";
+        changeRootBtn.innerText = "변경";
+        changeRootBtn.addEventListener('click', function (event) {
+            event.preventDefault();
+            rootCategoryInput.removeAttribute('disabled');
+            rootCategoryIdxInput.removeAttribute('disabled');
+        });
+        rootInputGroup.appendChild(changeRootBtn);
+        changeCategoryForm.appendChild(rootInputGroup);
         
         //subcategories
         const line = document.createElement("div");
@@ -59,16 +106,17 @@ script.
 
             const subcategoryInput = document.createElement("input");
             subcategoryInput.setAttribute("class", "form-control");
-            subcategoryInput.setAttribute("id", `subcategory${subcategory.idx}Name`);
+            subcategoryInput.setAttribute("id", `subcategoryName`);
             subcategoryInput.setAttribute("value", `${subcategory.categoryName}`);
             subcategoryInput.setAttribute("disabled", true);
             subcategoryInput.type = 'text'
-            subcategoryInput.name = `subcategory${subcategory.idx}Name`;
+            subcategoryInput.name = `subcategoryName`;
 
             const subcategoryIdxInput = document.createElement("input");
             subcategoryIdxInput.type = "hidden";
-            subcategoryIdxInput.name = `subcategory${subcategory.idx}Idx`;
+            subcategoryIdxInput.name = `subcategoryIdx`;
             subcategoryIdxInput.value = subcategory.idx;
+            subcategoryIdxInput.setAttribute("disabled", true);
 
             const changeBtn = document.createElement("button");
             changeBtn.setAttribute("class", "btn btn-dark");
@@ -77,19 +125,31 @@ script.
             changeBtn.innerText = "변경";
             changeBtn.addEventListener('click', function (event) {
                 event.preventDefault();
-                const subcategoryInput = this.previousElementSibling.previousElementSibling;
                 subcategoryInput.removeAttribute('disabled');
+                subcategoryIdxInput.removeAttribute('disabled');
             });
 
             subInputGroup.appendChild(subcategoryInput);
             subInputGroup.appendChild(subcategoryIdxInput);
             subInputGroup.appendChild(changeBtn);
             changeCategoryForm.appendChild(subInputGroup);
-        })        
+        })
+        const submitBtn = document.createElement("button");
+        submitBtn.setAttribute("class", "btn btn-dark mt-2 ms-auto");
+        submitBtn.setAttribute('type', "submit");
+        submitBtn.setAttribute("id", "submitBtn");
+        submitBtn.innerText = "변경";
+        changeCategoryForm.appendChild(submitBtn);
     }
-    function enableInput(input) {
-        input.removeAttribute('disabled');
+    function populateRootCategories() {
+        
+        while (rootCategorySelect.firstChild) {
+            rootCategorySelect.removeChild(rootCategorySelect.firstChild);
+        }
+        const defaultOption = createOptionElement('상위카테고리 선택', '');
+        rootCategorySelect.appendChild(defaultOption);
     }
+
     document.addEventListener('DOMContentLoaded', () => {
         const changeCategoryBtn = document.getElementById('changeCategoryBtn');
         changeCategoryBtn.addEventListener('click', function (event){
@@ -123,4 +183,17 @@ script.
                 xhr.send();
             }
         });
+        const changeCategoryModal = document.querySelector('#changeCategoryModal');
+        changeCategoryModal.addEventListener('hide.bs.modal', function (event) {
+            const modalContent = this.querySelector('.modal-content');
+            const modalBody = modalContent.querySelector('.modal-body');
+            const form = modalBody.querySelector('#changeCategoryForm');
+            while (changeCategoryForm.firstChild) {
+                changeCategoryForm.removeChild(changeCategoryForm.firstChild);
+            }
+            populateRootCategories();
+        });
+        changeCategoryForm.addEventListener("submit", submitForm);
+        //- const submitBtn = document.querySelector("#submitBtn");
+        
     });
